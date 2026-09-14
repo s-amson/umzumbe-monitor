@@ -1,1182 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>uMzumbe Environment Monitor</title>
-
-  <style>
-    :root {
-      --bg: #f3f5f7;
-      --surface: #ffffff;
-      --surface-2: #f7f8fa;
-      --text: #171717;
-      --muted: #666b73;
-      --border: #dfe3e8;
-      --accent: #111111;
-      --accent-contrast: #ffffff;
-      --shadow: 0 14px 34px rgba(0,0,0,.10);
-      --good: #15803d;
-      --warn: #b77900;
-      --bad: #c62828;
-      --chart-grid: #d9dde2;
-    }
-
-    body.dark {
-      --bg: #101214;
-      --surface: #181b1f;
-      --surface-2: #20242a;
-      --text: #f5f7fa;
-      --muted: #aab0b8;
-      --border: #30363d;
-      --accent: #f5f7fa;
-      --accent-contrast: #111315;
-      --shadow: 0 14px 34px rgba(0,0,0,.35);
-      --chart-grid: #343a42;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
-      min-height: 100vh;
-      transition: background .2s, color .2s;
-    }
-
-    button, select { font: inherit; }
-
-    .app-shell {
-      width: min(100%, 820px);
-      min-height: 100vh;
-      margin: 0 auto;
-      background: var(--surface);
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      height: 74px;
-      display: grid;
-      grid-template-columns: 52px 1fr 52px;
-      align-items: center;
-      padding: 0 16px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .brand {
-      text-align: center;
-      font-weight: 800;
-      font-size: clamp(18px, 3vw, 23px);
-      letter-spacing: -.2px;
-    }
-
-    .icon-btn {
-      width: 44px;
-      height: 44px;
-      border: 0;
-      background: transparent;
-      color: var(--text);
-      cursor: pointer;
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-    }
-
-    .icon-btn:hover { background: var(--surface-2); }
-
-    .hamburger,
-    .hamburger::before,
-    .hamburger::after {
-      width: 27px;
-      height: 4px;
-      background: currentColor;
-      border-radius: 20px;
-      display: block;
-      position: relative;
-    }
-
-    .hamburger::before,
-    .hamburger::after {
-      content: "";
-      position: absolute;
-      left: 0;
-    }
-
-    .hamburger::before { top: -9px; }
-    .hamburger::after { top: 9px; }
-
-    .page {
-      display: none;
-      padding: 34px 28px 48px;
-    }
-
-    .page.active { display: block; }
-
-    .welcome {
-      min-height: calc(100vh - 74px);
-      display: flex;
-      flex-direction: column;
-    }
-
-    h1, h2, h3, p { margin-top: 0; }
-
-    .welcome h1 {
-      text-align: center;
-      margin: 34px 0 24px;
-      font-size: clamp(25px, 5vw, 38px);
-    }
-
-    .section-label {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 18px;
-    }
-
-    .overview-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      margin-bottom: 34px;
-    }
-
-    .overview-item {
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px 14px;
-      background: var(--surface-2);
-      min-height: 105px;
-    }
-
-    .overview-item .label {
-      color: var(--muted);
-      font-weight: 700;
-      font-size: 14px;
-      margin-bottom: 12px;
-    }
-
-    .overview-item .value {
-      font-size: clamp(22px, 5vw, 30px);
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .signin-wrap {
-      margin-top: auto;
-      padding-top: 26px;
-      text-align: center;
-    }
-
-    .primary-btn {
-      border: 2px solid var(--accent);
-      color: var(--accent);
-      background: var(--surface);
-      border-radius: 14px;
-      min-width: 170px;
-      padding: 14px 26px;
-      font-weight: 800;
-      cursor: pointer;
-      font-size: 18px;
-    }
-
-    .primary-btn:hover {
-      background: var(--accent);
-      color: var(--accent-contrast);
-    }
-
-    .account-link {
-      margin-top: 12px;
-      text-decoration: underline;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .prototype-note {
-      margin-top: 24px;
-      color: var(--muted);
-      font-size: 12px;
-      text-align: center;
-      line-height: 1.5;
-    }
-
-    .metric-strip {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(110px, 1fr));
-      gap: 10px;
-      overflow-x: auto;
-      padding-bottom: 6px;
-      margin-bottom: 28px;
-    }
-
-    .metric-chip {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--surface-2);
-      padding: 12px;
-      min-width: 110px;
-      text-align: center;
-    }
-
-    .metric-chip .mini-label {
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-    }
-
-    .metric-chip .mini-value {
-      font-size: 17px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .dashboard-title {
-      font-size: 25px;
-      margin-bottom: 8px;
-    }
-
-    .dashboard-subtitle {
-      color: var(--muted);
-      margin-bottom: 22px;
-      line-height: 1.5;
-    }
-
-    .sensor-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-    }
-
-    .secondary-btn {
-      border: 1px solid var(--border);
-      background: var(--surface-2);
-      color: var(--text);
-      border-radius: 10px;
-      padding: 10px 14px;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .secondary-btn:hover { border-color: var(--text); }
-
-    #connectionStatus {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .factor-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 26px;
-    }
-
-    .factor-btn {
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      border-radius: 14px;
-      padding: 18px;
-      text-align: left;
-      cursor: pointer;
-      transition: transform .15s, border-color .15s;
-    }
-
-    .factor-btn:hover {
-      transform: translateY(-1px);
-      border-color: var(--text);
-    }
-
-    .factor-btn .name {
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .factor-btn .current {
-      font-size: 23px;
-      font-weight: 800;
-    }
-
-    .detail-card {
-      display: none;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      background: var(--surface);
-    }
-
-    .detail-card.active { display: block; }
-
-    .detail-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .detail-current {
-      font-size: clamp(32px, 7vw, 48px);
-      font-weight: 900;
-      margin: 5px 0 4px;
-    }
-
-    .status-badge {
-      display: inline-block;
-      border-radius: 999px;
-      padding: 7px 11px;
-      font-size: 12px;
-      font-weight: 800;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-    }
-
-    .meaning {
-      line-height: 1.55;
-      color: var(--muted);
-      margin-bottom: 18px;
-    }
-
-    .chart-wrap {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px;
-      background: var(--surface-2);
-      margin-bottom: 20px;
-    }
-
-    canvas {
-      width: 100%;
-      height: 240px;
-      display: block;
-    }
-
-    .advice-box {
-      border-left: 5px solid var(--accent);
-      background: var(--surface-2);
-      border-radius: 10px;
-      padding: 15px;
-      line-height: 1.5;
-    }
-
-    .advice-box h3 {
-      font-size: 16px;
-      margin-bottom: 8px;
-    }
-
-    .drawer-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.35);
-      z-index: 50;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .2s;
-    }
-
-    .drawer-overlay.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .drawer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: min(330px, 85vw);
-      height: 100%;
-      background: var(--surface);
-      color: var(--text);
-      box-shadow: 12px 0 30px rgba(0,0,0,.2);
-      transform: translateX(-100%);
-      transition: transform .22s ease;
-      padding: 20px;
-    }
-
-    .drawer-overlay.open .drawer { transform: translateX(0); }
-
-    .drawer-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 28px;
-    }
-
-    .drawer-title {
-      font-weight: 900;
-      font-size: 20px;
-    }
-
-    .drawer-section {
-      border-top: 1px solid var(--border);
-      padding: 18px 0;
-    }
-
-    .drawer-section h3 {
-      font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      letter-spacing: .6px;
-    }
-
-    .choice-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .choice-btn {
-      border: 1px solid var(--border);
-      background: var(--surface-2);
-      color: var(--text);
-      padding: 10px;
-      border-radius: 9px;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .choice-btn.active {
-      border-color: var(--text);
-      box-shadow: inset 0 0 0 1px var(--text);
-    }
-
-    @media (max-width: 560px) {
-      .page { padding: 24px 18px 40px; }
-      .overview-grid, .factor-grid { grid-template-columns: 1fr 1fr; }
-      .metric-strip { grid-template-columns: repeat(4, 112px); }
-      .detail-header { flex-direction: column; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>uMzumbe Environment Monitor</title>
+<style>
+
+:root{
+  --bg:#f1f3f5; --surface:#fff; --surface2:#f7f8fa; --text:#171717; --muted:#69707a;
+  --border:#d9dee4; --accent:#111; --accentContrast:#fff; --good:#14833b;
+  --warn:#b77700; --bad:#c62828; --shadow:0 14px 34px rgba(0,0,0,.10);
+  --grid:#d9dde2;
+}
+body.dark{
+  --bg:#0f1114; --surface:#181b1f; --surface2:#20242a; --text:#f4f6f8; --muted:#aab0b8;
+  --border:#30363d; --accent:#f4f6f8; --accentContrast:#111315; --shadow:0 14px 34px rgba(0,0,0,.35);
+  --grid:#343a42;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+button{font:inherit}
+.app-shell{width:min(100%,820px);min-height:100vh;margin:0 auto;background:var(--surface);box-shadow:var(--shadow)}
+.topbar{position:sticky;top:0;z-index:20;height:74px;display:grid;grid-template-columns:52px 1fr 52px;align-items:center;padding:0 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+.brand{text-align:center;font-weight:800;font-size:clamp(18px,3vw,23px)}
+.icon-btn{width:44px;height:44px;border:0;background:transparent;color:var(--text);cursor:pointer;border-radius:10px;display:grid;place-items:center}
+.icon-btn:hover{background:var(--surface2)}
+.hamburger,.hamburger::before,.hamburger::after{width:27px;height:4px;background:currentColor;border-radius:20px;display:block;position:relative}
+.hamburger::before,.hamburger::after{content:"";position:absolute;left:0}
+.hamburger::before{top:-9px}.hamburger::after{top:9px}
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.drawer-overlay.open{opacity:1;pointer-events:auto}
+.drawer{position:absolute;top:0;left:0;width:min(330px,85vw);height:100%;background:var(--surface);color:var(--text);box-shadow:12px 0 30px rgba(0,0,0,.2);transform:translateX(-100%);transition:transform .22s ease;padding:20px}
+.drawer-overlay.open .drawer{transform:translateX(0)}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.drawer-title{font-weight:900;font-size:20px}
+.drawer-section{border-top:1px solid var(--border);padding:18px 0}
+.drawer-section h3{font-size:14px;color:var(--muted);margin:0 0 12px;text-transform:uppercase;letter-spacing:.6px}
+.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choice-btn{border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:10px;border-radius:9px;cursor:pointer;font-weight:700}
+.choice-btn.active{border-color:var(--text);box-shadow:inset 0 0 0 1px var(--text)}
+.note{color:var(--muted);font-size:12px;line-height:1.5}
+
+.page{min-height:calc(100vh - 74px);padding:34px 28px 46px;display:flex;flex-direction:column}
+h1{text-align:center;font-size:clamp(25px,5vw,38px);margin:36px 0 24px}
+.section-label{font-size:18px;font-weight:700;margin-bottom:18px}
+.overview-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:32px}
+.overview-item{border:1px solid var(--border);border-radius:14px;padding:18px 14px;background:var(--surface2);min-height:105px}
+.overview-item .label{color:var(--muted);font-weight:700;font-size:14px;margin-bottom:12px}
+.overview-item .value{font-size:clamp(22px,5vw,30px);font-weight:800;white-space:nowrap}
+.signin-wrap{margin-top:auto;text-align:center;padding-top:28px}
+.primary-btn{border:2px solid var(--accent);color:var(--accent);background:var(--surface);border-radius:14px;min-width:170px;padding:14px 26px;font-weight:800;cursor:pointer;font-size:18px}
+.primary-btn:hover{background:var(--accent);color:var(--accentContrast)}
+.account-link{margin-top:12px;text-decoration:underline;color:var(--muted);font-size:14px}
+.loading-overlay{position:fixed;inset:0;background:var(--surface);z-index:100;display:none;place-items:center;padding:24px}
+.loading-overlay.show{display:grid}
+.loading-card{text-align:center}
+.spinner{width:52px;height:52px;border:5px solid var(--border);border-top-color:var(--accent);border-radius:50%;margin:0 auto 22px;animation:spin .8s linear infinite}
+.loading-text{font-weight:800;font-size:20px}
+.loading-sub{color:var(--muted);margin-top:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:560px){.page{padding:24px 18px 40px}}
+</style>
 </head>
-
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <button class="icon-btn" id="menuButton" aria-label="Open menu">
-        <span class="hamburger"></span>
-      </button>
+<div class="app-shell">
+  <header class="topbar">
+    <button class="icon-btn" id="menuButton" aria-label="Open menu"><span class="hamburger"></span></button>
+    <div class="brand">uMzumbe Environment Monitor</div><div></div>
+  </header>
 
-      <div class="brand">uMzumbe Environment Monitor</div>
-      <div></div>
-    </header>
+  <main class="page">
+    <h1>WELCOME TO UEM App</h1>
+    <div class="section-label">Quick Overview:</div>
 
-    <!-- WELCOME PAGE -->
-    <section class="page welcome active" id="welcomePage">
-      <h1>WELCOME TO UEM App</h1>
+    <div class="overview-grid">
+      <div class="overview-item"><div class="label">Temperature</div><div class="value" id="welcomeTemp">-- °C</div></div>
+      <div class="overview-item"><div class="label">Noise Level</div><div class="value" id="welcomeNoise">-- dB</div></div>
+      <div class="overview-item"><div class="label">Water Acidity</div><div class="value" id="welcomePh">pH --</div></div>
+      <div class="overview-item"><div class="label">Air Quality</div><div class="value" id="welcomeAir">-- µg/m³</div></div>
+    </div>
 
-      <div class="section-label">Quick Overview:</div>
-
-      <div class="overview-grid">
-        <div class="overview-item">
-          <div class="label">Temperature</div>
-          <div class="value" id="welcomeTemp">-- °C</div>
-        </div>
-
-        <div class="overview-item">
-          <div class="label">Noise Level</div>
-          <div class="value" id="welcomeNoise">-- dB</div>
-        </div>
-
-        <div class="overview-item">
-          <div class="label">Water Acidity</div>
-          <div class="value" id="welcomePh">pH --</div>
-        </div>
-
-        <div class="overview-item">
-          <div class="label">Air Quality</div>
-          <div class="value" id="welcomeAir">-- µg/m³</div>
-        </div>
-      </div>
-
-      <div class="signin-wrap">
-        <button class="primary-btn" id="signInButton">SIGN IN</button>
-        <div class="account-link">I don't have an account</div>
-
-        <div class="prototype-note">
-          Prototype values are derived from one potentiometer for demonstration.
-          They are not real environmental measurements.
-        </div>
-      </div>
-    </section>
-
-    <!-- DASHBOARD PAGE -->
-    <section class="page" id="dashboardPage">
-      <div class="metric-strip">
-        <div class="metric-chip">
-          <div class="mini-label">Temp</div>
-          <div class="mini-value" id="stripTemp">-- °C</div>
-        </div>
-
-        <div class="metric-chip">
-          <div class="mini-label">Noise</div>
-          <div class="mini-value" id="stripNoise">-- dB</div>
-        </div>
-
-        <div class="metric-chip">
-          <div class="mini-label">Water</div>
-          <div class="mini-value" id="stripPh">pH --</div>
-        </div>
-
-        <div class="metric-chip">
-          <div class="mini-label">PM2.5</div>
-          <div class="mini-value" id="stripAir">-- µg/m³</div>
-        </div>
-      </div>
-
-      <h2 class="dashboard-title">Live Environmental Data</h2>
-      <p class="dashboard-subtitle">
-        Choose an environmental factor to see its value, interpretation,
-        recent live trend and recommended response.
+    <div class="signin-wrap">
+      <button class="primary-btn" id="signInButton">SIGN IN</button>
+      <div class="account-link">I don't have an account</div>
+      <p class="note" style="margin-top:24px">
+        Prototype values are derived from one potentiometer for demonstration only.
       </p>
+    </div>
+  </main>
+</div>
 
-      <div class="sensor-controls" id="sensorControls">
-        <button class="secondary-btn" id="connectButton">Connect Arduino</button>
-        <span id="connectionStatus">Sensor source not connected on this device</span>
+
+<div class="drawer-overlay" id="drawerOverlay">
+  <aside class="drawer">
+    <div class="drawer-head">
+      <div class="drawer-title">UEM Settings</div>
+      <button class="icon-btn" id="closeDrawerButton" aria-label="Close menu">✕</button>
+    </div>
+    <div class="drawer-section">
+      <h3>Appearance</h3>
+      <div class="choice-row">
+        <button class="choice-btn active" id="lightModeButton">Light</button>
+        <button class="choice-btn" id="darkModeButton">Dark</button>
       </div>
-
-      <div class="factor-grid">
-        <button class="factor-btn" data-factor="temperature">
-          <div class="name">Temperature</div>
-          <div class="current" id="cardTemp">-- °C</div>
-        </button>
-
-        <button class="factor-btn" data-factor="noise">
-          <div class="name">Noise Level</div>
-          <div class="current" id="cardNoise">-- dB</div>
-        </button>
-
-        <button class="factor-btn" data-factor="ph">
-          <div class="name">Water Acidity</div>
-          <div class="current" id="cardPh">pH --</div>
-        </button>
-
-        <button class="factor-btn" data-factor="air">
-          <div class="name">Air Quality (PM2.5)</div>
-          <div class="current" id="cardAir">-- µg/m³</div>
-        </button>
+    </div>
+    <div class="drawer-section">
+      <h3>Language</h3>
+      <div class="choice-row">
+        <button class="choice-btn active" id="englishButton">English</button>
+        <button class="choice-btn" id="zuluButton">IsiZulu</button>
       </div>
+      <p class="note" style="margin-top:12px">Both choices display English for now.</p>
+    </div>
+  </aside>
+</div>
 
-      <div class="detail-card" id="detailCard">
-        <div class="detail-header">
-          <div>
-            <div id="detailName" class="section-label">Environmental Factor</div>
-            <div class="detail-current" id="detailValue">--</div>
-            <div class="status-badge" id="detailStatus">Waiting for data</div>
-          </div>
-        </div>
 
-        <p class="meaning" id="detailMeaning"></p>
-
-        <div class="chart-wrap">
-          <canvas id="liveChart"></canvas>
-        </div>
-
-        <div class="advice-box" id="adviceBox">
-          <h3>Advice</h3>
-          <div id="detailAdvice">Waiting for data.</div>
-        </div>
-      </div>
-    </section>
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-card">
+    <div class="spinner"></div>
+    <div class="loading-text">Taking you there in a moment...</div>
+    <div class="loading-sub">hang tight</div>
   </div>
-
-  <!-- DRAWER -->
-  <div class="drawer-overlay" id="drawerOverlay">
-    <aside class="drawer">
-      <div class="drawer-head">
-        <div class="drawer-title">UEM Settings</div>
-        <button class="icon-btn" id="closeDrawerButton" aria-label="Close menu">✕</button>
-      </div>
-
-      <div class="drawer-section">
-        <h3>Appearance</h3>
-        <div class="choice-row">
-          <button class="choice-btn active" id="lightModeButton">Light</button>
-          <button class="choice-btn" id="darkModeButton">Dark</button>
-        </div>
-      </div>
-
-      <div class="drawer-section">
-        <h3>Language</h3>
-        <div class="choice-row">
-          <button class="choice-btn active" id="englishButton">English</button>
-          <button class="choice-btn" id="zuluButton">IsiZulu</button>
-        </div>
-        <p class="prototype-note" style="text-align:left;margin-bottom:0;">
-          Both options display English content in this prototype.
-        </p>
-      </div>
-    </aside>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from
-      "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-
-    import {
-      getDatabase,
-      ref,
-      set,
-      onValue
-    } from
-      "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
-
-    // =========================================================
-    // 1) REPLACE THESE VALUES WITH YOUR EXISTING FIREBASE CONFIG
-    // =========================================================
-    const firebaseConfig =
-    {
-
-        apiKey:
-        "AIzaSyDEklrPBaRIvDg8bTwkcMz3kE_VNLcVxAs",
-
-        authDomain:
-        "umzumbe-monitor.firebaseapp.com",
-
-        databaseURL:
-        "https://umzumbe-monitor-default-rtdb.firebaseio.com",
-
-        projectId:
-        "umzumbe-monitor",
-
-        storageBucket:
-        "umzumbe-monitor.firebasestorage.app",
-
-        messagingSenderId:
-        "781346294395",
-
-        appId:
-        "1:781346294395:web:056f025c31ab1b055f70de"
-
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-    const sensorReference = ref(database, "sensor/currentValue");
-
-    // =========================================================
-    // PAGE + MENU CONTROLS
-    // =========================================================
-    const welcomePage = document.getElementById("welcomePage");
-    const dashboardPage = document.getElementById("dashboardPage");
-    const signInButton = document.getElementById("signInButton");
-
-    signInButton.addEventListener("click", () => {
-      welcomePage.classList.remove("active");
-      dashboardPage.classList.add("active");
-      setTimeout(renderGraph, 80);
-    });
-
-    const drawerOverlay = document.getElementById("drawerOverlay");
-    document.getElementById("menuButton").addEventListener("click", () => {
-      drawerOverlay.classList.add("open");
-    });
-
-    document.getElementById("closeDrawerButton").addEventListener("click", () => {
-      drawerOverlay.classList.remove("open");
-    });
-
-    drawerOverlay.addEventListener("click", (event) => {
-      if (event.target === drawerOverlay) {
-        drawerOverlay.classList.remove("open");
-      }
-    });
-
-    // =========================================================
-    // THEME
-    // =========================================================
-    const lightModeButton = document.getElementById("lightModeButton");
-    const darkModeButton = document.getElementById("darkModeButton");
-
-    function setTheme(theme) {
-      document.body.classList.toggle("dark", theme === "dark");
-      lightModeButton.classList.toggle("active", theme === "light");
-      darkModeButton.classList.toggle("active", theme === "dark");
-      localStorage.setItem("uem-theme", theme);
-      renderGraph();
-    }
-
-    lightModeButton.addEventListener("click", () => setTheme("light"));
-    darkModeButton.addEventListener("click", () => setTheme("dark"));
-
-    setTheme(localStorage.getItem("uem-theme") || "light");
-
-    // =========================================================
-    // LANGUAGE — BOTH REMAIN ENGLISH FOR NOW
-    // =========================================================
-    const englishButton = document.getElementById("englishButton");
-    const zuluButton = document.getElementById("zuluButton");
-
-    function setLanguage(language) {
-      englishButton.classList.toggle("active", language === "en");
-      zuluButton.classList.toggle("active", language === "zu");
-      localStorage.setItem("uem-language", language);
-
-      // Intentionally no translation yet.
-      // English remains displayed for both choices.
-    }
-
-    englishButton.addEventListener("click", () => setLanguage("en"));
-    zuluButton.addEventListener("click", () => setLanguage("zu"));
-
-    setLanguage(localStorage.getItem("uem-language") || "en");
-
-    // =========================================================
-    // IMPORTANT SCIENTIFIC NOTE
-    // =========================================================
-    // A potentiometer does NOT physically measure temperature,
-    // noise, pH or PM2.5.
-    //
-    // The mappings below are DEMO mappings that convert the same
-    // 0–1023 prototype input into plausible-looking engineering units.
-    //
-    // When real sensors are installed, replace these formulas with
-    // each sensor manufacturer's calibration equation.
-    // =========================================================
-
-    function clamp(value, min, max) {
-      return Math.min(max, Math.max(min, value));
-    }
-
-    function deriveMetrics(rawValue) {
-      const raw = clamp(Number(rawValue) || 0, 0, 1023);
-      const n = raw / 1023.0;  // 0.0 to 1.0
-
-      return {
-        raw,
-
-        // DEMO RANGE: 18.0 to 45.0 °C
-        temperature: +(18 + 27 * n).toFixed(1),
-
-        // DEMO RANGE: 35.0 to 110.0 dB
-        noise: +(35 + 75 * n).toFixed(1),
-
-        // DEMO RANGE: pH 8.5 down to 4.0 as risk rises
-        ph: +(8.5 - 4.5 * n).toFixed(2),
-
-        // DEMO RANGE: 5 to 200 µg/m³ PM2.5
-        air: +(5 + 195 * n).toFixed(1)
-      };
-    }
-
-    // =========================================================
-    // FACTOR DEFINITIONS
-    // =========================================================
-    const factorMeta = {
-      temperature: {
-        name: "Temperature",
-        unit: "°C",
-        graphMin: 15,
-        graphMax: 50,
-        meaning(value) {
-          if (value < 30) return "The simulated ambient temperature is within the prototype's normal range.";
-          if (value < 35) return "The simulated ambient temperature is elevated.";
-          return "The simulated ambient temperature is very high.";
-        },
-        status(value) {
-          if (value < 30) return { text: "NORMAL", level: "good" };
-          if (value < 35) return { text: "ELEVATED", level: "warn" };
-          return { text: "HIGH", level: "bad" };
-        },
-        advice(value) {
-          if (value < 30) return "Normal monitoring can continue.";
-          if (value < 35) return "Limit unnecessary heat exposure and keep drinking water available.";
-          return "Reduce prolonged outdoor exposure, provide shade and hydration, and investigate unusual heat conditions.";
-        }
-      },
-
-      noise: {
-        name: "Noise Level",
-        unit: "dB",
-        graphMin: 30,
-        graphMax: 115,
-        meaning(value) {
-          if (value < 55) return "The simulated noise level is relatively low for this prototype.";
-          if (value < 70) return "The simulated noise level is elevated and may affect nearby residents.";
-          return "The simulated noise level is high and should trigger investigation.";
-        },
-        status(value) {
-          if (value < 55) return { text: "LOW", level: "good" };
-          if (value < 70) return { text: "ELEVATED", level: "warn" };
-          return { text: "HIGH", level: "bad" };
-        },
-        advice(value) {
-          if (value < 55) return "Continue routine monitoring.";
-          if (value < 70) return "Review the likely noise source and consider limiting noisy activity near the community.";
-          return "Move away from the immediate noise source where practical, use hearing protection where required, and investigate the source before continued exposure.";
-        }
-      },
-
-      ph: {
-        name: "Water Acidity",
-        unit: "pH",
-        graphMin: 3.5,
-        graphMax: 10,
-        meaning(value) {
-          if (value >= 5 && value <= 9.7) {
-            return "The simulated pH is within the SANS 241 operational pH range. pH alone does not prove that water is safe to drink.";
-          }
-          if (value < 5) {
-            return "The simulated water is increasingly acidic and falls below the SANS 241 operational pH range.";
-          }
-          return "The simulated water is highly alkaline and falls outside the prototype reference range.";
-        },
-        status(value) {
-          if (value >= 5 && value <= 9.7) return { text: "IN RANGE", level: "good" };
-          if (value >= 4.5 && value < 5) return { text: "WARNING", level: "warn" };
-          return { text: "OUT OF RANGE", level: "bad" };
-        },
-        advice(value) {
-          if (value >= 5 && value <= 9.7) {
-            return "Continue monitoring. Do not describe the water as safe to drink from pH alone; potability requires additional water-quality tests.";
-          }
-          return "Treat this as a water-quality warning. Investigate the source, verify with a calibrated pH instrument and perform the required chemical and microbiological tests before any consumption decision.";
-        }
-      },
-
-      air: {
-        name: "Air Quality (PM2.5)",
-        unit: "µg/m³",
-        graphMin: 0,
-        graphMax: 210,
-        meaning(value) {
-          if (value <= 15) return "The simulated PM2.5 value is at or below the WHO 24-hour guideline reference.";
-          if (value <= 35) return "The simulated PM2.5 value is above the WHO 24-hour guideline reference.";
-          return "The simulated PM2.5 value is high and represents poor air-quality conditions in this prototype.";
-        },
-        status(value) {
-          if (value <= 15) return { text: "LOW", level: "good" };
-          if (value <= 35) return { text: "ELEVATED", level: "warn" };
-          return { text: "HIGH", level: "bad" };
-        },
-        advice(value) {
-          if (value <= 15) return "Continue monitoring.";
-          if (value <= 35) return "Reduce unnecessary exposure to visible dust and investigate the pollution source.";
-          return "Reduce outdoor exposure during the event, move away from visible dust where practical, close nearby windows if appropriate, and investigate or suppress the source.";
-        }
-      }
-    };
-
-    // =========================================================
-    // LIVE DATA + HISTORY
-    // =========================================================
-    let currentMetrics = deriveMetrics(0);
-    let selectedFactor = null;
-
-    const history = {
-      temperature: [],
-      noise: [],
-      ph: [],
-      air: []
-    };
-
-    const MAX_POINTS = 60;
-
-    function addHistory(metrics) {
-      const time = Date.now();
-
-      for (const key of ["temperature", "noise", "ph", "air"]) {
-        history[key].push({ time, value: metrics[key] });
-
-        if (history[key].length > MAX_POINTS) {
-          history[key].shift();
-        }
-      }
-    }
-
-    function formatValue(key, value) {
-      if (key === "ph") return `pH ${Number(value).toFixed(2)}`;
-      if (key === "temperature") return `${Number(value).toFixed(1)} °C`;
-      if (key === "noise") return `${Number(value).toFixed(1)} dB`;
-      return `${Number(value).toFixed(1)} µg/m³`;
-    }
-
-    function updateAllDisplays(metrics) {
-      currentMetrics = metrics;
-
-      document.getElementById("welcomeTemp").textContent = formatValue("temperature", metrics.temperature);
-      document.getElementById("welcomeNoise").textContent = formatValue("noise", metrics.noise);
-      document.getElementById("welcomePh").textContent = formatValue("ph", metrics.ph);
-      document.getElementById("welcomeAir").textContent = formatValue("air", metrics.air);
-
-      document.getElementById("stripTemp").textContent = formatValue("temperature", metrics.temperature);
-      document.getElementById("stripNoise").textContent = formatValue("noise", metrics.noise);
-      document.getElementById("stripPh").textContent = formatValue("ph", metrics.ph);
-      document.getElementById("stripAir").textContent = formatValue("air", metrics.air);
-
-      document.getElementById("cardTemp").textContent = formatValue("temperature", metrics.temperature);
-      document.getElementById("cardNoise").textContent = formatValue("noise", metrics.noise);
-      document.getElementById("cardPh").textContent = formatValue("ph", metrics.ph);
-      document.getElementById("cardAir").textContent = formatValue("air", metrics.air);
-
-      if (selectedFactor) {
-        updateDetail(selectedFactor);
-      }
-    }
-
-    // Firebase updates every viewing device
-    onValue(sensorReference, (snapshot) => {
-      const rawValue = snapshot.val();
-
-      if (rawValue === null || rawValue === undefined) return;
-
-      const metrics = deriveMetrics(rawValue);
-      addHistory(metrics);
-      updateAllDisplays(metrics);
-    });
-
-    // =========================================================
-    // FACTOR DETAIL
-    // =========================================================
-    document.querySelectorAll(".factor-btn").forEach((button) => {
-      button.addEventListener("click", () => {
-        selectedFactor = button.dataset.factor;
-        document.getElementById("detailCard").classList.add("active");
-        updateDetail(selectedFactor);
-
-        document.getElementById("detailCard").scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-      });
-    });
-
-    function updateDetail(key) {
-      const meta = factorMeta[key];
-      const value = currentMetrics[key];
-      const state = meta.status(value);
-
-      document.getElementById("detailName").textContent = meta.name;
-      document.getElementById("detailValue").textContent = formatValue(key, value);
-      document.getElementById("detailMeaning").textContent = meta.meaning(value);
-      document.getElementById("detailAdvice").textContent = meta.advice(value);
-
-      const badge = document.getElementById("detailStatus");
-      badge.textContent = state.text;
-
-      const colors = {
-        good: "var(--good)",
-        warn: "var(--warn)",
-        bad: "var(--bad)"
-      };
-
-      badge.style.color = colors[state.level];
-      badge.style.borderColor = colors[state.level];
-
-      const adviceBox = document.getElementById("adviceBox");
-      adviceBox.style.borderLeftColor = colors[state.level];
-
-      renderGraph();
-    }
-
-    // =========================================================
-    // CANVAS LIVE GRAPH
-    // =========================================================
-    const canvas = document.getElementById("liveChart");
-    const ctx = canvas.getContext("2d");
-
-    function renderGraph() {
-      if (!selectedFactor || !dashboardPage.classList.contains("active")) return;
-
-      const rect = canvas.getBoundingClientRect();
-      if (rect.width === 0 || rect.height === 0) return;
-
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.round(rect.width * dpr);
-      canvas.height = Math.round(rect.height * dpr);
-
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      const w = rect.width;
-      const h = rect.height;
-      const padding = { left: 46, right: 12, top: 14, bottom: 28 };
-
-      const styles = getComputedStyle(document.body);
-      const textColor = styles.getPropertyValue("--muted").trim();
-      const gridColor = styles.getPropertyValue("--chart-grid").trim();
-      const accentColor = styles.getPropertyValue("--accent").trim();
-
-      ctx.clearRect(0, 0, w, h);
-
-      const meta = factorMeta[selectedFactor];
-      const points = history[selectedFactor];
-
-      ctx.strokeStyle = gridColor;
-      ctx.lineWidth = 1;
-      ctx.fillStyle = textColor;
-      ctx.font = "12px Arial";
-
-      for (let i = 0; i <= 4; i++) {
-        const y = padding.top + ((h - padding.top - padding.bottom) * i / 4);
-
-        ctx.beginPath();
-        ctx.moveTo(padding.left, y);
-        ctx.lineTo(w - padding.right, y);
-        ctx.stroke();
-
-        const value = meta.graphMax - ((meta.graphMax - meta.graphMin) * i / 4);
-        ctx.fillText(value.toFixed(selectedFactor === "ph" ? 1 : 0), 4, y + 4);
-      }
-
-      ctx.fillText("older", padding.left, h - 7);
-      ctx.fillText("now", w - 34, h - 7);
-
-      if (points.length < 2) {
-        ctx.fillText("Waiting for more live data...", padding.left + 20, h / 2);
-        return;
-      }
-
-      const plotW = w - padding.left - padding.right;
-      const plotH = h - padding.top - padding.bottom;
-
-      ctx.strokeStyle = accentColor;
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-
-      points.forEach((point, index) => {
-        const x = padding.left + (index / Math.max(1, MAX_POINTS - 1)) * plotW;
-        const normalized =
-          (point.value - meta.graphMin) / (meta.graphMax - meta.graphMin);
-
-        const y =
-          padding.top + plotH - clamp(normalized, 0, 1) * plotH;
-
-        if (index === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-
-      ctx.stroke();
-    }
-
-    window.addEventListener("resize", renderGraph);
-
-    // =========================================================
-    // WEB SERIAL — SOURCE LAPTOP ONLY
-    // =========================================================
-    const connectButton = document.getElementById("connectButton");
-    const connectionStatus = document.getElementById("connectionStatus");
-
-    let port = null;
-    let reader = null;
-    let keepReading = false;
-    let serialBuffer = "";
-
-    if (!("serial" in navigator)) {
-      // Viewer devices do not need serial access.
-      connectButton.style.display = "none";
-      connectionStatus.textContent = "Viewing live cloud data";
-    }
-
-    connectButton.addEventListener("click", async () => {
-      if (keepReading) {
-        await disconnectArduino();
-        return;
-      }
-
-      try {
-        port = await navigator.serial.requestPort();
-
-        await port.open({
-          baudRate: 9600
-        });
-
-        keepReading = true;
-        connectionStatus.textContent = "Arduino connected";
-        connectButton.textContent = "Disconnect Arduino";
-
-        // Many Arduino UNO boards reset when the serial port opens.
-        await sleep(2000);
-
-        readSerialData();
-      }
-      catch (error) {
-        console.error(error);
-        connectionStatus.textContent = "Arduino connection failed";
-      }
-    });
-
-    async function readSerialData() {
-      const decoder = new TextDecoder();
-
-      while (port && port.readable && keepReading) {
-        reader = port.readable.getReader();
-
-        try {
-          while (keepReading) {
-            const { value, done } = await reader.read();
-
-            if (done) break;
-            if (!value) continue;
-
-            serialBuffer += decoder.decode(value, { stream: true });
-
-            const lines = serialBuffer.split(/\r?\n/);
-            serialBuffer = lines.pop();
-
-            for (const line of lines) {
-              const cleanLine = line.trim();
-              if (!cleanLine) continue;
-
-              const rawValue = Number(cleanLine);
-
-              if (
-                !Number.isInteger(rawValue) ||
-                rawValue < 0 ||
-                rawValue > 1023
-              ) {
-                continue;
-              }
-
-              // One raw value is sent to Firebase.
-              // All devices derive the same four demo metrics from it.
-              await set(sensorReference, rawValue);
-            }
-          }
-        }
-        catch (error) {
-          console.error("Serial read error:", error);
-        }
-        finally {
-          if (reader) {
-            try { reader.releaseLock(); } catch (_) {}
-          }
-        }
-      }
-    }
-
-    async function disconnectArduino() {
-      keepReading = false;
-
-      if (reader) {
-        try { await reader.cancel(); } catch (_) {}
-      }
-
-      if (port) {
-        try { await port.close(); } catch (_) {}
-      }
-
-      reader = null;
-      port = null;
-      connectButton.textContent = "Connect Arduino";
-      connectionStatus.textContent = "Arduino disconnected";
-    }
-
-    function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-  </script>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDEklrPBaRIvDg8bTwkcMz3kE_VNLcVxAs",
+  authDomain: "umzumbe-monitor.firebaseapp.com",
+  databaseURL: "https://umzumbe-monitor-default-rtdb.firebaseio.com",
+  projectId: "umzumbe-monitor",
+  storageBucket: "umzumbe-monitor.firebasestorage.app",
+  messagingSenderId: "781346294395",
+  appId: "1:781346294395:web:056f025c31ab1b055f70de"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+const sensorRef=ref(db,"sensor/currentValue");
+
+function clamp(v,min,max){return Math.min(max,Math.max(min,v))}
+function derive(rawValue){
+  const raw=clamp(Number(rawValue)||0,0,1023);
+  const n=raw/1023;
+  return {
+    temperature:(18+27*n).toFixed(1),
+    noise:(35+75*n).toFixed(1),
+    ph:(8.5-4.5*n).toFixed(2),
+    air:(5+195*n).toFixed(1)
+  };
+}
+function updateOverview(m){
+  document.getElementById("welcomeTemp").textContent=`${m.temperature} °C`;
+  document.getElementById("welcomeNoise").textContent=`${m.noise} dB`;
+  document.getElementById("welcomePh").textContent=`pH ${m.ph}`;
+  document.getElementById("welcomeAir").textContent=`${m.air} µg/m³`;
+}
+onValue(sensorRef,snap=>{if(snap.exists())updateOverview(derive(snap.val()))});
+
+document.getElementById("signInButton").addEventListener("click",()=>{
+  document.getElementById("loadingOverlay").classList.add("show");
+  const params=new URLSearchParams(window.location.search);
+  const source=params.get("source")==="1";
+  setTimeout(()=>{
+    window.location.href=source ? "dashboard.html?source=1" : "dashboard.html";
+  },1800);
+});
+
+
+const drawerOverlay = document.getElementById("drawerOverlay");
+document.getElementById("menuButton").addEventListener("click",()=>drawerOverlay.classList.add("open"));
+document.getElementById("closeDrawerButton").addEventListener("click",()=>drawerOverlay.classList.remove("open"));
+drawerOverlay.addEventListener("click",e=>{if(e.target===drawerOverlay)drawerOverlay.classList.remove("open")});
+
+const lightBtn=document.getElementById("lightModeButton");
+const darkBtn=document.getElementById("darkModeButton");
+function setTheme(theme){
+  document.body.classList.toggle("dark",theme==="dark");
+  lightBtn.classList.toggle("active",theme==="light");
+  darkBtn.classList.toggle("active",theme==="dark");
+  localStorage.setItem("uem-theme",theme);
+  if(typeof renderGraph==="function") renderGraph();
+}
+lightBtn.addEventListener("click",()=>setTheme("light"));
+darkBtn.addEventListener("click",()=>setTheme("dark"));
+setTheme(localStorage.getItem("uem-theme")||"light");
+
+const enBtn=document.getElementById("englishButton");
+const zuBtn=document.getElementById("zuluButton");
+function setLanguage(lang){
+  enBtn.classList.toggle("active",lang==="en");
+  zuBtn.classList.toggle("active",lang==="zu");
+  localStorage.setItem("uem-language",lang);
+}
+enBtn.addEventListener("click",()=>setLanguage("en"));
+zuBtn.addEventListener("click",()=>setLanguage("zu"));
+setLanguage(localStorage.getItem("uem-language")||"en");
+
+</script>
 </body>
 </html>
