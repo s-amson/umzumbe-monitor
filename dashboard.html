@@ -1,5 +1,4 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UEM Community</title>
-<style>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UEM Community Dashboard</title><style>
 :root{
   --bg:#f5f7f9;--surface:#fff;--surface2:#f8fafb;--text:#11161b;--muted:#6d7580;
   --border:#e3e8ec;--accent:#1f4f6f;--accentSoft:#edf4f8;--accentContrast:#fff;
@@ -26,22 +25,26 @@ body.dark .topbar{background:rgba(23,28,33,.95)}.brand{text-align:center;font-we
 .choice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.choice-btn{border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:10px;border-radius:10px;cursor:pointer;font-weight:650}.choice-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accentSoft)}
 .note{color:var(--muted);font-size:12px;line-height:1.55}
 
-.page{min-height:calc(100vh - 76px);padding:36px 30px 48px;display:flex;flex-direction:column}.hero{text-align:center;padding:8px 0 30px}.eyebrow{display:inline-block;color:var(--accent);background:var(--accentSoft);font-size:12px;font-weight:750;letter-spacing:.7px;text-transform:uppercase;padding:8px 11px;border-radius:999px;margin-bottom:16px}h1{font-size:clamp(30px,5vw,44px);line-height:1.05;letter-spacing:-1px;margin:0 0 12px}.hero p{max-width:560px;margin:0 auto;color:var(--muted);line-height:1.6;font-size:15px}.section-title{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:6px 0 16px}.section-title h2{font-size:18px;margin:0}.section-title span{font-size:12px;color:var(--muted)}.overview-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.overview-card{border:1px solid var(--border);border-radius:18px;padding:18px;background:var(--surface);display:flex;gap:14px;align-items:center;min-height:116px}.overview-label{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:7px}.overview-status{font-size:22px;font-weight:800}.overview-caption{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.35}.signin-wrap{margin-top:auto;text-align:center;padding-top:34px}.primary-btn{border:0;color:var(--accentContrast);background:var(--accent);border-radius:13px;min-width:188px;padding:15px 28px;font-weight:750;cursor:pointer;font-size:17px}.alert-banner{display:none;border-radius:15px;padding:15px 16px;margin-bottom:18px;border:1px solid var(--bad);background:var(--badSoft)}.alert-banner.show{display:block}.alert-banner strong{display:block;margin-bottom:4px}.loading-overlay{position:fixed;inset:0;background:var(--surface);z-index:100;display:none;place-items:center}.loading-overlay.show{display:grid}.spinner{width:50px;height:50px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;margin:0 auto 22px;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}@media(max-width:560px){.page{padding:26px 18px 38px}.overview-grid{grid-template-columns:1fr}}
+.page{padding:24px 28px 46px}.metric-strip{display:grid;grid-template-columns:repeat(4,minmax(122px,1fr));gap:10px;overflow-x:auto;margin-bottom:26px}.metric-chip{border:1px solid var(--border);border-radius:14px;background:var(--surface2);padding:12px 13px;min-width:122px;display:flex;align-items:center;gap:9px}.metric-chip .factor-icon{width:34px;height:34px;border-radius:10px}.metric-chip .factor-icon svg{width:18px;height:18px}.mini-label{color:var(--muted);font-size:10px;font-weight:750;text-transform:uppercase}.mini-value{font-size:15px;font-weight:800;white-space:nowrap}.dashboard-heading h1{font-size:30px;letter-spacing:-.7px;margin:0 0 7px}.dashboard-heading p{color:var(--muted);line-height:1.55;margin:0 0 24px}.factor-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:26px}.factor-btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:18px;padding:18px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:14px}.factor-btn .name{color:var(--muted);font-size:12px;font-weight:750;text-transform:uppercase}.factor-btn .current{font-size:22px;font-weight:820}.detail-card{display:none;border:1px solid var(--border);border-radius:20px;padding:22px;background:var(--surface)}.detail-card.active{display:block}.detail-current{font-size:48px;font-weight:900;margin:3px 0 5px}.status-badge{display:inline-block;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:800;border:1px solid var(--border)}.meaning{color:var(--muted);line-height:1.6}.chart-wrap{border:1px solid var(--border);border-radius:14px;padding:10px;background:var(--surface2);margin-bottom:20px}canvas{width:100%;height:240px}.advice-box{border-left:4px solid var(--accent);background:var(--surface2);border-radius:12px;padding:16px;line-height:1.55}.alert-banner{display:none;border-radius:15px;padding:15px 16px;margin-bottom:18px;border:1px solid var(--bad);background:var(--badSoft)}.alert-banner.show{display:block}@media(max-width:560px){.page{padding:20px 16px}.metric-strip{grid-template-columns:repeat(4,132px)}.factor-grid{grid-template-columns:1fr}}
 </style></head><body>
 <div class="app-shell"><header class="topbar"><button class="icon-btn" id="menuButton"><span class="hamburger"></span></button><div class="brand">uMzumbe Environment Monitor</div><div></div></header>
 <main class="page">
-<div id="communityAlert" class="alert-banner"><strong>Community alert</strong><span id="communityAlertText"></span></div>
-<section class="hero"><div class="eyebrow">Community Environment Dashboard</div><h1>Welcome to UEM</h1><p>See current conditions at a glance, then sign in for detailed live data, trends and advice.</p></section>
-<div class="section-title"><h2>Quick overview</h2><span>Live status</span></div>
-<section class="overview-grid">
-<article class="overview-card"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div><div><div class="overview-label">Temperature</div><div class="overview-status" id="ts">Waiting</div><div class="overview-caption" id="tc">Waiting for live data</div></div></article>
-<article class="overview-card"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div><div><div class="overview-label">Noise level</div><div class="overview-status" id="ns">Waiting</div><div class="overview-caption" id="nc">Waiting for live data</div></div></article>
-<article class="overview-card"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div><div><div class="overview-label">Water acidity</div><div class="overview-status" id="ps">Waiting</div><div class="overview-caption" id="pc">Waiting for live data</div></div></article>
-<article class="overview-card"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div><div><div class="overview-label">Air quality</div><div class="overview-status" id="as">Waiting</div><div class="overview-caption" id="ac">Waiting for live data</div></div></article>
-</section>
-<div class="signin-wrap"><button class="primary-btn" id="signInButton">SIGN IN</button><p class="note" style="margin-top:22px">Prototype statuses are derived from one potentiometer for demonstration only.</p></div>
+<div id="communityAlert" class="alert-banner"><strong>Community alert</strong><div id="communityAlertText"></div></div>
+<div class="metric-strip">
+<div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div><div><div class="mini-label">Temp</div><div class="mini-value" id="st">-- °C</div></div></div>
+<div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div><div><div class="mini-label">Noise</div><div class="mini-value" id="sn">-- dB</div></div></div>
+<div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div><div><div class="mini-label">Water</div><div class="mini-value" id="sp">pH --</div></div></div>
+<div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div><div><div class="mini-label">PM2.5</div><div class="mini-value" id="sa">-- µg/m³</div></div></div>
+</div>
+<section class="dashboard-heading"><h1>Live environmental data</h1><p>Select a factor to understand the current reading, recent trend and recommended response.</p></section>
+<div class="factor-grid">
+<button class="factor-btn" data-factor="temperature"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div><div><div class="name">Temperature</div><div class="current" id="ct">-- °C</div></div></button>
+<button class="factor-btn" data-factor="noise"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div><div><div class="name">Noise level</div><div class="current" id="cn">-- dB</div></div></button>
+<button class="factor-btn" data-factor="ph"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div><div><div class="name">Water acidity</div><div class="current" id="cp">pH --</div></div></button>
+<button class="factor-btn" data-factor="air"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div><div><div class="name">Air quality</div><div class="current" id="ca">-- µg/m³</div></div></button>
+</div>
+<section class="detail-card" id="detailCard"><div id="detailName" style="font-size:14px;color:var(--muted);font-weight:750"></div><div class="detail-current" id="detailValue">--</div><div class="status-badge" id="detailStatus">Waiting</div><p class="meaning" id="detailMeaning"></p><div class="chart-wrap"><canvas id="liveChart"></canvas></div><div class="advice-box" id="adviceBox"><strong>Recommended response</strong><div id="detailAdvice" style="margin-top:7px"></div></div></section>
 </main></div>
-
 <div class="drawer-overlay" id="drawerOverlay">
 <aside class="drawer">
   <div class="drawer-head"><div class="drawer-title">UEM Settings</div><button class="icon-btn" id="closeDrawerButton">✕</button></div>
@@ -50,7 +53,6 @@ body.dark .topbar{background:rgba(23,28,33,.95)}.brand{text-align:center;font-we
 </aside>
 </div>
 
-<div class="loading-overlay" id="loadingOverlay"><div style="text-align:center"><div class="spinner"></div><div style="font-weight:800;font-size:20px">Taking you there in a moment...</div><div style="color:var(--muted);margin-top:8px">hang tight</div></div></div>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import {getDatabase,ref,onValue} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
@@ -63,7 +65,7 @@ const firebaseConfig = {
   messagingSenderId: "781346294395",
   appId: "1:781346294395:web:056f025c31ab1b055f70de"
 };
-const app=initializeApp(firebaseConfig),db=getDatabase(app),sensorRef=ref(db,"sensor/currentValue"),alertRef=ref(db,"communityAlert");
+const app=initializeApp(firebaseConfig),db=getDatabase(app),sensorRef=ref(db,"sensor/currentValue"),settingsRef=ref(db,"settings/thresholds"),alertRef=ref(db,"communityAlert");
 
 function clamp(v,min,max){return Math.min(max,Math.max(min,v))}
 function derive(rawValue){
@@ -77,16 +79,25 @@ function fmt(key,v){
   return `${Number(v).toFixed(1)} µg/m³`;
 }
 
-function update(m){
- const temp=m.temperature<30?["Comfortable","Temperature is within the normal prototype range"]:m.temperature<35?["Warm","Temperature is becoming elevated"]:["Very hot","High temperature detected"];
- const noise=m.noise<55?["Quiet","Noise conditions are currently low"]:m.noise<70?["Noticeable","Noise level is elevated"]:["Loud","High noise level detected"];
- const ph=(m.ph>=5&&m.ph<=9.7)?["Within range","pH is within the prototype reference range"]:(m.ph>=4.5?["Needs attention","Water is becoming more acidic"]:["Out of range","Water acidity needs investigation"]);
- const air=m.air<=15?["Good","Air quality is currently good"]:m.air<=35?["Elevated","Air pollution is increasing"]:["Poor","High particulate level detected"];
- [["ts","tc",temp],["ns","nc",noise],["ps","pc",ph],["as","ac",air]].forEach(x=>{document.getElementById(x[0]).textContent=x[2][0];document.getElementById(x[1]).textContent=x[2][1]})
+let thresholds={temperatureHigh:35,noiseHigh:70,airHigh:35,phMin:5,phMax:9.7},current=derive(0),selected=null;
+const hist={temperature:[],noise:[],ph:[],air:[]},MAX=60;
+onValue(settingsRef,s=>{if(s.exists())thresholds={...thresholds,...s.val()};if(selected)updateDetail(selected)});
+onValue(alertRef,s=>{const a=s.val(),b=document.getElementById("communityAlert");if(a&&a.active&&a.message){b.classList.add("show");document.getElementById("communityAlertText").textContent=a.message}else b.classList.remove("show")});
+onValue(sensorRef,s=>{if(!s.exists())return;current=derive(s.val());const t=Date.now();for(const k of Object.keys(hist)){hist[k].push({t,value:current[k]});if(hist[k].length>MAX)hist[k].shift()}updateDisplays();if(selected)updateDetail(selected)});
+
+function updateDisplays(){st.textContent=fmt("temperature",current.temperature);sn.textContent=fmt("noise",current.noise);sp.textContent=fmt("ph",current.ph);sa.textContent=fmt("air",current.air);ct.textContent=st.textContent;cn.textContent=sn.textContent;cp.textContent=sp.textContent;ca.textContent=sa.textContent}
+document.querySelectorAll(".factor-btn").forEach(b=>b.onclick=()=>{selected=b.dataset.factor;detailCard.classList.add("active");updateDetail(selected);detailCard.scrollIntoView({behavior:"smooth"})});
+
+function factorState(k,v){
+ if(k==="temperature")return v>=thresholds.temperatureHigh?["HIGH","bad","High temperature detected. Reduce prolonged heat exposure and ensure shade and hydration."]:["NORMAL","good","Temperature is below the configured high threshold."];
+ if(k==="noise")return v>=thresholds.noiseHigh?["HIGH","bad","High noise detected. Move away from the source where practical and use hearing protection where required."]:["ACCEPTABLE","good","Noise is below the configured high threshold."];
+ if(k==="air")return v>=thresholds.airHigh?["HIGH","bad","Elevated particulate pollution detected. Reduce unnecessary exposure and investigate the dust source."]:["LOWER","good","PM2.5 is below the configured high threshold."];
+ return (v<thresholds.phMin||v>thresholds.phMax)?["OUT OF RANGE","bad","Water pH is outside the configured range. Verify with calibrated water-quality testing before making any consumption decision."]:["IN RANGE","good","pH is within the configured range. pH alone does not establish that water is safe to drink."];
 }
-onValue(sensorRef,s=>{if(s.exists())update(derive(s.val()))});
-onValue(alertRef,s=>{const a=s.val();const b=document.getElementById("communityAlert");if(a&&a.active&&a.message){b.classList.add("show");document.getElementById("communityAlertText").textContent=a.message}else b.classList.remove("show")});
-document.getElementById("signInButton").onclick=()=>{document.getElementById("loadingOverlay").classList.add("show");setTimeout(()=>location.href="dashboard.html",1600)};
+function updateDetail(k){const names={temperature:"Temperature",noise:"Noise Level",ph:"Water Acidity",air:"Air Quality (PM2.5)"},v=current[k],s=factorState(k,v);detailName.textContent=names[k];detailValue.textContent=fmt(k,v);detailStatus.textContent=s[0];detailMeaning.textContent=s[2];detailAdvice.textContent=s[2];const c=s[1]==="bad"?"var(--bad)":"var(--good)";detailStatus.style.color=c;detailStatus.style.borderColor=c;adviceBox.style.borderLeftColor=c;renderGraph()}
+const canvas=document.getElementById("liveChart"),ctx=canvas.getContext("2d");
+function renderGraph(){if(!selected)return;const r=canvas.getBoundingClientRect();if(!r.width)return;const dpr=devicePixelRatio||1;canvas.width=r.width*dpr;canvas.height=r.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);const w=r.width,h=r.height,p={l:46,r:12,t:14,b:28},styles=getComputedStyle(document.body);ctx.clearRect(0,0,w,h);ctx.strokeStyle=styles.getPropertyValue("--grid").trim();ctx.fillStyle=styles.getPropertyValue("--muted").trim();ctx.font="12px Arial";const ranges={temperature:[15,50],noise:[30,115],ph:[3.5,10],air:[0,210]},[min,max]=ranges[selected];for(let i=0;i<=4;i++){const y=p.t+(h-p.t-p.b)*i/4;ctx.beginPath();ctx.moveTo(p.l,y);ctx.lineTo(w-p.r,y);ctx.stroke();ctx.fillText((max-(max-min)*i/4).toFixed(selected==="ph"?1:0),4,y+4)}const pts=hist[selected];if(pts.length<2)return;ctx.strokeStyle=styles.getPropertyValue("--accent").trim();ctx.lineWidth=2.5;ctx.beginPath();pts.forEach((pt,i)=>{const x=p.l+i/Math.max(1,MAX-1)*(w-p.l-p.r),norm=(pt.value-min)/(max-min),y=p.t+(h-p.t-p.b)-clamp(norm,0,1)*(h-p.t-p.b);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()}
+window.onresize=renderGraph;
 
 const drawerOverlay=document.getElementById("drawerOverlay");
 document.getElementById("menuButton").addEventListener("click",()=>drawerOverlay.classList.add("open"));
