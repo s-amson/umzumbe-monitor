@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 
 <html>
+
 <head>
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>uMzumbe Environmental Monitor</title>
+    <title>
+        uMzumbe Environmental Monitor
+    </title>
 
 
     <style>
@@ -16,20 +21,28 @@
         body
         {
             font-family: Arial, sans-serif;
-            text-align: center;
+
             background: #f4f6f8;
+
             margin: 0;
-            padding: 30px;
+
+            padding: 25px;
+
+            text-align: center;
         }
 
 
         .card
         {
-            max-width: 500px;
+            max-width: 520px;
+
             margin: auto;
+
             background: white;
+
             padding: 30px;
-            border-radius: 15px;
+
+            border-radius: 16px;
 
             box-shadow:
                 0 4px 15px rgba(0,0,0,0.15);
@@ -38,47 +51,131 @@
 
         h1
         {
-            font-size: 26px;
+            margin-top: 5px;
+
+            font-size: 27px;
+        }
+
+
+        .subtitle
+        {
+            color: #666;
         }
 
 
         #sensorValue
         {
-            font-size: 60px;
+            font-size: 65px;
+
             font-weight: bold;
-            margin: 20px;
+
+            margin-top: 25px;
+
+            margin-bottom: 5px;
         }
 
 
         #status
         {
             font-size: 25px;
+
             font-weight: bold;
+
+            margin-bottom: 25px;
         }
 
 
-        input
+        /* BAR BACKGROUND */
+
+        .bar-container
         {
-            padding: 10px;
-            font-size: 18px;
-            width: 150px;
+            width: 100%;
+
+            height: 30px;
+
+            background: #ddd;
+
+            border-radius: 15px;
+
+            overflow: hidden;
+
+            margin-top: 20px;
+
+            margin-bottom: 25px;
+        }
+
+
+        /* MOVING BAR */
+
+        #sensorBar
+        {
+            height: 100%;
+
+            width: 0%;
+
+            background: gray;
+
+            transition:
+                width 0.2s,
+                background 0.2s;
         }
 
 
         button
         {
-            padding: 12px 20px;
+            padding: 14px 25px;
+
             font-size: 18px;
-            margin: 10px;
+
+            border: none;
+
+            border-radius: 8px;
+
             cursor: pointer;
+
+            background: #222;
+
+            color: white;
+
+            margin-top: 15px;
         }
 
 
-        .prototype
+        button:hover
         {
-            margin-top: 30px;
+            opacity: 0.85;
+        }
+
+
+        #connectionStatus
+        {
+            margin-top: 15px;
+
+            font-weight: bold;
+        }
+
+
+        #alertMessage
+        {
+            margin-top: 25px;
+
+            padding: 15px;
+
+            border-radius: 8px;
+
+            background: #eeeeee;
+
+            font-weight: bold;
+        }
+
+
+        .small-text
+        {
+            color: #777;
+
             font-size: 13px;
-            color: #666;
+
+            margin-top: 30px;
         }
 
     </style>
@@ -91,9 +188,15 @@
 
 <div class="card">
 
-    <h1>uMzumbe Environmental Monitor</h1>
 
-    <p>Live Sensor Reading</p>
+    <h1>
+        uMzumbe Environmental Monitor
+    </h1>
+
+
+    <p class="subtitle">
+        Live Environmental Sensor Prototype
+    </p>
 
 
     <div id="sensorValue">
@@ -106,36 +209,43 @@
     </div>
 
 
-    <hr>
+    <div class="bar-container">
+
+        <div id="sensorBar"></div>
+
+    </div>
 
 
-    <h3>Temporary Sensor Test</h3>
+    <div id="alertMessage">
 
-    <p>
-        Enter a number from 0 to 1023
-    </p>
+        Waiting for sensor information...
 
-
-    <input
-        type="number"
-        id="testValue"
-        min="0"
-        max="1023"
-        value="500"
-    >
+    </div>
 
 
-    <br>
+    <hr style="margin-top: 30px;">
 
 
-    <button id="sendButton">
-        Send Test Value
+    <button id="connectButton">
+
+        Connect Arduino
+
     </button>
 
 
-    <div class="prototype">
-        Prototype environmental monitoring system
+    <div id="connectionStatus">
+
+        Arduino not connected to this device
+
     </div>
+
+
+    <div class="small-text">
+
+        Live prototype data synchronized through Firebase
+
+    </div>
+
 
 </div>
 
@@ -144,33 +254,42 @@
 <script type="module">
 
 
-    // Firebase libraries
+// ======================================================
+// FIREBASE LIBRARIES
+// ======================================================
 
-    import
-    {
-        initializeApp
-    }
-    from
-    "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-
-
-    import
-    {
-        getDatabase,
-        ref,
-        set,
-        onValue
-    }
-    from
-    "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+import
+{
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
 
+import
+{
+    getDatabase,
+    ref,
+    set,
+    onValue
+}
+from
+"https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
-    // ==================================================
-    // REPLACE THIS WITH YOUR FIREBASE INFORMATION
-    // ==================================================
 
-    const firebaseConfig =
+
+// ======================================================
+// YOUR FIREBASE CONFIGURATION
+// ======================================================
+//
+// IMPORTANT:
+//
+// Replace everything below with the SAME Firebase
+// configuration that was working in your old webpage.
+//
+// ======================================================
+
+const firebaseConfig =
     {
 
         apiKey:
@@ -198,132 +317,639 @@
 
 
 
-    // Start Firebase
+// ======================================================
+// START FIREBASE
+// ======================================================
 
-    const app =
-        initializeApp(firebaseConfig);
+const app =
+    initializeApp(
+        firebaseConfig
+    );
 
 
-    const database =
-        getDatabase(app);
+const database =
+    getDatabase(
+        app
+    );
 
 
 
-    // Location where sensor data will be stored
+// This is where the sensor reading is stored
 
-    const sensorReference =
-        ref(
-            database,
-            "sensor/currentValue"
+const sensorReference =
+    ref(
+        database,
+        "sensor/currentValue"
+    );
+
+
+
+// ======================================================
+// HTML ELEMENTS
+// ======================================================
+
+const sensorValueDisplay =
+    document.getElementById(
+        "sensorValue"
+    );
+
+
+const statusDisplay =
+    document.getElementById(
+        "status"
+    );
+
+
+const sensorBar =
+    document.getElementById(
+        "sensorBar"
+    );
+
+
+const alertMessage =
+    document.getElementById(
+        "alertMessage"
+    );
+
+
+const connectButton =
+    document.getElementById(
+        "connectButton"
+    );
+
+
+const connectionStatus =
+    document.getElementById(
+        "connectionStatus"
+    );
+
+
+
+// ======================================================
+// FIREBASE LIVE LISTENER
+// ======================================================
+//
+// EVERY DEVICE running this page listens here.
+//
+// If Firebase receives:
+//
+//          700
+//
+// every connected phone/laptop/tablet receives:
+//
+//          700
+//
+// ======================================================
+
+onValue(
+    sensorReference,
+
+    function(snapshot)
+    {
+
+        const value =
+            snapshot.val();
+
+
+        if (value === null)
+        {
+            return;
+        }
+
+
+        updateDisplay(
+            value
         );
 
+    }
+);
 
 
-    // ==================================================
-    // SEND TEST DATA
-    // ==================================================
 
-    document
-        .getElementById("sendButton")
-        .addEventListener(
-            "click",
-            function()
+// ======================================================
+// UPDATE SCREEN
+// ======================================================
+
+function updateDisplay(value)
+{
+
+    sensorValueDisplay.innerText =
+        value;
+
+
+    // Convert 0-1023 into percentage
+
+    const percentage =
+        (
+            value
+            /
+            1023
+        )
+        *
+        100;
+
+
+    sensorBar.style.width =
+        percentage + "%";
+
+
+    // --------------------------------------------------
+    // LOW
+    // --------------------------------------------------
+
+    if (value < 300)
+    {
+
+        statusDisplay.innerText =
+            "Status: LOW";
+
+
+        statusDisplay.style.color =
+            "green";
+
+
+        sensorBar.style.background =
+            "green";
+
+
+        alertMessage.innerText =
+            "Environmental conditions normal";
+
+
+        alertMessage.style.background =
+            "#dff5df";
+
+    }
+
+
+    // --------------------------------------------------
+    // MODERATE
+    // --------------------------------------------------
+
+    else if (value < 700)
+    {
+
+        statusDisplay.innerText =
+            "Status: MODERATE";
+
+
+        statusDisplay.style.color =
+            "#b58200";
+
+
+        sensorBar.style.background =
+            "#d6a000";
+
+
+        alertMessage.innerText =
+            "Environmental conditions are increasing";
+
+
+        alertMessage.style.background =
+            "#fff1c2";
+
+    }
+
+
+    // --------------------------------------------------
+    // HIGH
+    // --------------------------------------------------
+
+    else
+    {
+
+        statusDisplay.innerText =
+            "Status: HIGH";
+
+
+        statusDisplay.style.color =
+            "red";
+
+
+        sensorBar.style.background =
+            "red";
+
+
+        alertMessage.innerText =
+            "WARNING: HIGH SENSOR LEVEL DETECTED";
+
+
+        alertMessage.style.background =
+            "#ffd6d6";
+
+    }
+
+}
+
+
+
+// ======================================================
+// SERIAL VARIABLES
+// ======================================================
+
+let port;
+
+let reader;
+
+let keepReading =
+    false;
+
+
+let serialBuffer =
+    "";
+
+
+
+// ======================================================
+// CHECK WHETHER BROWSER SUPPORTS WEB SERIAL
+// ======================================================
+
+if (!("serial" in navigator))
+{
+
+    connectButton.disabled =
+        true;
+
+
+    connectButton.innerText =
+        "Arduino Connection Not Supported";
+
+
+    connectionStatus.innerText =
+        "This browser can view live data, but cannot connect directly to the Arduino.";
+
+}
+
+
+
+// ======================================================
+// CONNECT BUTTON
+// ======================================================
+
+connectButton.addEventListener(
+    "click",
+
+    async function()
+    {
+
+        // If already connected, disconnect instead
+
+        if (keepReading)
+        {
+
+            await disconnectArduino();
+
+            return;
+
+        }
+
+
+        try
+        {
+
+            // ------------------------------------------
+            // ASK USER WHICH SERIAL DEVICE TO USE
+            // ------------------------------------------
+
+            port =
+                await navigator.serial.requestPort();
+
+
+            // ------------------------------------------
+            // OPEN SERIAL CONNECTION
+            // ------------------------------------------
+            //
+            // MUST MATCH:
+            //
+            // Serial.begin(9600);
+            //
+            // ------------------------------------------
+
+            await port.open(
+                {
+                    baudRate: 9600
+                }
+            );
+
+
+            connectionStatus.innerText =
+                "Arduino connected";
+
+
+            connectionStatus.style.color =
+                "green";
+
+
+            connectButton.innerText =
+                "Disconnect Arduino";
+
+
+            keepReading =
+                true;
+
+
+            // Arduino UNO may restart after connection.
+            // Give it two seconds.
+
+            await sleep(
+                2000
+            );
+
+
+            // Start receiving values
+
+            readSerialData();
+
+        }
+
+
+        catch(error)
+        {
+
+            console.error(
+                error
+            );
+
+
+            connectionStatus.innerText =
+                "Arduino connection failed";
+
+
+            connectionStatus.style.color =
+                "red";
+
+        }
+
+    }
+);
+
+
+
+// ======================================================
+// READ ARDUINO
+// ======================================================
+
+async function readSerialData()
+{
+
+    const decoder =
+        new TextDecoder();
+
+
+    while (
+        port &&
+        port.readable &&
+        keepReading
+    )
+    {
+
+        reader =
+            port.readable.getReader();
+
+
+        try
+        {
+
+            while (keepReading)
             {
 
-                const value =
-                    Number(
-                        document
-                        .getElementById(
-                            "testValue"
-                        )
-                        .value
-                    );
-
-
-                if (
-                    value < 0 ||
-                    value > 1023
-                )
+                const
                 {
-                    alert(
-                        "Enter a value between 0 and 1023"
-                    );
+                    value,
+                    done
+                }
+                =
+                await reader.read();
 
-                    return;
+
+                if (done)
+                {
+                    break;
                 }
 
 
-                set(
-                    sensorReference,
-                    value
-                );
+                if (value)
+                {
+
+                    // Convert raw bytes into text
+
+                    serialBuffer +=
+                        decoder.decode(
+                            value,
+                            {
+                                stream: true
+                            }
+                        );
+
+
+                    // Arduino sends each number with
+                    // Serial.println()
+                    //
+                    // Therefore each reading ends
+                    // with a new line.
+
+                    const lines =
+                        serialBuffer.split(
+                            /\r?\n/
+                        );
+
+
+                    // Last piece may not yet contain
+                    // a complete line.
+
+                    serialBuffer =
+                        lines.pop();
+
+
+                    // Process completed lines
+
+                    for (
+                        const line of lines
+                    )
+                    {
+
+                        const cleanLine =
+                            line.trim();
+
+
+                        if (
+                            cleanLine === ""
+                        )
+                        {
+                            continue;
+                        }
+
+
+                        const sensorValue =
+                            Number(
+                                cleanLine
+                            );
+
+
+                        // Make sure Arduino sent
+                        // a valid number.
+
+                        if (
+                            !Number.isInteger(
+                                sensorValue
+                            )
+                        )
+                        {
+                            continue;
+                        }
+
+
+                        if (
+                            sensorValue < 0 ||
+                            sensorValue > 1023
+                        )
+                        {
+                            continue;
+                        }
+
+
+                        // ==================================
+                        // SEND ARDUINO VALUE TO FIREBASE
+                        // ==================================
+
+                        await set(
+                            sensorReference,
+                            sensorValue
+                        );
+
+
+                        console.log(
+                            "Arduino:",
+                            sensorValue
+                        );
+
+                    }
+
+                }
 
             }
-        );
-
-
-
-    // ==================================================
-    // RECEIVE LIVE DATA
-    // ==================================================
-
-    onValue(
-        sensorReference,
-        function(snapshot)
-        {
-
-            const value =
-                snapshot.val();
-
-
-            if (value === null)
-            {
-                return;
-            }
-
-
-            document
-                .getElementById(
-                    "sensorValue"
-                )
-                .innerText =
-                value;
-
-
-
-            // Determine status
-
-            let status;
-
-
-            if (value < 300)
-            {
-                status =
-                    "LOW";
-            }
-
-            else if (value < 700)
-            {
-                status =
-                    "MODERATE";
-            }
-
-            else
-            {
-                status =
-                    "HIGH";
-            }
-
-
-            document
-                .getElementById(
-                    "status"
-                )
-                .innerText =
-                "Status: " + status;
 
         }
+
+
+        catch(error)
+        {
+
+            console.error(
+                "Serial reading error:",
+                error
+            );
+
+        }
+
+
+        finally
+        {
+
+            reader.releaseLock();
+
+        }
+
+    }
+
+}
+
+
+
+// ======================================================
+// DISCONNECT ARDUINO
+// ======================================================
+
+async function disconnectArduino()
+{
+
+    keepReading =
+        false;
+
+
+    if (reader)
+    {
+
+        try
+        {
+
+            await reader.cancel();
+
+        }
+
+        catch(error)
+        {
+
+            console.log(
+                error
+            );
+
+        }
+
+    }
+
+
+    if (port)
+    {
+
+        try
+        {
+
+            await port.close();
+
+        }
+
+        catch(error)
+        {
+
+            console.log(
+                error
+            );
+
+        }
+
+    }
+
+
+    port =
+        null;
+
+
+    reader =
+        null;
+
+
+    connectButton.innerText =
+        "Connect Arduino";
+
+
+    connectionStatus.innerText =
+        "Arduino disconnected";
+
+
+    connectionStatus.style.color =
+        "#555";
+
+}
+
+
+
+// ======================================================
+// SIMPLE WAIT FUNCTION
+// ======================================================
+
+function sleep(milliseconds)
+{
+
+    return new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                milliseconds
+            )
     );
+
+}
 
 
 </script>
