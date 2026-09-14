@@ -7,87 +7,227 @@
 <style>
 
 :root{
-  --bg:#f1f3f5; --surface:#fff; --surface2:#f7f8fa; --text:#171717; --muted:#69707a;
-  --border:#d9dee4; --accent:#111; --accentContrast:#fff; --good:#14833b;
-  --warn:#b77700; --bad:#c62828; --shadow:0 14px 34px rgba(0,0,0,.10);
-  --grid:#d9dde2;
+  --bg:#f5f7f9;
+  --surface:#ffffff;
+  --surface2:#f8fafb;
+  --text:#12161b;
+  --muted:#6d7580;
+  --border:#e4e8ec;
+  --accent:#1f4f6f;
+  --accentSoft:#edf4f8;
+  --accentContrast:#ffffff;
+  --good:#1f7a4d;
+  --goodSoft:#edf8f2;
+  --warn:#9a6a10;
+  --warnSoft:#fbf5e8;
+  --bad:#b23a3a;
+  --badSoft:#fbefef;
+  --shadow:0 18px 45px rgba(18,22,27,.08);
+  --grid:#e4e8ec;
 }
 body.dark{
-  --bg:#0f1114; --surface:#181b1f; --surface2:#20242a; --text:#f4f6f8; --muted:#aab0b8;
-  --border:#30363d; --accent:#f4f6f8; --accentContrast:#111315; --shadow:0 14px 34px rgba(0,0,0,.35);
-  --grid:#343a42;
+  --bg:#0f1317;
+  --surface:#171c21;
+  --surface2:#1d2329;
+  --text:#f3f6f8;
+  --muted:#a4adb6;
+  --border:#2a323a;
+  --accent:#78b5d8;
+  --accentSoft:#182832;
+  --accentContrast:#0d151a;
+  --good:#67c994;
+  --goodSoft:#17271f;
+  --warn:#d8b55b;
+  --warnSoft:#2a2415;
+  --bad:#ef8686;
+  --badSoft:#2b1a1a;
+  --shadow:0 18px 45px rgba(0,0,0,.28);
+  --grid:#313940;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
 button{font:inherit}
-.app-shell{width:min(100%,820px);min-height:100vh;margin:0 auto;background:var(--surface);box-shadow:var(--shadow)}
-.topbar{position:sticky;top:0;z-index:20;height:74px;display:grid;grid-template-columns:52px 1fr 52px;align-items:center;padding:0 16px;background:var(--surface);border-bottom:1px solid var(--border)}
-.brand{text-align:center;font-weight:800;font-size:clamp(18px,3vw,23px)}
-.icon-btn{width:44px;height:44px;border:0;background:transparent;color:var(--text);cursor:pointer;border-radius:10px;display:grid;place-items:center}
+.app-shell{
+  width:min(100%,860px);
+  min-height:100vh;
+  margin:0 auto;
+  background:var(--surface);
+  box-shadow:var(--shadow);
+}
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  height:76px;
+  display:grid;
+  grid-template-columns:52px 1fr 52px;
+  align-items:center;
+  padding:0 18px;
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+body.dark .topbar{background:rgba(23,28,33,.95)}
+.brand{
+  text-align:center;
+  font-weight:750;
+  font-size:clamp(17px,3vw,22px);
+  letter-spacing:-.3px;
+}
+.icon-btn{
+  width:44px;height:44px;border:0;background:transparent;color:var(--text);
+  cursor:pointer;border-radius:12px;display:grid;place-items:center;
+}
 .icon-btn:hover{background:var(--surface2)}
-.hamburger,.hamburger::before,.hamburger::after{width:27px;height:4px;background:currentColor;border-radius:20px;display:block;position:relative}
+.hamburger,.hamburger::before,.hamburger::after{
+  width:25px;height:3px;background:currentColor;border-radius:20px;display:block;position:relative
+}
 .hamburger::before,.hamburger::after{content:"";position:absolute;left:0}
-.hamburger::before{top:-9px}.hamburger::after{top:9px}
-.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.hamburger::before{top:-8px}.hamburger::after{top:8px}
+
+.factor-icon{
+  width:44px;height:44px;border-radius:13px;
+  display:grid;place-items:center;
+  background:var(--accentSoft);color:var(--accent);
+  flex:0 0 auto;
+}
+.factor-icon svg{
+  width:23px;height:23px;
+  stroke:currentColor;fill:none;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+
+.drawer-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.34);z-index:60;
+  opacity:0;pointer-events:none;transition:opacity .2s
+}
 .drawer-overlay.open{opacity:1;pointer-events:auto}
-.drawer{position:absolute;top:0;left:0;width:min(330px,85vw);height:100%;background:var(--surface);color:var(--text);box-shadow:12px 0 30px rgba(0,0,0,.2);transform:translateX(-100%);transition:transform .22s ease;padding:20px}
+.drawer{
+  position:absolute;top:0;left:0;width:min(330px,86vw);height:100%;
+  background:var(--surface);color:var(--text);box-shadow:12px 0 30px rgba(0,0,0,.18);
+  transform:translateX(-100%);transition:transform .22s ease;padding:22px;
+}
 .drawer-overlay.open .drawer{transform:translateX(0)}
 .drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
-.drawer-title{font-weight:900;font-size:20px}
-.drawer-section{border-top:1px solid var(--border);padding:18px 0}
-.drawer-section h3{font-size:14px;color:var(--muted);margin:0 0 12px;text-transform:uppercase;letter-spacing:.6px}
+.drawer-title{font-weight:800;font-size:20px;letter-spacing:-.2px}
+.drawer-section{border-top:1px solid var(--border);padding:20px 0}
+.drawer-section h3{
+  font-size:12px;color:var(--muted);margin:0 0 12px;
+  text-transform:uppercase;letter-spacing:.9px
+}
 .choice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.choice-btn{border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:10px;border-radius:9px;cursor:pointer;font-weight:700}
-.choice-btn.active{border-color:var(--text);box-shadow:inset 0 0 0 1px var(--text)}
-.note{color:var(--muted);font-size:12px;line-height:1.5}
+.choice-btn{
+  border:1px solid var(--border);background:var(--surface2);color:var(--text);
+  padding:10px;border-radius:10px;cursor:pointer;font-weight:650
+}
+.choice-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accentSoft)}
+.note{color:var(--muted);font-size:12px;line-height:1.55}
 
-.page{min-height:calc(100vh - 74px);padding:34px 28px 46px;display:flex;flex-direction:column}
-h1{text-align:center;font-size:clamp(25px,5vw,38px);margin:36px 0 24px}
-.section-label{font-size:18px;font-weight:700;margin-bottom:18px}
-.overview-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:32px}
-.overview-item{border:1px solid var(--border);border-radius:14px;padding:18px 14px;background:var(--surface2);min-height:105px}
-.overview-item .label{color:var(--muted);font-weight:700;font-size:14px;margin-bottom:12px}
-.overview-item .value{font-size:clamp(22px,5vw,30px);font-weight:800;white-space:nowrap}
-.signin-wrap{margin-top:auto;text-align:center;padding-top:28px}
-.primary-btn{border:2px solid var(--accent);color:var(--accent);background:var(--surface);border-radius:14px;min-width:170px;padding:14px 26px;font-weight:800;cursor:pointer;font-size:18px}
-.primary-btn:hover{background:var(--accent);color:var(--accentContrast)}
-.account-link{margin-top:12px;text-decoration:underline;color:var(--muted);font-size:14px}
+.page{min-height:calc(100vh - 76px);padding:36px 30px 48px;display:flex;flex-direction:column}
+.hero{text-align:center;padding:8px 0 30px}
+.eyebrow{display:inline-block;color:var(--accent);background:var(--accentSoft);font-size:12px;font-weight:750;letter-spacing:.7px;text-transform:uppercase;padding:8px 11px;border-radius:999px;margin-bottom:16px}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.05;letter-spacing:-1px;margin:0 0 12px}
+.hero p{max-width:560px;margin:0 auto;color:var(--muted);line-height:1.6;font-size:15px}
+.section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:6px 0 16px}
+.section-title h2{font-size:18px;margin:0;letter-spacing:-.2px}
+.section-title span{font-size:12px;color:var(--muted)}
+.overview-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.overview-card{border:1px solid var(--border);border-radius:18px;padding:18px;background:var(--surface);display:flex;gap:14px;align-items:center;min-height:116px;transition:transform .15s,border-color .15s,box-shadow .15s}
+.overview-card:hover{transform:translateY(-1px);border-color:#cdd5dc;box-shadow:0 10px 25px rgba(18,22,27,.05)}
+.overview-copy{min-width:0}
+.overview-label{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:7px}
+.overview-status{font-size:22px;font-weight:800;letter-spacing:-.4px}
+.overview-caption{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.35}
+.signin-wrap{margin-top:auto;text-align:center;padding-top:34px}
+.primary-btn{border:0;color:var(--accentContrast);background:var(--accent);border-radius:13px;min-width:188px;padding:15px 28px;font-weight:750;cursor:pointer;font-size:17px;box-shadow:0 8px 18px rgba(31,79,111,.18)}
+.primary-btn:hover{transform:translateY(-1px)}
+.account-link{margin-top:13px;text-decoration:underline;color:var(--muted);font-size:13px}
 .loading-overlay{position:fixed;inset:0;background:var(--surface);z-index:100;display:none;place-items:center;padding:24px}
 .loading-overlay.show{display:grid}
 .loading-card{text-align:center}
-.spinner{width:52px;height:52px;border:5px solid var(--border);border-top-color:var(--accent);border-radius:50%;margin:0 auto 22px;animation:spin .8s linear infinite}
-.loading-text{font-weight:800;font-size:20px}
+.spinner{width:50px;height:50px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;margin:0 auto 22px;animation:spin .8s linear infinite}
+.loading-text{font-weight:800;font-size:20px;letter-spacing:-.2px}
 .loading-sub{color:var(--muted);margin-top:8px}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:560px){.page{padding:24px 18px 40px}}
+@media(max-width:560px){
+  .page{padding:26px 18px 38px}
+  .overview-grid{grid-template-columns:1fr}
+  .hero{padding-bottom:24px}
+}
 </style>
 </head>
 <body>
 <div class="app-shell">
-  <header class="topbar">
-    <button class="icon-btn" id="menuButton" aria-label="Open menu"><span class="hamburger"></span></button>
-    <div class="brand">uMzumbe Environment Monitor</div><div></div>
-  </header>
+<header class="topbar">
+  <button class="icon-btn" id="menuButton" aria-label="Open menu"><span class="hamburger"></span></button>
+  <div class="brand">uMzumbe Environment Monitor</div><div></div>
+</header>
 
-  <main class="page">
-    <h1>WELCOME TO UEM App</h1>
-    <div class="section-label">Quick Overview:</div>
+<main class="page">
+  <section class="hero">
+    <div class="eyebrow">Community Environment Dashboard</div>
+    <h1>Welcome to UEM</h1>
+    <p>See the current environmental condition at a glance, then sign in for detailed live data and trends.</p>
+  </section>
 
-    <div class="overview-grid">
-      <div class="overview-item"><div class="label">Temperature</div><div class="value" id="welcomeTemp">-- °C</div></div>
-      <div class="overview-item"><div class="label">Noise Level</div><div class="value" id="welcomeNoise">-- dB</div></div>
-      <div class="overview-item"><div class="label">Water Acidity</div><div class="value" id="welcomePh">pH --</div></div>
-      <div class="overview-item"><div class="label">Air Quality</div><div class="value" id="welcomeAir">-- µg/m³</div></div>
-    </div>
+  <div class="section-title">
+    <h2>Quick overview</h2>
+    <span>Live status</span>
+  </div>
 
-    <div class="signin-wrap">
-      <button class="primary-btn" id="signInButton">SIGN IN</button>
-      <div class="account-link">I don't have an account</div>
-      <p class="note" style="margin-top:24px">
-        Prototype values are derived from one potentiometer for demonstration only.
-      </p>
-    </div>
-  </main>
+  <section class="overview-grid">
+    <article class="overview-card">
+      <div class="factor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 14.76V5a3 3 0 0 0-6 0v9.76a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/><path d="M11 18h.01"/></svg></div>
+      <div class="overview-copy">
+        <div class="overview-label">Temperature</div>
+        <div class="overview-status" id="welcomeTempStatus">Waiting</div>
+        <div class="overview-caption" id="welcomeTempCaption">Waiting for live data</div>
+      </div>
+    </article>
+
+    <article class="overview-card">
+      <div class="factor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div>
+      <div class="overview-copy">
+        <div class="overview-label">Noise level</div>
+        <div class="overview-status" id="welcomeNoiseStatus">Waiting</div>
+        <div class="overview-caption" id="welcomeNoiseCaption">Waiting for live data</div>
+      </div>
+    </article>
+
+    <article class="overview-card">
+      <div class="factor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div>
+      <div class="overview-copy">
+        <div class="overview-label">Water acidity</div>
+        <div class="overview-status" id="welcomePhStatus">Waiting</div>
+        <div class="overview-caption" id="welcomePhCaption">Waiting for live data</div>
+      </div>
+    </article>
+
+    <article class="overview-card">
+      <div class="factor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div>
+      <div class="overview-copy">
+        <div class="overview-label">Air quality</div>
+        <div class="overview-status" id="welcomeAirStatus">Waiting</div>
+        <div class="overview-caption" id="welcomeAirCaption">Waiting for live data</div>
+      </div>
+    </article>
+  </section>
+
+  <div class="signin-wrap">
+    <button class="primary-btn" id="signInButton">SIGN IN</button>
+    <div class="account-link">I don't have an account</div>
+    <p class="note" style="margin-top:24px">
+      Prototype statuses are derived from one potentiometer for demonstration only.
+    </p>
+  </div>
+</main>
 </div>
 
 
@@ -110,7 +250,7 @@ h1{text-align:center;font-size:clamp(25px,5vw,38px);margin:36px 0 24px}
         <button class="choice-btn active" id="englishButton">English</button>
         <button class="choice-btn" id="zuluButton">IsiZulu</button>
       </div>
-      <p class="note" style="margin-top:12px">Both choices display English for now.</p>
+      <p class="note" style="margin-top:12px">Both options display English for now.</p>
     </div>
   </aside>
 </div>
@@ -144,34 +284,61 @@ const sensorRef=ref(db,"sensor/currentValue");
 
 function clamp(v,min,max){return Math.min(max,Math.max(min,v))}
 function derive(rawValue){
-  const raw=clamp(Number(rawValue)||0,0,1023);
-  const n=raw/1023;
+  const raw=clamp(Number(rawValue)||0,0,1023), n=raw/1023;
   return {
-    temperature:(18+27*n).toFixed(1),
-    noise:(35+75*n).toFixed(1),
-    ph:(8.5-4.5*n).toFixed(2),
-    air:(5+195*n).toFixed(1)
+    temperature:+(18+27*n).toFixed(1),
+    noise:+(35+75*n).toFixed(1),
+    ph:+(8.5-4.5*n).toFixed(2),
+    air:+(5+195*n).toFixed(1)
   };
 }
-function updateOverview(m){
-  document.getElementById("welcomeTemp").textContent=`${m.temperature} °C`;
-  document.getElementById("welcomeNoise").textContent=`${m.noise} dB`;
-  document.getElementById("welcomePh").textContent=`pH ${m.ph}`;
-  document.getElementById("welcomeAir").textContent=`${m.air} µg/m³`;
+
+function statusWords(m){
+  return {
+    temperature:
+      m.temperature < 30 ? ["Comfortable","Temperature is within the normal prototype range"] :
+      m.temperature < 35 ? ["Warm","Temperature is becoming elevated"] :
+      ["Very hot","High temperature detected"],
+
+    noise:
+      m.noise < 55 ? ["Quiet","Noise conditions are currently low"] :
+      m.noise < 70 ? ["Noticeable","Noise level is elevated"] :
+      ["Loud","High noise level detected"],
+
+    ph:
+      (m.ph >= 5 && m.ph <= 9.7) ? ["Within range","pH is within the prototype reference range"] :
+      (m.ph >= 4.5 && m.ph < 5) ? ["Needs attention","Water is becoming more acidic"] :
+      ["Out of range","Water acidity needs investigation"],
+
+    air:
+      m.air <= 15 ? ["Good","Air quality is currently good"] :
+      m.air <= 35 ? ["Elevated","Air pollution is increasing"] :
+      ["Poor","High particulate level detected"]
+  };
 }
+
+function updateOverview(m){
+  const s=statusWords(m);
+  document.getElementById("welcomeTempStatus").textContent=s.temperature[0];
+  document.getElementById("welcomeTempCaption").textContent=s.temperature[1];
+  document.getElementById("welcomeNoiseStatus").textContent=s.noise[0];
+  document.getElementById("welcomeNoiseCaption").textContent=s.noise[1];
+  document.getElementById("welcomePhStatus").textContent=s.ph[0];
+  document.getElementById("welcomePhCaption").textContent=s.ph[1];
+  document.getElementById("welcomeAirStatus").textContent=s.air[0];
+  document.getElementById("welcomeAirCaption").textContent=s.air[1];
+}
+
 onValue(sensorRef,snap=>{if(snap.exists())updateOverview(derive(snap.val()))});
 
 document.getElementById("signInButton").addEventListener("click",()=>{
   document.getElementById("loadingOverlay").classList.add("show");
-  const params=new URLSearchParams(window.location.search);
-  const source=params.get("source")==="1";
-  setTimeout(()=>{
-    window.location.href=source ? "dashboard.html?source=1" : "dashboard.html";
-  },1800);
+  const source=new URLSearchParams(window.location.search).get("source")==="1";
+  setTimeout(()=>{window.location.href=source?"dashboard.html?source=1":"dashboard.html"},1800);
 });
 
 
-const drawerOverlay = document.getElementById("drawerOverlay");
+const drawerOverlay=document.getElementById("drawerOverlay");
 document.getElementById("menuButton").addEventListener("click",()=>drawerOverlay.classList.add("open"));
 document.getElementById("closeDrawerButton").addEventListener("click",()=>drawerOverlay.classList.remove("open"));
 drawerOverlay.addEventListener("click",e=>{if(e.target===drawerOverlay)drawerOverlay.classList.remove("open")});
