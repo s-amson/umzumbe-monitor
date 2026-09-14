@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UEM Live Dashboard</title>
+<style>
+:root{
+  --bg:#f1f3f5; --surface:#fff; --surface2:#f7f8fa; --text:#171717; --muted:#69707a;
+  --border:#d9dee4; --accent:#111; --accentContrast:#fff; --good:#14833b;
+  --warn:#b77700; --bad:#c62828; --shadow:0 14px 34px rgba(0,0,0,.10);
+  --grid:#d9dde2;
+}
+body.dark{
+  --bg:#0f1114; --surface:#181b1f; --surface2:#20242a; --text:#f4f6f8; --muted:#aab0b8;
+  --border:#30363d; --accent:#f4f6f8; --accentContrast:#111315; --shadow:0 14px 34px rgba(0,0,0,.35);
+  --grid:#343a42;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+button{font:inherit}
+.app-shell{width:min(100%,820px);min-height:100vh;margin:0 auto;background:var(--surface);box-shadow:var(--shadow)}
+.topbar{position:sticky;top:0;z-index:20;height:74px;display:grid;grid-template-columns:52px 1fr 52px;align-items:center;padding:0 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+.brand{text-align:center;font-weight:800;font-size:clamp(18px,3vw,23px)}
+.icon-btn{width:44px;height:44px;border:0;background:transparent;color:var(--text);cursor:pointer;border-radius:10px;display:grid;place-items:center}
+.icon-btn:hover{background:var(--surface2)}
+.hamburger,.hamburger::before,.hamburger::after{width:27px;height:4px;background:currentColor;border-radius:20px;display:block;position:relative}
+.hamburger::before,.hamburger::after{content:"";position:absolute;left:0}
+.hamburger::before{top:-9px}.hamburger::after{top:9px}
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.drawer-overlay.open{opacity:1;pointer-events:auto}
+.drawer{position:absolute;top:0;left:0;width:min(330px,85vw);height:100%;background:var(--surface);color:var(--text);box-shadow:12px 0 30px rgba(0,0,0,.2);transform:translateX(-100%);transition:transform .22s ease;padding:20px}
+.drawer-overlay.open .drawer{transform:translateX(0)}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.drawer-title{font-weight:900;font-size:20px}
+.drawer-section{border-top:1px solid var(--border);padding:18px 0}
+.drawer-section h3{font-size:14px;color:var(--muted);margin:0 0 12px;text-transform:uppercase;letter-spacing:.6px}
+.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choice-btn{border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:10px;border-radius:9px;cursor:pointer;font-weight:700}
+.choice-btn.active{border-color:var(--text);box-shadow:inset 0 0 0 1px var(--text)}
+.note{color:var(--muted);font-size:12px;line-height:1.5}
+
+.page{padding:24px 26px 46px}
+.metric-strip{display:grid;grid-template-columns:repeat(4,minmax(110px,1fr));gap:10px;overflow-x:auto;padding-bottom:7px;margin-bottom:26px}
+.metric-chip{border:1px solid var(--border);border-radius:12px;background:var(--surface2);padding:12px;min-width:110px;text-align:center}
+.metric-chip .mini-label{color:var(--muted);font-size:11px;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.metric-chip .mini-value{font-size:17px;font-weight:800;white-space:nowrap}
+.dashboard-title{font-size:25px;margin:0 0 8px}
+.dashboard-subtitle{color:var(--muted);line-height:1.5;margin:0 0 22px}
+.source-panel{display:none;border:1px dashed var(--border);background:var(--surface2);border-radius:12px;padding:14px;margin-bottom:22px}
+.source-panel.show{display:block}
+.source-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.secondary-btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:700}
+.secondary-btn:hover{border-color:var(--text)}
+#connectionStatus{color:var(--muted);font-size:13px}
+.factor-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:26px}
+.factor-btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:14px;padding:18px;text-align:left;cursor:pointer}
+.factor-btn:hover{border-color:var(--text)}
+.factor-btn .name{color:var(--muted);font-size:13px;font-weight:700;margin-bottom:8px}
+.factor-btn .current{font-size:23px;font-weight:800}
+.detail-card{display:none;border:1px solid var(--border);border-radius:16px;padding:20px;background:var(--surface)}
+.detail-card.active{display:block}
+.detail-current{font-size:clamp(32px,7vw,48px);font-weight:900;margin:6px 0}
+.status-badge{display:inline-block;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;background:var(--surface2);border:1px solid var(--border)}
+.meaning{line-height:1.55;color:var(--muted);margin:18px 0}
+.chart-wrap{border:1px solid var(--border);border-radius:12px;padding:10px;background:var(--surface2);margin-bottom:20px}
+canvas{width:100%;height:240px;display:block}
+.advice-box{border-left:5px solid var(--accent);background:var(--surface2);border-radius:10px;padding:15px;line-height:1.5}
+.advice-box h3{font-size:16px;margin:0 0 8px}
+.back-link{display:inline-block;margin-bottom:18px;color:var(--muted);text-decoration:none;font-weight:700}
+@media(max-width:560px){.page{padding:20px 16px 40px}.metric-strip{grid-template-columns:repeat(4,112px)}.factor-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <button class="icon-btn" id="menuButton" aria-label="Open menu"><span class="hamburger"></span></button>
+    <div class="brand">uMzumbe Environment Monitor</div><div></div>
+  </header>
+
+  <main class="page">
+    <div class="metric-strip">
+      <div class="metric-chip"><div class="mini-label">Temp</div><div class="mini-value" id="stripTemp">-- °C</div></div>
+      <div class="metric-chip"><div class="mini-label">Noise</div><div class="mini-value" id="stripNoise">-- dB</div></div>
+      <div class="metric-chip"><div class="mini-label">Water</div><div class="mini-value" id="stripPh">pH --</div></div>
+      <div class="metric-chip"><div class="mini-label">PM2.5</div><div class="mini-value" id="stripAir">-- µg/m³</div></div>
+    </div>
+
+    <a href="index.html" class="back-link">← Welcome page</a>
+
+    <h1 class="dashboard-title">Live Environmental Data</h1>
+    <p class="dashboard-subtitle">
+      Choose an environmental factor to see its current value, what it means,
+      its live trend and recommended action.
+    </p>
+
+    <section class="source-panel" id="sourcePanel">
+      <div class="source-row">
+        <button class="secondary-btn" id="connectButton">Connect Arduino</button>
+        <span id="connectionStatus">Arduino not connected</span>
+      </div>
+      <p class="note" style="margin:10px 0 0">
+        Source-device mode. Only the computer physically connected to the Arduino should use this mode.
+      </p>
+    </section>
+
+    <div class="factor-grid">
+      <button class="factor-btn" data-factor="temperature"><div class="name">Temperature</div><div class="current" id="cardTemp">-- °C</div></button>
+      <button class="factor-btn" data-factor="noise"><div class="name">Noise Level</div><div class="current" id="cardNoise">-- dB</div></button>
+      <button class="factor-btn" data-factor="ph"><div class="name">Water Acidity</div><div class="current" id="cardPh">pH --</div></button>
+      <button class="factor-btn" data-factor="air"><div class="name">Air Quality (PM2.5)</div><div class="current" id="cardAir">-- µg/m³</div></button>
+    </div>
+
+    <section class="detail-card" id="detailCard">
+      <div id="detailName" style="font-weight:800;font-size:18px"></div>
+      <div class="detail-current" id="detailValue">--</div>
+      <div class="status-badge" id="detailStatus">Waiting for data</div>
+      <p class="meaning" id="detailMeaning"></p>
+      <div class="chart-wrap"><canvas id="liveChart"></canvas></div>
+      <div class="advice-box" id="adviceBox">
+        <h3>Advice</h3>
+        <div id="detailAdvice">Waiting for data.</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+
+<div class="drawer-overlay" id="drawerOverlay">
+  <aside class="drawer">
+    <div class="drawer-head">
+      <div class="drawer-title">UEM Settings</div>
+      <button class="icon-btn" id="closeDrawerButton" aria-label="Close menu">✕</button>
+    </div>
+    <div class="drawer-section">
+      <h3>Appearance</h3>
+      <div class="choice-row">
+        <button class="choice-btn active" id="lightModeButton">Light</button>
+        <button class="choice-btn" id="darkModeButton">Dark</button>
+      </div>
+    </div>
+    <div class="drawer-section">
+      <h3>Language</h3>
+      <div class="choice-row">
+        <button class="choice-btn active" id="englishButton">English</button>
+        <button class="choice-btn" id="zuluButton">IsiZulu</button>
+      </div>
+      <p class="note" style="margin-top:12px">Both choices display English for now.</p>
+    </div>
+  </aside>
+</div>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDEklrPBaRIvDg8bTwkcMz3kE_VNLcVxAs",
+  authDomain: "umzumbe-monitor.firebaseapp.com",
+  databaseURL: "https://umzumbe-monitor-default-rtdb.firebaseio.com",
+  projectId: "umzumbe-monitor",
+  storageBucket: "umzumbe-monitor.firebasestorage.app",
+  messagingSenderId: "781346294395",
+  appId: "1:781346294395:web:056f025c31ab1b055f70de"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+const sensorRef=ref(db,"sensor/currentValue");
+
+function clamp(v,min,max){return Math.min(max,Math.max(min,v))}
+function derive(rawValue){
+  const raw=clamp(Number(rawValue)||0,0,1023), n=raw/1023;
+  return {
+    raw,
+    temperature:+(18+27*n).toFixed(1),
+    noise:+(35+75*n).toFixed(1),
+    ph:+(8.5-4.5*n).toFixed(2),
+    air:+(5+195*n).toFixed(1)
+  };
+}
+function fmt(key,v){
+  if(key==="ph") return `pH ${Number(v).toFixed(2)}`;
+  if(key==="temperature") return `${Number(v).toFixed(1)} °C`;
+  if(key==="noise") return `${Number(v).toFixed(1)} dB`;
+  return `${Number(v).toFixed(1)} µg/m³`;
+}
+
+const meta={
+  temperature:{
+    name:"Temperature",min:15,max:50,
+    status:v=>v<30?["NORMAL","good"]:v<35?["ELEVATED","warn"]:["HIGH","bad"],
+    meaning:v=>v<30?"The simulated ambient temperature is within the prototype's normal range.":v<35?"The simulated ambient temperature is elevated.":"The simulated ambient temperature is very high.",
+    advice:v=>v<30?"Continue routine monitoring.":v<35?"Limit unnecessary heat exposure and keep drinking water available.":"Reduce prolonged outdoor exposure, provide shade and hydration, and investigate unusual heat conditions."
+  },
+  noise:{
+    name:"Noise Level",min:30,max:115,
+    status:v=>v<55?["LOW","good"]:v<70?["ELEVATED","warn"]:["HIGH","bad"],
+    meaning:v=>v<55?"The simulated noise level is relatively low.":v<70?"The simulated noise level is elevated and may affect nearby residents.":"The simulated noise level is high and should trigger investigation.",
+    advice:v=>v<55?"Continue routine monitoring.":v<70?"Review the likely noise source and consider limiting noisy activity near the community.":"Move away from the immediate noise source where practical, use hearing protection where required, and investigate the source."
+  },
+  ph:{
+    name:"Water Acidity",min:3.5,max:10,
+    status:v=>(v>=5&&v<=9.7)?["IN RANGE","good"]:(v>=4.5&&v<5)?["WARNING","warn"]:["OUT OF RANGE","bad"],
+    meaning:v=>(v>=5&&v<=9.7)?"The simulated pH is within the prototype reference range. pH alone does not prove that water is safe to drink.":v<5?"The simulated water is increasingly acidic.":"The simulated water is highly alkaline.",
+    advice:v=>(v>=5&&v<=9.7)?"Continue monitoring. Do not judge potability from pH alone.":"Treat this as a water-quality warning and verify with a calibrated instrument before any consumption decision."
+  },
+  air:{
+    name:"Air Quality (PM2.5)",min:0,max:210,
+    status:v=>v<=15?["LOW","good"]:v<=35?["ELEVATED","warn"]:["HIGH","bad"],
+    meaning:v=>v<=15?"The simulated PM2.5 value is low.":v<=35?"The simulated PM2.5 value is elevated.":"The simulated PM2.5 value is high and represents poor air-quality conditions in this prototype.",
+    advice:v=>v<=15?"Continue monitoring.":v<=35?"Reduce unnecessary exposure to visible dust and investigate the source.":"Reduce outdoor exposure during the event, move away from visible dust where practical, and investigate or suppress the source."
+  }
+};
+
+let current=derive(0), selected=null;
+const history={temperature:[],noise:[],ph:[],air:[]};
+const MAX=60;
+
+function addHistory(m){
+  const t=Date.now();
+  for(const key of ["temperature","noise","ph","air"]){
+    history[key].push({t,value:m[key]});
+    if(history[key].length>MAX) history[key].shift();
+  }
+}
+
+function updateDisplays(m){
+  current=m;
+  document.getElementById("stripTemp").textContent=fmt("temperature",m.temperature);
+  document.getElementById("stripNoise").textContent=fmt("noise",m.noise);
+  document.getElementById("stripPh").textContent=fmt("ph",m.ph);
+  document.getElementById("stripAir").textContent=fmt("air",m.air);
+  document.getElementById("cardTemp").textContent=fmt("temperature",m.temperature);
+  document.getElementById("cardNoise").textContent=fmt("noise",m.noise);
+  document.getElementById("cardPh").textContent=fmt("ph",m.ph);
+  document.getElementById("cardAir").textContent=fmt("air",m.air);
+  if(selected) updateDetail(selected);
+}
+
+onValue(sensorRef,snap=>{
+  if(!snap.exists()) return;
+  const m=derive(snap.val());
+  addHistory(m);
+  updateDisplays(m);
+});
+
+document.querySelectorAll(".factor-btn").forEach(btn=>btn.addEventListener("click",()=>{
+  selected=btn.dataset.factor;
+  document.getElementById("detailCard").classList.add("active");
+  updateDetail(selected);
+  document.getElementById("detailCard").scrollIntoView({behavior:"smooth",block:"start"});
+}));
+
+function updateDetail(key){
+  const m=meta[key], v=current[key], state=m.status(v);
+  document.getElementById("detailName").textContent=m.name;
+  document.getElementById("detailValue").textContent=fmt(key,v);
+  document.getElementById("detailStatus").textContent=state[0];
+  document.getElementById("detailMeaning").textContent=m.meaning(v);
+  document.getElementById("detailAdvice").textContent=m.advice(v);
+  const colors={good:"var(--good)",warn:"var(--warn)",bad:"var(--bad)"};
+  document.getElementById("detailStatus").style.color=colors[state[1]];
+  document.getElementById("detailStatus").style.borderColor=colors[state[1]];
+  document.getElementById("adviceBox").style.borderLeftColor=colors[state[1]];
+  renderGraph();
+}
+
+const canvas=document.getElementById("liveChart"), ctx=canvas.getContext("2d");
+function renderGraph(){
+  if(!selected) return;
+  const r=canvas.getBoundingClientRect();
+  if(!r.width||!r.height) return;
+  const dpr=window.devicePixelRatio||1;
+  canvas.width=Math.round(r.width*dpr); canvas.height=Math.round(r.height*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const w=r.width,h=r.height,p={l:46,r:12,t:14,b:28};
+  const styles=getComputedStyle(document.body);
+  const text=styles.getPropertyValue("--muted").trim();
+  const grid=styles.getPropertyValue("--grid").trim();
+  const line=styles.getPropertyValue("--accent").trim();
+  ctx.clearRect(0,0,w,h);
+  const m=meta[selected], pts=history[selected];
+  ctx.strokeStyle=grid;ctx.lineWidth=1;ctx.fillStyle=text;ctx.font="12px Arial";
+  for(let i=0;i<=4;i++){
+    const y=p.t+(h-p.t-p.b)*i/4;
+    ctx.beginPath();ctx.moveTo(p.l,y);ctx.lineTo(w-p.r,y);ctx.stroke();
+    const val=m.max-(m.max-m.min)*i/4;
+    ctx.fillText(val.toFixed(selected==="ph"?1:0),4,y+4);
+  }
+  ctx.fillText("older",p.l,h-7);ctx.fillText("now",w-34,h-7);
+  if(pts.length<2){ctx.fillText("Waiting for more live data...",p.l+20,h/2);return}
+  const plotW=w-p.l-p.r,plotH=h-p.t-p.b;
+  ctx.strokeStyle=line;ctx.lineWidth=2.5;ctx.beginPath();
+  pts.forEach((pt,i)=>{
+    const x=p.l+(i/Math.max(1,MAX-1))*plotW;
+    const norm=(pt.value-m.min)/(m.max-m.min);
+    const y=p.t+plotH-clamp(norm,0,1)*plotH;
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+}
+window.addEventListener("resize",renderGraph);
+
+
+const drawerOverlay = document.getElementById("drawerOverlay");
+document.getElementById("menuButton").addEventListener("click",()=>drawerOverlay.classList.add("open"));
+document.getElementById("closeDrawerButton").addEventListener("click",()=>drawerOverlay.classList.remove("open"));
+drawerOverlay.addEventListener("click",e=>{if(e.target===drawerOverlay)drawerOverlay.classList.remove("open")});
+
+const lightBtn=document.getElementById("lightModeButton");
+const darkBtn=document.getElementById("darkModeButton");
+function setTheme(theme){
+  document.body.classList.toggle("dark",theme==="dark");
+  lightBtn.classList.toggle("active",theme==="light");
+  darkBtn.classList.toggle("active",theme==="dark");
+  localStorage.setItem("uem-theme",theme);
+  if(typeof renderGraph==="function") renderGraph();
+}
+lightBtn.addEventListener("click",()=>setTheme("light"));
+darkBtn.addEventListener("click",()=>setTheme("dark"));
+setTheme(localStorage.getItem("uem-theme")||"light");
+
+const enBtn=document.getElementById("englishButton");
+const zuBtn=document.getElementById("zuluButton");
+function setLanguage(lang){
+  enBtn.classList.toggle("active",lang==="en");
+  zuBtn.classList.toggle("active",lang==="zu");
+  localStorage.setItem("uem-language",lang);
+}
+enBtn.addEventListener("click",()=>setLanguage("en"));
+zuBtn.addEventListener("click",()=>setLanguage("zu"));
+setLanguage(localStorage.getItem("uem-language")||"en");
+
+
+// -----------------------------------------------------
+// SOURCE DEVICE MODE
+// Normal viewers: dashboard.html
+// Arduino laptop: dashboard.html?source=1
+// -----------------------------------------------------
+const sourceMode=new URLSearchParams(window.location.search).get("source")==="1";
+const sourcePanel=document.getElementById("sourcePanel");
+const connectButton=document.getElementById("connectButton");
+const connectionStatus=document.getElementById("connectionStatus");
+
+if(sourceMode){
+  sourcePanel.classList.add("show");
+  if(!("serial" in navigator)){
+    connectButton.disabled=true;
+    connectionStatus.textContent="This browser does not support Web Serial. Use desktop Chrome or Edge.";
+  }
+}
+
+let port=null,reader=null,keepReading=false,serialBuffer="";
+
+connectButton.addEventListener("click",async()=>{
+  if(!sourceMode) return;
+  if(keepReading){await disconnectArduino();return}
+  try{
+    port=await navigator.serial.requestPort();
+    await port.open({baudRate:9600});
+    keepReading=true;
+    connectButton.textContent="Disconnect Arduino";
+    connectionStatus.textContent="Arduino connected";
+    connectionStatus.style.color="var(--good)";
+    await new Promise(r=>setTimeout(r,2000));
+    readSerial();
+  }catch(err){
+    console.error(err);
+    connectionStatus.textContent="Connection failed. Close Serial Monitor/C++ apps and try again.";
+    connectionStatus.style.color="var(--bad)";
+  }
+});
+
+async function readSerial(){
+  const decoder=new TextDecoder();
+  while(port&&port.readable&&keepReading){
+    reader=port.readable.getReader();
+    try{
+      while(keepReading){
+        const {value,done}=await reader.read();
+        if(done)break;
+        if(!value)continue;
+        serialBuffer+=decoder.decode(value,{stream:true});
+        const lines=serialBuffer.split(/\r?\n/);
+        serialBuffer=lines.pop();
+        for(const line of lines){
+          const s=line.trim();
+          if(!s)continue;
+          const raw=Number(s);
+          if(!Number.isInteger(raw)||raw<0||raw>1023)continue;
+          await set(sensorRef,raw);
+        }
+      }
+    }catch(err){console.error("Serial read error",err)}
+    finally{if(reader){try{reader.releaseLock()}catch(_e){}}}
+  }
+}
+
+async function disconnectArduino(){
+  keepReading=false;
+  if(reader){try{await reader.cancel()}catch(_e){}}
+  if(port){try{await port.close()}catch(_e){}}
+  reader=null;port=null;
+  connectButton.textContent="Connect Arduino";
+  connectionStatus.textContent="Arduino disconnected";
+  connectionStatus.style.color="var(--muted)";
+}
+</script>
+</body>
+</html>
