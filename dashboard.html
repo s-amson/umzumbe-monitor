@@ -1,4 +1,9 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UEM Community Dashboard</title><style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UEM Community Dashboard</title>
+<style>
 :root{
   --bg:#f5f7f9;--surface:#fff;--surface2:#f8fafb;--text:#11161b;--muted:#6d7580;
   --border:#e3e8ec;--accent:#1f4f6f;--accentSoft:#edf4f8;--accentContrast:#fff;
@@ -11,47 +16,216 @@ body.dark{
   --good:#67c994;--goodSoft:#17271f;--warn:#d8b55b;--warnSoft:#2a2415;
   --bad:#ef8686;--badSoft:#2b1a1a;--shadow:0 18px 45px rgba(0,0,0,.28);--grid:#313940;
 }
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
-button,input,select,textarea{font:inherit}.app-shell{width:min(100%,900px);min-height:100vh;margin:0 auto;background:var(--surface);box-shadow:var(--shadow)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+button{font:inherit}
+.app-shell{width:min(100%,900px);min-height:100vh;margin:0 auto;background:var(--surface);box-shadow:var(--shadow)}
 .topbar{position:sticky;top:0;z-index:20;height:76px;display:grid;grid-template-columns:52px 1fr 52px;align-items:center;padding:0 18px;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
-body.dark .topbar{background:rgba(23,28,33,.95)}.brand{text-align:center;font-weight:780;font-size:clamp(17px,3vw,22px);letter-spacing:-.3px}
-.icon-btn{width:44px;height:44px;border:0;background:transparent;color:var(--text);cursor:pointer;border-radius:12px;display:grid;place-items:center}.icon-btn:hover{background:var(--surface2)}
-.hamburger,.hamburger::before,.hamburger::after{width:25px;height:3px;background:currentColor;border-radius:20px;display:block;position:relative}.hamburger::before,.hamburger::after{content:"";position:absolute;left:0}.hamburger::before{top:-8px}.hamburger::after{top:8px}
-.factor-icon{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:var(--accentSoft);color:var(--accent);flex:0 0 auto}
-.factor-icon svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.34);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}.drawer-overlay.open{opacity:1;pointer-events:auto}
-.drawer{position:absolute;top:0;left:0;width:min(330px,86vw);height:100%;background:var(--surface);color:var(--text);box-shadow:12px 0 30px rgba(0,0,0,.18);transform:translateX(-100%);transition:transform .22s ease;padding:22px}.drawer-overlay.open .drawer{transform:translateX(0)}
-.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}.drawer-title{font-weight:800;font-size:20px}.drawer-section{border-top:1px solid var(--border);padding:20px 0}.drawer-section h3{font-size:12px;color:var(--muted);margin:0 0 12px;text-transform:uppercase;letter-spacing:.9px}
-.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.choice-btn{border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:10px;border-radius:10px;cursor:pointer;font-weight:650}.choice-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accentSoft)}
+body.dark .topbar{background:rgba(23,28,33,.95)}
+.brand{text-align:center;font-weight:780;font-size:clamp(17px,3vw,22px);letter-spacing:-.3px}
+.icon-btn{width:44px;height:44px;border:0;background:transparent;color:var(--text);cursor:pointer;border-radius:12px;display:grid;place-items:center}
+.icon-btn:hover{background:var(--surface2)}
+.hamburger,.hamburger::before,.hamburger::after{width:25px;height:3px;background:currentColor;border-radius:20px;display:block;position:relative}
+.hamburger::before,.hamburger::after{content:"";position:absolute;left:0}.hamburger::before{top:-8px}.hamburger::after{top:8px}
+.factor-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--accentSoft);color:var(--accent);flex:0 0 auto}
+.factor-icon svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.34);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.drawer-overlay.open{opacity:1;pointer-events:auto}
+.drawer{position:absolute;top:0;left:0;width:min(330px,86vw);height:100%;background:var(--surface);color:var(--text);box-shadow:12px 0 30px rgba(0,0,0,.18);transform:translateX(-100%);transition:transform .22s ease;padding:22px;overflow-y:auto}
+.drawer-overlay.open .drawer{transform:translateX(0)}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.drawer-title{font-weight:800;font-size:20px}
+.drawer-section{border-top:1px solid var(--border);padding:20px 0}
+.drawer-section h3{font-size:12px;color:var(--muted);margin:0 0 12px;text-transform:uppercase;letter-spacing:.9px}
+.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choice-btn{border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:10px;border-radius:10px;cursor:pointer;font-weight:650}
+.choice-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accentSoft)}
 .note{color:var(--muted);font-size:12px;line-height:1.55}
 
-.page{padding:24px 28px 46px}.metric-strip{display:grid;grid-template-columns:repeat(4,minmax(122px,1fr));gap:10px;overflow-x:auto;margin-bottom:26px}.metric-chip{border:1px solid var(--border);border-radius:14px;background:var(--surface2);padding:12px 13px;min-width:122px;display:flex;align-items:center;gap:9px}.metric-chip .factor-icon{width:34px;height:34px;border-radius:10px}.metric-chip .factor-icon svg{width:18px;height:18px}.mini-label{color:var(--muted);font-size:10px;font-weight:750;text-transform:uppercase}.mini-value{font-size:15px;font-weight:800;white-space:nowrap}.dashboard-heading h1{font-size:30px;letter-spacing:-.7px;margin:0 0 7px}.dashboard-heading p{color:var(--muted);line-height:1.55;margin:0 0 24px}.factor-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:26px}.factor-btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:18px;padding:18px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:14px}.factor-btn .name{color:var(--muted);font-size:12px;font-weight:750;text-transform:uppercase}.factor-btn .current{font-size:22px;font-weight:820}.detail-card{display:none;border:1px solid var(--border);border-radius:20px;padding:22px;background:var(--surface)}.detail-card.active{display:block}.detail-current{font-size:48px;font-weight:900;margin:3px 0 5px}.status-badge{display:inline-block;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:800;border:1px solid var(--border)}.meaning{color:var(--muted);line-height:1.6}.chart-wrap{border:1px solid var(--border);border-radius:14px;padding:10px;background:var(--surface2);margin-bottom:20px}canvas{width:100%;height:240px}.advice-box{border-left:4px solid var(--accent);background:var(--surface2);border-radius:12px;padding:16px;line-height:1.55}.alert-banner{display:none;border-radius:15px;padding:15px 16px;margin-bottom:18px;border:1px solid var(--bad);background:var(--badSoft)}.alert-banner.show{display:block}@media(max-width:560px){.page{padding:20px 16px}.metric-strip{grid-template-columns:repeat(4,132px)}.factor-grid{grid-template-columns:1fr}}
-</style></head><body>
-<div class="app-shell"><header class="topbar"><button class="icon-btn" id="menuButton"><span class="hamburger"></span></button><div class="brand">uMzumbe Environment Monitor</div><div></div></header>
+.page{padding:24px 28px 46px}
+.alert-banner{display:none;border-radius:15px;padding:15px 16px;margin-bottom:18px;border:1px solid var(--bad);background:var(--badSoft)}
+.alert-banner.show{display:block}
+
+/* NORMAL MODE */
+.normal-mode{display:block}
+.normal-intro{margin:3px 0 20px}
+.normal-intro h1{font-size:29px;margin:0 0 7px;letter-spacing:-.65px}
+.normal-intro p{margin:0;color:var(--muted);line-height:1.5}
+.simple-grid{display:grid;gap:16px}
+.simple-card{
+  border:1px solid var(--border);border-radius:22px;background:var(--surface);
+  padding:22px;display:grid;grid-template-columns:58px 1fr 74px;gap:16px;align-items:center;
+  min-height:142px
+}
+.simple-main{min-width:0}
+.simple-label{font-size:13px;font-weight:750;color:var(--muted);margin-bottom:6px}
+.simple-status{font-size:clamp(25px,4vw,32px);font-weight:900;letter-spacing:-.55px;margin-bottom:5px}
+.simple-advice{font-size:15px;line-height:1.45;color:var(--text)}
+.simple-emoji{
+  width:68px;height:68px;border-radius:50%;display:grid;place-items:center;
+  font-size:43px;background:var(--surface2);justify-self:end
+}
+.simple-card.good{border-color:color-mix(in srgb,var(--good) 35%,var(--border))}
+.simple-card.warn{border-color:color-mix(in srgb,var(--warn) 40%,var(--border))}
+.simple-card.bad{border-color:color-mix(in srgb,var(--bad) 42%,var(--border))}
+
+/* PRO MODE */
+.pro-mode{display:none}
+.metric-strip{display:grid;grid-template-columns:repeat(4,minmax(122px,1fr));gap:10px;overflow-x:auto;margin-bottom:26px}
+.metric-chip{border:1px solid var(--border);border-radius:14px;background:var(--surface2);padding:12px 13px;min-width:122px;display:flex;align-items:center;gap:9px}
+.metric-chip .factor-icon{width:34px;height:34px;border-radius:10px}.metric-chip .factor-icon svg{width:18px;height:18px}
+.mini-label{color:var(--muted);font-size:10px;font-weight:750;text-transform:uppercase}.mini-value{font-size:15px;font-weight:800;white-space:nowrap}
+.dashboard-heading h1{font-size:30px;letter-spacing:-.7px;margin:0 0 7px}.dashboard-heading p{color:var(--muted);line-height:1.55;margin:0 0 24px}
+.factor-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:26px}
+.factor-btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:18px;padding:18px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:14px}
+.factor-btn .name{color:var(--muted);font-size:12px;font-weight:750;text-transform:uppercase}.factor-btn .current{font-size:22px;font-weight:820}
+.detail-card{display:none;border:1px solid var(--border);border-radius:20px;padding:22px;background:var(--surface)}.detail-card.active{display:block}
+.detail-current{font-size:48px;font-weight:900;margin:3px 0 5px}.status-badge{display:inline-block;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:800;border:1px solid var(--border)}
+.meaning{color:var(--muted);line-height:1.6}.chart-wrap{border:1px solid var(--border);border-radius:14px;padding:10px;background:var(--surface2);margin-bottom:20px}canvas{width:100%;height:240px}
+.advice-box{border-left:4px solid var(--accent);background:var(--surface2);border-radius:12px;padding:16px;line-height:1.55}
+
+body.pro-active .normal-mode{display:none}
+body.pro-active .pro-mode{display:block}
+
+@media(max-width:560px){
+ .page{padding:20px 16px}
+ .simple-card{grid-template-columns:50px 1fr 60px;padding:18px 16px;gap:12px}
+ .simple-card .factor-icon{width:46px;height:46px}
+ .simple-emoji{width:56px;height:56px;font-size:36px}
+ .simple-advice{font-size:14px}
+ .metric-strip{grid-template-columns:repeat(4,132px)}
+ .factor-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+<header class="topbar"><button class="icon-btn" id="menuButton"><span class="hamburger"></span></button><div class="brand">uMzumbe Environment Monitor</div><div></div></header>
 <main class="page">
 <div id="communityAlert" class="alert-banner"><strong>Community alert</strong><div id="communityAlertText"></div></div>
-<div class="metric-strip">
-<div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div><div><div class="mini-label">Temp</div><div class="mini-value" id="st">-- °C</div></div></div>
-<div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div><div><div class="mini-label">Noise</div><div class="mini-value" id="sn">-- dB</div></div></div>
-<div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div><div><div class="mini-label">Water</div><div class="mini-value" id="sp">pH --</div></div></div>
-<div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div><div><div class="mini-label">PM2.5</div><div class="mini-value" id="sa">-- µg/m³</div></div></div>
+
+<!-- DEFAULT: NORMAL MODE -->
+<section class="normal-mode" id="normalMode">
+  <div class="normal-intro">
+    <h1>Current conditions</h1>
+    <p>Simple information and what you should do right now.</p>
+  </div>
+
+  <div class="simple-grid">
+    <article class="simple-card" id="normalTempCard">
+      <div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div>
+      <div class="simple-main">
+        <div class="simple-label">Temperature</div>
+        <div class="simple-status" id="normalTempStatus">Waiting</div>
+        <div class="simple-advice" id="normalTempAdvice">Waiting for live data</div>
+      </div>
+      <div class="simple-emoji" id="normalTempEmoji">⏳</div>
+    </article>
+
+    <article class="simple-card" id="normalNoiseCard">
+      <div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div>
+      <div class="simple-main">
+        <div class="simple-label">Noise level</div>
+        <div class="simple-status" id="normalNoiseStatus">Waiting</div>
+        <div class="simple-advice" id="normalNoiseAdvice">Waiting for live data</div>
+      </div>
+      <div class="simple-emoji" id="normalNoiseEmoji">⏳</div>
+    </article>
+
+    <article class="simple-card" id="normalPhCard">
+      <div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div>
+      <div class="simple-main">
+        <div class="simple-label">Water acidity</div>
+        <div class="simple-status" id="normalPhStatus">Waiting</div>
+        <div class="simple-advice" id="normalPhAdvice">Waiting for live data</div>
+      </div>
+      <div class="simple-emoji" id="normalPhEmoji">⏳</div>
+    </article>
+
+    <article class="simple-card" id="normalAirCard">
+      <div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div>
+      <div class="simple-main">
+        <div class="simple-label">Air quality</div>
+        <div class="simple-status" id="normalAirStatus">Waiting</div>
+        <div class="simple-advice" id="normalAirAdvice">Waiting for live data</div>
+      </div>
+      <div class="simple-emoji" id="normalAirEmoji">⏳</div>
+    </article>
+  </div>
+  <p class="note" style="margin-top:22px">This is a prototype demonstration using one potentiometer, not four real environmental sensors.</p>
+</section>
+
+<!-- OPTIONAL: PRO MODE -->
+<section class="pro-mode" id="proMode">
+  <div class="metric-strip">
+    <div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div><div><div class="mini-label">Temp</div><div class="mini-value" id="st">-- °C</div></div></div>
+    <div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div><div><div class="mini-label">Noise</div><div class="mini-value" id="sn">-- dB</div></div></div>
+    <div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div><div><div class="mini-label">Water</div><div class="mini-value" id="sp">pH --</div></div></div>
+    <div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div><div><div class="mini-label">PM2.5</div><div class="mini-value" id="sa">-- µg/m³</div></div></div>
+  </div>
+
+  <section class="dashboard-heading">
+    <h1>Environmental analytics</h1>
+    <p>Numerical readings, live trends and technical interpretation.</p>
+  </section>
+
+  <div class="factor-grid">
+    <button class="factor-btn" data-factor="temperature"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div><div><div class="name">Temperature</div><div class="current" id="ct">-- °C</div></div></button>
+    <button class="factor-btn" data-factor="noise"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div><div><div class="name">Noise level</div><div class="current" id="cn">-- dB</div></div></button>
+    <button class="factor-btn" data-factor="ph"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div><div><div class="name">Water acidity</div><div class="current" id="cp">pH --</div></div></button>
+    <button class="factor-btn" data-factor="air"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div><div><div class="name">Air quality</div><div class="current" id="ca">-- µg/m³</div></div></button>
+  </div>
+
+  <section class="detail-card" id="detailCard">
+    <div id="detailName" style="font-size:14px;color:var(--muted);font-weight:750"></div>
+    <div class="detail-current" id="detailValue">--</div>
+    <div class="status-badge" id="detailStatus">Waiting</div>
+    <p class="meaning" id="detailMeaning"></p>
+    <div class="chart-wrap"><canvas id="liveChart"></canvas></div>
+    <div class="advice-box" id="adviceBox"><strong>Recommended response</strong><div id="detailAdvice" style="margin-top:7px"></div></div>
+  </section>
+</section>
+</main>
 </div>
-<section class="dashboard-heading"><h1>Live environmental data</h1><p>Select a factor to understand the current reading, recent trend and recommended response.</p></section>
-<div class="factor-grid">
-<button class="factor-btn" data-factor="temperature"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div><div><div class="name">Temperature</div><div class="current" id="ct">-- °C</div></div></button>
-<button class="factor-btn" data-factor="noise"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div><div><div class="name">Noise level</div><div class="current" id="cn">-- dB</div></div></button>
-<button class="factor-btn" data-factor="ph"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div><div><div class="name">Water acidity</div><div class="current" id="cp">pH --</div></div></button>
-<button class="factor-btn" data-factor="air"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div><div><div class="name">Air quality</div><div class="current" id="ca">-- µg/m³</div></div></button>
-</div>
-<section class="detail-card" id="detailCard"><div id="detailName" style="font-size:14px;color:var(--muted);font-weight:750"></div><div class="detail-current" id="detailValue">--</div><div class="status-badge" id="detailStatus">Waiting</div><p class="meaning" id="detailMeaning"></p><div class="chart-wrap"><canvas id="liveChart"></canvas></div><div class="advice-box" id="adviceBox"><strong>Recommended response</strong><div id="detailAdvice" style="margin-top:7px"></div></div></section>
-</main></div>
+
+
 <div class="drawer-overlay" id="drawerOverlay">
 <aside class="drawer">
-  <div class="drawer-head"><div class="drawer-title">UEM Settings</div><button class="icon-btn" id="closeDrawerButton">✕</button></div>
-  <div class="drawer-section"><h3>Appearance</h3><div class="choice-row"><button class="choice-btn active" id="lightModeButton">Light</button><button class="choice-btn" id="darkModeButton">Dark</button></div></div>
-  <div class="drawer-section"><h3>Language</h3><div class="choice-row"><button class="choice-btn active" id="englishButton">English</button><button class="choice-btn" id="zuluButton">IsiZulu</button></div><p class="note" style="margin-top:12px">Both options display English for now.</p></div>
+  <div class="drawer-head">
+    <div class="drawer-title">UEM Settings</div>
+    <button class="icon-btn" id="closeDrawerButton" aria-label="Close menu">✕</button>
+  </div>
+
+  <div class="drawer-section">
+    <h3>Display mode</h3>
+    <div class="choice-row">
+      <button class="choice-btn active" id="normalModeButton">Normal</button>
+      <button class="choice-btn" id="proModeButton">Pro</button>
+    </div>
+    <p class="note" style="margin-top:12px">
+      Normal uses simple words, actions and visual faces. Pro shows numerical data and graphs.
+    </p>
+  </div>
+
+  <div class="drawer-section">
+    <h3>Appearance</h3>
+    <div class="choice-row">
+      <button class="choice-btn active" id="lightModeButton">Light</button>
+      <button class="choice-btn" id="darkModeButton">Dark</button>
+    </div>
+  </div>
+
+  <div class="drawer-section">
+    <h3>Language</h3>
+    <div class="choice-row">
+      <button class="choice-btn active" id="englishButton">English</button>
+      <button class="choice-btn" id="zuluButton">IsiZulu</button>
+    </div>
+    <p class="note" style="margin-top:12px">Both options display English for now.</p>
+  </div>
 </aside>
 </div>
+
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
@@ -65,12 +239,24 @@ const firebaseConfig = {
   messagingSenderId: "781346294395",
   appId: "1:781346294395:web:056f025c31ab1b055f70de"
 };
-const app=initializeApp(firebaseConfig),db=getDatabase(app),sensorRef=ref(db,"sensor/currentValue"),settingsRef=ref(db,"settings/thresholds"),alertRef=ref(db,"communityAlert");
+
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+const sensorRef=ref(db,"sensor/currentValue");
+const settingsRef=ref(db,"settings/thresholds");
+const alertRef=ref(db,"communityAlert");
+
 
 function clamp(v,min,max){return Math.min(max,Math.max(min,v))}
 function derive(rawValue){
   const raw=clamp(Number(rawValue)||0,0,1023),n=raw/1023;
-  return {raw,temperature:+(18+27*n).toFixed(1),noise:+(35+75*n).toFixed(1),ph:+(8.5-4.5*n).toFixed(2),air:+(5+195*n).toFixed(1)};
+  return {
+    raw,
+    temperature:+(18+27*n).toFixed(1),
+    noise:+(35+75*n).toFixed(1),
+    ph:+(8.5-4.5*n).toFixed(2),
+    air:+(5+195*n).toFixed(1)
+  };
 }
 function fmt(key,v){
   if(key==="ph")return `pH ${Number(v).toFixed(2)}`;
@@ -79,35 +265,323 @@ function fmt(key,v){
   return `${Number(v).toFixed(1)} µg/m³`;
 }
 
-let thresholds={temperatureHigh:35,noiseHigh:70,airHigh:35,phMin:5,phMax:9.7},current=derive(0),selected=null;
-const hist={temperature:[],noise:[],ph:[],air:[]},MAX=60;
-onValue(settingsRef,s=>{if(s.exists())thresholds={...thresholds,...s.val()};if(selected)updateDetail(selected)});
-onValue(alertRef,s=>{const a=s.val(),b=document.getElementById("communityAlert");if(a&&a.active&&a.message){b.classList.add("show");document.getElementById("communityAlertText").textContent=a.message}else b.classList.remove("show")});
-onValue(sensorRef,s=>{if(!s.exists())return;current=derive(s.val());const t=Date.now();for(const k of Object.keys(hist)){hist[k].push({t,value:current[k]});if(hist[k].length>MAX)hist[k].shift()}updateDisplays();if(selected)updateDetail(selected)});
 
-function updateDisplays(){st.textContent=fmt("temperature",current.temperature);sn.textContent=fmt("noise",current.noise);sp.textContent=fmt("ph",current.ph);sa.textContent=fmt("air",current.air);ct.textContent=st.textContent;cn.textContent=sn.textContent;cp.textContent=sp.textContent;ca.textContent=sa.textContent}
-document.querySelectorAll(".factor-btn").forEach(b=>b.onclick=()=>{selected=b.dataset.factor;detailCard.classList.add("active");updateDetail(selected);detailCard.scrollIntoView({behavior:"smooth"})});
+let thresholds={temperatureHigh:35,noiseHigh:70,airHigh:35,phMin:5,phMax:9.7};
+let current=derive(0);
+let selected=null;
+const hist={temperature:[],noise:[],ph:[],air:[]};
+const MAX=60;
+
+onValue(settingsRef,s=>{
+  if(s.exists()) thresholds={...thresholds,...s.val()};
+  updateNormalMode();
+  if(selected)updateDetail(selected);
+});
+
+onValue(alertRef,s=>{
+  const a=s.val();
+  const b=document.getElementById("communityAlert");
+  if(a&&a.active&&a.message){
+    b.classList.add("show");
+    document.getElementById("communityAlertText").textContent=a.message;
+  } else b.classList.remove("show");
+});
+
+onValue(sensorRef,s=>{
+  if(!s.exists())return;
+  current=derive(s.val());
+
+  const t=Date.now();
+  for(const k of Object.keys(hist)){
+    hist[k].push({t,value:current[k]});
+    if(hist[k].length>MAX)hist[k].shift();
+  }
+
+  updateNormalMode();
+  updateProDisplays();
+  if(selected)updateDetail(selected);
+});
+
+/* -------------------------
+   NORMAL MODE
+   ------------------------- */
+function setSimpleCard(prefix,state){
+  document.getElementById(`normal${prefix}Status`).textContent=state.status;
+  document.getElementById(`normal${prefix}Advice`).textContent=state.advice;
+  document.getElementById(`normal${prefix}Emoji`).textContent=state.emoji;
+
+  const card=document.getElementById(`normal${prefix}Card`);
+  card.classList.remove("good","warn","bad");
+  card.classList.add(state.level);
+}
+
+function normalTemperature(v){
+  if(v<20) return {
+    status:"Cold",
+    emoji:"🥶",
+    level:"warn",
+    advice:"Keep warm. Wear extra clothing and stay dry."
+  };
+  if(v<30) return {
+    status:"Comfortable",
+    emoji:"😊",
+    level:"good",
+    advice:"Conditions are comfortable. Continue normal activities."
+  };
+  if(v<thresholds.temperatureHigh) return {
+    status:"Warm",
+    emoji:"😅",
+    level:"warn",
+    advice:"Drink water and take breaks in the shade."
+  };
+  return {
+    status:"Very hot",
+    emoji:"🥵",
+    level:"bad",
+    advice:"Stay in the shade, drink water, and avoid long periods outside."
+  };
+}
+
+function normalNoise(v){
+  if(v<55) return {
+    status:"Quiet",
+    emoji:"😊",
+    level:"good",
+    advice:"Noise is low. No special action is needed."
+  };
+  if(v<thresholds.noiseHigh) return {
+    status:"Noisy",
+    emoji:"😕",
+    level:"warn",
+    advice:"Move away from loud areas if the noise feels uncomfortable."
+  };
+  return {
+    status:"Very loud",
+    emoji:"🙉",
+    level:"bad",
+    advice:"Move away from the noise and protect your ears."
+  };
+}
+
+function normalPh(v){
+  if(v<thresholds.phMin) return {
+    status:"Too acidic",
+    emoji:"🚱",
+    level:"bad",
+    advice:"Do not drink this water until it has been checked."
+  };
+  if(v>thresholds.phMax) return {
+    status:"Too alkaline",
+    emoji:"🚱",
+    level:"bad",
+    advice:"Do not drink this water until it has been checked."
+  };
+  return {
+    status:"Within range",
+    emoji:"😊",
+    level:"good",
+    advice:"Use water only from an approved drinking source."
+  };
+}
+
+function normalAir(v){
+  if(v<=15) return {
+    status:"Good",
+    emoji:"😊",
+    level:"good",
+    advice:"Air quality is good. Normal outdoor activity is okay."
+  };
+  if(v<thresholds.airHigh) return {
+    status:"Dusty",
+    emoji:"😷",
+    level:"warn",
+    advice:"Avoid dusty areas and close windows if dust enters your home."
+  };
+  return {
+    status:"Poor",
+    emoji:"🤧",
+    level:"bad",
+    advice:"Stay indoors where possible, close windows, and avoid dusty areas."
+  };
+}
+
+function updateNormalMode(){
+  setSimpleCard("Temp",normalTemperature(current.temperature));
+  setSimpleCard("Noise",normalNoise(current.noise));
+  setSimpleCard("Ph",normalPh(current.ph));
+  setSimpleCard("Air",normalAir(current.air));
+}
+
+/* -------------------------
+   PRO MODE
+   ------------------------- */
+function updateProDisplays(){
+  document.getElementById("st").textContent=fmt("temperature",current.temperature);
+  document.getElementById("sn").textContent=fmt("noise",current.noise);
+  document.getElementById("sp").textContent=fmt("ph",current.ph);
+  document.getElementById("sa").textContent=fmt("air",current.air);
+  document.getElementById("ct").textContent=document.getElementById("st").textContent;
+  document.getElementById("cn").textContent=document.getElementById("sn").textContent;
+  document.getElementById("cp").textContent=document.getElementById("sp").textContent;
+  document.getElementById("ca").textContent=document.getElementById("sa").textContent;
+}
+
+document.querySelectorAll(".factor-btn").forEach(b=>b.onclick=()=>{
+  selected=b.dataset.factor;
+  document.getElementById("detailCard").classList.add("active");
+  updateDetail(selected);
+  document.getElementById("detailCard").scrollIntoView({behavior:"smooth"});
+});
 
 function factorState(k,v){
- if(k==="temperature")return v>=thresholds.temperatureHigh?["HIGH","bad","High temperature detected. Reduce prolonged heat exposure and ensure shade and hydration."]:["NORMAL","good","Temperature is below the configured high threshold."];
- if(k==="noise")return v>=thresholds.noiseHigh?["HIGH","bad","High noise detected. Move away from the source where practical and use hearing protection where required."]:["ACCEPTABLE","good","Noise is below the configured high threshold."];
- if(k==="air")return v>=thresholds.airHigh?["HIGH","bad","Elevated particulate pollution detected. Reduce unnecessary exposure and investigate the dust source."]:["LOWER","good","PM2.5 is below the configured high threshold."];
- return (v<thresholds.phMin||v>thresholds.phMax)?["OUT OF RANGE","bad","Water pH is outside the configured range. Verify with calibrated water-quality testing before making any consumption decision."]:["IN RANGE","good","pH is within the configured range. pH alone does not establish that water is safe to drink."];
+  if(k==="temperature"){
+    if(v<20)return ["COLD","warn","Temperature is below the normal comfort range.","Keep warm and limit prolonged exposure if you feel uncomfortable."];
+    if(v>=thresholds.temperatureHigh)return ["HIGH","bad","Temperature is above the configured high threshold.","Reduce prolonged heat exposure and ensure shade and hydration."];
+    if(v>=30)return ["ELEVATED","warn","Temperature is elevated but below the configured high threshold.","Take breaks, hydrate and monitor conditions."];
+    return ["NORMAL","good","Temperature is within the normal prototype range.","Continue routine monitoring."];
+  }
+
+  if(k==="noise"){
+    if(v>=thresholds.noiseHigh)return ["HIGH","bad","Noise is above the configured high threshold.","Move away from the source where practical and use hearing protection where required."];
+    if(v>=55)return ["ELEVATED","warn","Noise is elevated but below the configured high threshold.","Reduce unnecessary exposure and investigate the source if it persists."];
+    return ["LOW","good","Noise is below the configured warning range.","Continue routine monitoring."];
+  }
+
+  if(k==="air"){
+    if(v>=thresholds.airHigh)return ["HIGH","bad","PM2.5 is above the configured high threshold.","Reduce outdoor exposure and investigate or suppress the dust source."];
+    if(v>15)return ["ELEVATED","warn","PM2.5 is above the lower prototype reference.","Reduce unnecessary exposure to dusty areas."];
+    return ["LOW","good","PM2.5 is in the lower prototype range.","Continue routine monitoring."];
+  }
+
+  if(v<thresholds.phMin||v>thresholds.phMax)return ["OUT OF RANGE","bad","Water pH is outside the configured range.","Verify with calibrated water-quality testing before any consumption decision."];
+  return ["IN RANGE","good","pH is within the configured range.","pH alone does not establish that water is safe to drink."];
 }
-function updateDetail(k){const names={temperature:"Temperature",noise:"Noise Level",ph:"Water Acidity",air:"Air Quality (PM2.5)"},v=current[k],s=factorState(k,v);detailName.textContent=names[k];detailValue.textContent=fmt(k,v);detailStatus.textContent=s[0];detailMeaning.textContent=s[2];detailAdvice.textContent=s[2];const c=s[1]==="bad"?"var(--bad)":"var(--good)";detailStatus.style.color=c;detailStatus.style.borderColor=c;adviceBox.style.borderLeftColor=c;renderGraph()}
-const canvas=document.getElementById("liveChart"),ctx=canvas.getContext("2d");
-function renderGraph(){if(!selected)return;const r=canvas.getBoundingClientRect();if(!r.width)return;const dpr=devicePixelRatio||1;canvas.width=r.width*dpr;canvas.height=r.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);const w=r.width,h=r.height,p={l:46,r:12,t:14,b:28},styles=getComputedStyle(document.body);ctx.clearRect(0,0,w,h);ctx.strokeStyle=styles.getPropertyValue("--grid").trim();ctx.fillStyle=styles.getPropertyValue("--muted").trim();ctx.font="12px Arial";const ranges={temperature:[15,50],noise:[30,115],ph:[3.5,10],air:[0,210]},[min,max]=ranges[selected];for(let i=0;i<=4;i++){const y=p.t+(h-p.t-p.b)*i/4;ctx.beginPath();ctx.moveTo(p.l,y);ctx.lineTo(w-p.r,y);ctx.stroke();ctx.fillText((max-(max-min)*i/4).toFixed(selected==="ph"?1:0),4,y+4)}const pts=hist[selected];if(pts.length<2)return;ctx.strokeStyle=styles.getPropertyValue("--accent").trim();ctx.lineWidth=2.5;ctx.beginPath();pts.forEach((pt,i)=>{const x=p.l+i/Math.max(1,MAX-1)*(w-p.l-p.r),norm=(pt.value-min)/(max-min),y=p.t+(h-p.t-p.b)-clamp(norm,0,1)*(h-p.t-p.b);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()}
-window.onresize=renderGraph;
+
+function updateDetail(k){
+  const names={temperature:"Temperature",noise:"Noise Level",ph:"Water Acidity",air:"Air Quality (PM2.5)"};
+  const v=current[k],s=factorState(k,v);
+
+  document.getElementById("detailName").textContent=names[k];
+  document.getElementById("detailValue").textContent=fmt(k,v);
+  document.getElementById("detailStatus").textContent=s[0];
+  document.getElementById("detailMeaning").textContent=s[2];
+  document.getElementById("detailAdvice").textContent=s[3];
+
+  const color=s[1]==="bad"?"var(--bad)":s[1]==="warn"?"var(--warn)":"var(--good)";
+  document.getElementById("detailStatus").style.color=color;
+  document.getElementById("detailStatus").style.borderColor=color;
+  document.getElementById("adviceBox").style.borderLeftColor=color;
+  renderGraph();
+}
+
+const canvas=document.getElementById("liveChart");
+const ctx=canvas.getContext("2d");
+
+function renderGraph(){
+  if(!selected || !document.body.classList.contains("pro-active"))return;
+
+  const r=canvas.getBoundingClientRect();
+  if(!r.width)return;
+
+  const dpr=devicePixelRatio||1;
+  canvas.width=r.width*dpr;
+  canvas.height=r.height*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+
+  const w=r.width,h=r.height,p={l:46,r:12,t:14,b:28};
+  const styles=getComputedStyle(document.body);
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle=styles.getPropertyValue("--grid").trim();
+  ctx.fillStyle=styles.getPropertyValue("--muted").trim();
+  ctx.font="12px Arial";
+
+  const ranges={temperature:[15,50],noise:[30,115],ph:[3.5,10],air:[0,210]};
+  const [min,max]=ranges[selected];
+
+  for(let i=0;i<=4;i++){
+    const y=p.t+(h-p.t-p.b)*i/4;
+    ctx.beginPath();
+    ctx.moveTo(p.l,y);
+    ctx.lineTo(w-p.r,y);
+    ctx.stroke();
+    ctx.fillText((max-(max-min)*i/4).toFixed(selected==="ph"?1:0),4,y+4);
+  }
+
+  const pts=hist[selected];
+  if(pts.length<2)return;
+
+  ctx.strokeStyle=styles.getPropertyValue("--accent").trim();
+  ctx.lineWidth=2.5;
+  ctx.beginPath();
+
+  pts.forEach((pt,i)=>{
+    const x=p.l+i/Math.max(1,MAX-1)*(w-p.l-p.r);
+    const y=p.t+(h-p.t-p.b)-clamp((pt.value-min)/(max-min),0,1)*(h-p.t-p.b);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  });
+
+  ctx.stroke();
+}
+window.addEventListener("resize",renderGraph);
+
+function applyDisplayMode(mode){
+  document.body.classList.toggle("pro-active",mode==="pro");
+
+  // Pro mode is deliberately emoji-free and analytics-focused.
+  if(mode==="pro"){
+    setTimeout(renderGraph,50);
+  }
+}
+
 
 const drawerOverlay=document.getElementById("drawerOverlay");
 document.getElementById("menuButton").addEventListener("click",()=>drawerOverlay.classList.add("open"));
 document.getElementById("closeDrawerButton").addEventListener("click",()=>drawerOverlay.classList.remove("open"));
 drawerOverlay.addEventListener("click",e=>{if(e.target===drawerOverlay)drawerOverlay.classList.remove("open")});
-const lightBtn=document.getElementById("lightModeButton"),darkBtn=document.getElementById("darkModeButton");
-function setTheme(t){document.body.classList.toggle("dark",t==="dark");lightBtn.classList.toggle("active",t==="light");darkBtn.classList.toggle("active",t==="dark");localStorage.setItem("uem-theme",t);if(typeof renderGraph==="function")renderGraph()}
-lightBtn.onclick=()=>setTheme("light");darkBtn.onclick=()=>setTheme("dark");setTheme(localStorage.getItem("uem-theme")||"light");
-const enBtn=document.getElementById("englishButton"),zuBtn=document.getElementById("zuluButton");
-function setLanguage(l){enBtn.classList.toggle("active",l==="en");zuBtn.classList.toggle("active",l==="zu");localStorage.setItem("uem-language",l)}
-enBtn.onclick=()=>setLanguage("en");zuBtn.onclick=()=>setLanguage("zu");setLanguage(localStorage.getItem("uem-language")||"en");
 
-</script></body></html>
+const lightBtn=document.getElementById("lightModeButton");
+const darkBtn=document.getElementById("darkModeButton");
+function setTheme(t){
+  document.body.classList.toggle("dark",t==="dark");
+  lightBtn.classList.toggle("active",t==="light");
+  darkBtn.classList.toggle("active",t==="dark");
+  localStorage.setItem("uem-theme",t);
+  if(typeof renderGraph==="function")renderGraph();
+}
+lightBtn.onclick=()=>setTheme("light");
+darkBtn.onclick=()=>setTheme("dark");
+setTheme(localStorage.getItem("uem-theme")||"light");
+
+const enBtn=document.getElementById("englishButton");
+const zuBtn=document.getElementById("zuluButton");
+function setLanguage(l){
+  enBtn.classList.toggle("active",l==="en");
+  zuBtn.classList.toggle("active",l==="zu");
+  localStorage.setItem("uem-language",l);
+}
+enBtn.onclick=()=>setLanguage("en");
+zuBtn.onclick=()=>setLanguage("zu");
+setLanguage(localStorage.getItem("uem-language")||"en");
+
+const normalModeBtn=document.getElementById("normalModeButton");
+const proModeBtn=document.getElementById("proModeButton");
+function setDisplayMode(mode){
+  normalModeBtn.classList.toggle("active",mode==="normal");
+  proModeBtn.classList.toggle("active",mode==="pro");
+  localStorage.setItem("uem-display-mode",mode);
+  if(typeof applyDisplayMode==="function")applyDisplayMode(mode);
+}
+normalModeBtn.onclick=()=>setDisplayMode("normal");
+proModeBtn.onclick=()=>setDisplayMode("pro");
+
+// First-time visitors always start in Normal mode.
+// After they deliberately change it, their browser remembers the choice.
+setDisplayMode(localStorage.getItem("uem-display-mode")||"normal");
+
+
+// Paint current state immediately, then Firebase will replace it with live data.
+updateNormalMode();
+updateProDisplays();
+</script>
+</body>
+</html>
