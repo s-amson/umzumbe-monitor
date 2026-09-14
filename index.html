@@ -1,273 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>uMzumbe Environment Monitor</title>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UEM Community</title>
 <style>
-
 :root{
-  --bg:#f5f7f9;
-  --surface:#ffffff;
-  --surface2:#f8fafb;
-  --text:#12161b;
-  --muted:#6d7580;
-  --border:#e4e8ec;
-  --accent:#1f4f6f;
-  --accentSoft:#edf4f8;
-  --accentContrast:#ffffff;
-  --good:#1f7a4d;
-  --goodSoft:#edf8f2;
-  --warn:#9a6a10;
-  --warnSoft:#fbf5e8;
-  --bad:#b23a3a;
-  --badSoft:#fbefef;
-  --shadow:0 18px 45px rgba(18,22,27,.08);
-  --grid:#e4e8ec;
+  --bg:#f5f7f9;--surface:#fff;--surface2:#f8fafb;--text:#11161b;--muted:#6d7580;
+  --border:#e3e8ec;--accent:#1f4f6f;--accentSoft:#edf4f8;--accentContrast:#fff;
+  --good:#1f7a4d;--goodSoft:#edf8f2;--warn:#9a6a10;--warnSoft:#fbf5e8;
+  --bad:#b23a3a;--badSoft:#fbefef;--shadow:0 18px 45px rgba(18,22,27,.08);--grid:#e4e8ec;
 }
 body.dark{
-  --bg:#0f1317;
-  --surface:#171c21;
-  --surface2:#1d2329;
-  --text:#f3f6f8;
-  --muted:#a4adb6;
-  --border:#2a323a;
-  --accent:#78b5d8;
-  --accentSoft:#182832;
-  --accentContrast:#0d151a;
-  --good:#67c994;
-  --goodSoft:#17271f;
-  --warn:#d8b55b;
-  --warnSoft:#2a2415;
-  --bad:#ef8686;
-  --badSoft:#2b1a1a;
-  --shadow:0 18px 45px rgba(0,0,0,.28);
-  --grid:#313940;
+  --bg:#0f1317;--surface:#171c21;--surface2:#1d2329;--text:#f3f6f8;--muted:#a4adb6;
+  --border:#2a323a;--accent:#78b5d8;--accentSoft:#182832;--accentContrast:#0d151a;
+  --good:#67c994;--goodSoft:#17271f;--warn:#d8b55b;--warnSoft:#2a2415;
+  --bad:#ef8686;--badSoft:#2b1a1a;--shadow:0 18px 45px rgba(0,0,0,.28);--grid:#313940;
 }
-*{box-sizing:border-box}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  min-height:100vh;
-  -webkit-font-smoothing:antialiased;
-}
-button{font:inherit}
-.app-shell{
-  width:min(100%,860px);
-  min-height:100vh;
-  margin:0 auto;
-  background:var(--surface);
-  box-shadow:var(--shadow);
-}
-.topbar{
-  position:sticky;
-  top:0;
-  z-index:20;
-  height:76px;
-  display:grid;
-  grid-template-columns:52px 1fr 52px;
-  align-items:center;
-  padding:0 18px;
-  background:rgba(255,255,255,.95);
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--border);
-}
-body.dark .topbar{background:rgba(23,28,33,.95)}
-.brand{
-  text-align:center;
-  font-weight:750;
-  font-size:clamp(17px,3vw,22px);
-  letter-spacing:-.3px;
-}
-.icon-btn{
-  width:44px;height:44px;border:0;background:transparent;color:var(--text);
-  cursor:pointer;border-radius:12px;display:grid;place-items:center;
-}
-.icon-btn:hover{background:var(--surface2)}
-.hamburger,.hamburger::before,.hamburger::after{
-  width:25px;height:3px;background:currentColor;border-radius:20px;display:block;position:relative
-}
-.hamburger::before,.hamburger::after{content:"";position:absolute;left:0}
-.hamburger::before{top:-8px}.hamburger::after{top:8px}
-
-.factor-icon{
-  width:44px;height:44px;border-radius:13px;
-  display:grid;place-items:center;
-  background:var(--accentSoft);color:var(--accent);
-  flex:0 0 auto;
-}
-.factor-icon svg{
-  width:23px;height:23px;
-  stroke:currentColor;fill:none;stroke-width:1.9;
-  stroke-linecap:round;stroke-linejoin:round;
-}
-
-.drawer-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.34);z-index:60;
-  opacity:0;pointer-events:none;transition:opacity .2s
-}
-.drawer-overlay.open{opacity:1;pointer-events:auto}
-.drawer{
-  position:absolute;top:0;left:0;width:min(330px,86vw);height:100%;
-  background:var(--surface);color:var(--text);box-shadow:12px 0 30px rgba(0,0,0,.18);
-  transform:translateX(-100%);transition:transform .22s ease;padding:22px;
-}
-.drawer-overlay.open .drawer{transform:translateX(0)}
-.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
-.drawer-title{font-weight:800;font-size:20px;letter-spacing:-.2px}
-.drawer-section{border-top:1px solid var(--border);padding:20px 0}
-.drawer-section h3{
-  font-size:12px;color:var(--muted);margin:0 0 12px;
-  text-transform:uppercase;letter-spacing:.9px
-}
-.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.choice-btn{
-  border:1px solid var(--border);background:var(--surface2);color:var(--text);
-  padding:10px;border-radius:10px;cursor:pointer;font-weight:650
-}
-.choice-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accentSoft)}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit}.app-shell{width:min(100%,900px);min-height:100vh;margin:0 auto;background:var(--surface);box-shadow:var(--shadow)}
+.topbar{position:sticky;top:0;z-index:20;height:76px;display:grid;grid-template-columns:52px 1fr 52px;align-items:center;padding:0 18px;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+body.dark .topbar{background:rgba(23,28,33,.95)}.brand{text-align:center;font-weight:780;font-size:clamp(17px,3vw,22px);letter-spacing:-.3px}
+.icon-btn{width:44px;height:44px;border:0;background:transparent;color:var(--text);cursor:pointer;border-radius:12px;display:grid;place-items:center}.icon-btn:hover{background:var(--surface2)}
+.hamburger,.hamburger::before,.hamburger::after{width:25px;height:3px;background:currentColor;border-radius:20px;display:block;position:relative}.hamburger::before,.hamburger::after{content:"";position:absolute;left:0}.hamburger::before{top:-8px}.hamburger::after{top:8px}
+.factor-icon{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:var(--accentSoft);color:var(--accent);flex:0 0 auto}
+.factor-icon svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.34);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}.drawer-overlay.open{opacity:1;pointer-events:auto}
+.drawer{position:absolute;top:0;left:0;width:min(330px,86vw);height:100%;background:var(--surface);color:var(--text);box-shadow:12px 0 30px rgba(0,0,0,.18);transform:translateX(-100%);transition:transform .22s ease;padding:22px}.drawer-overlay.open .drawer{transform:translateX(0)}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}.drawer-title{font-weight:800;font-size:20px}.drawer-section{border-top:1px solid var(--border);padding:20px 0}.drawer-section h3{font-size:12px;color:var(--muted);margin:0 0 12px;text-transform:uppercase;letter-spacing:.9px}
+.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.choice-btn{border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:10px;border-radius:10px;cursor:pointer;font-weight:650}.choice-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accentSoft)}
 .note{color:var(--muted);font-size:12px;line-height:1.55}
 
-.page{min-height:calc(100vh - 76px);padding:36px 30px 48px;display:flex;flex-direction:column}
-.hero{text-align:center;padding:8px 0 30px}
-.eyebrow{display:inline-block;color:var(--accent);background:var(--accentSoft);font-size:12px;font-weight:750;letter-spacing:.7px;text-transform:uppercase;padding:8px 11px;border-radius:999px;margin-bottom:16px}
-h1{font-size:clamp(30px,5vw,44px);line-height:1.05;letter-spacing:-1px;margin:0 0 12px}
-.hero p{max-width:560px;margin:0 auto;color:var(--muted);line-height:1.6;font-size:15px}
-.section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:6px 0 16px}
-.section-title h2{font-size:18px;margin:0;letter-spacing:-.2px}
-.section-title span{font-size:12px;color:var(--muted)}
-.overview-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.overview-card{border:1px solid var(--border);border-radius:18px;padding:18px;background:var(--surface);display:flex;gap:14px;align-items:center;min-height:116px;transition:transform .15s,border-color .15s,box-shadow .15s}
-.overview-card:hover{transform:translateY(-1px);border-color:#cdd5dc;box-shadow:0 10px 25px rgba(18,22,27,.05)}
-.overview-copy{min-width:0}
-.overview-label{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:7px}
-.overview-status{font-size:22px;font-weight:800;letter-spacing:-.4px}
-.overview-caption{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.35}
-.signin-wrap{margin-top:auto;text-align:center;padding-top:34px}
-.primary-btn{border:0;color:var(--accentContrast);background:var(--accent);border-radius:13px;min-width:188px;padding:15px 28px;font-weight:750;cursor:pointer;font-size:17px;box-shadow:0 8px 18px rgba(31,79,111,.18)}
-.primary-btn:hover{transform:translateY(-1px)}
-.account-link{margin-top:13px;text-decoration:underline;color:var(--muted);font-size:13px}
-.loading-overlay{position:fixed;inset:0;background:var(--surface);z-index:100;display:none;place-items:center;padding:24px}
-.loading-overlay.show{display:grid}
-.loading-card{text-align:center}
-.spinner{width:50px;height:50px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;margin:0 auto 22px;animation:spin .8s linear infinite}
-.loading-text{font-weight:800;font-size:20px;letter-spacing:-.2px}
-.loading-sub{color:var(--muted);margin-top:8px}
-@keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:560px){
-  .page{padding:26px 18px 38px}
-  .overview-grid{grid-template-columns:1fr}
-  .hero{padding-bottom:24px}
-}
-</style>
-</head>
-<body>
-<div class="app-shell">
-<header class="topbar">
-  <button class="icon-btn" id="menuButton" aria-label="Open menu"><span class="hamburger"></span></button>
-  <div class="brand">uMzumbe Environment Monitor</div><div></div>
-</header>
-
+.page{min-height:calc(100vh - 76px);padding:36px 30px 48px;display:flex;flex-direction:column}.hero{text-align:center;padding:8px 0 30px}.eyebrow{display:inline-block;color:var(--accent);background:var(--accentSoft);font-size:12px;font-weight:750;letter-spacing:.7px;text-transform:uppercase;padding:8px 11px;border-radius:999px;margin-bottom:16px}h1{font-size:clamp(30px,5vw,44px);line-height:1.05;letter-spacing:-1px;margin:0 0 12px}.hero p{max-width:560px;margin:0 auto;color:var(--muted);line-height:1.6;font-size:15px}.section-title{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:6px 0 16px}.section-title h2{font-size:18px;margin:0}.section-title span{font-size:12px;color:var(--muted)}.overview-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.overview-card{border:1px solid var(--border);border-radius:18px;padding:18px;background:var(--surface);display:flex;gap:14px;align-items:center;min-height:116px}.overview-label{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:7px}.overview-status{font-size:22px;font-weight:800}.overview-caption{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.35}.signin-wrap{margin-top:auto;text-align:center;padding-top:34px}.primary-btn{border:0;color:var(--accentContrast);background:var(--accent);border-radius:13px;min-width:188px;padding:15px 28px;font-weight:750;cursor:pointer;font-size:17px}.alert-banner{display:none;border-radius:15px;padding:15px 16px;margin-bottom:18px;border:1px solid var(--bad);background:var(--badSoft)}.alert-banner.show{display:block}.alert-banner strong{display:block;margin-bottom:4px}.loading-overlay{position:fixed;inset:0;background:var(--surface);z-index:100;display:none;place-items:center}.loading-overlay.show{display:grid}.spinner{width:50px;height:50px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;margin:0 auto 22px;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}@media(max-width:560px){.page{padding:26px 18px 38px}.overview-grid{grid-template-columns:1fr}}
+</style></head><body>
+<div class="app-shell"><header class="topbar"><button class="icon-btn" id="menuButton"><span class="hamburger"></span></button><div class="brand">uMzumbe Environment Monitor</div><div></div></header>
 <main class="page">
-  <section class="hero">
-    <div class="eyebrow">Community Environment Dashboard</div>
-    <h1>Welcome to UEM</h1>
-    <p>See the current environmental condition at a glance, then sign in for detailed live data and trends.</p>
-  </section>
-
-  <div class="section-title">
-    <h2>Quick overview</h2>
-    <span>Live status</span>
-  </div>
-
-  <section class="overview-grid">
-    <article class="overview-card">
-      <div class="factor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 14.76V5a3 3 0 0 0-6 0v9.76a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/><path d="M11 18h.01"/></svg></div>
-      <div class="overview-copy">
-        <div class="overview-label">Temperature</div>
-        <div class="overview-status" id="welcomeTempStatus">Waiting</div>
-        <div class="overview-caption" id="welcomeTempCaption">Waiting for live data</div>
-      </div>
-    </article>
-
-    <article class="overview-card">
-      <div class="factor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div>
-      <div class="overview-copy">
-        <div class="overview-label">Noise level</div>
-        <div class="overview-status" id="welcomeNoiseStatus">Waiting</div>
-        <div class="overview-caption" id="welcomeNoiseCaption">Waiting for live data</div>
-      </div>
-    </article>
-
-    <article class="overview-card">
-      <div class="factor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div>
-      <div class="overview-copy">
-        <div class="overview-label">Water acidity</div>
-        <div class="overview-status" id="welcomePhStatus">Waiting</div>
-        <div class="overview-caption" id="welcomePhCaption">Waiting for live data</div>
-      </div>
-    </article>
-
-    <article class="overview-card">
-      <div class="factor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div>
-      <div class="overview-copy">
-        <div class="overview-label">Air quality</div>
-        <div class="overview-status" id="welcomeAirStatus">Waiting</div>
-        <div class="overview-caption" id="welcomeAirCaption">Waiting for live data</div>
-      </div>
-    </article>
-  </section>
-
-  <div class="signin-wrap">
-    <button class="primary-btn" id="signInButton">SIGN IN</button>
-    <div class="account-link">I don't have an account</div>
-    <p class="note" style="margin-top:24px">
-      Prototype statuses are derived from one potentiometer for demonstration only.
-    </p>
-  </div>
-</main>
-</div>
-
+<div id="communityAlert" class="alert-banner"><strong>Community alert</strong><span id="communityAlertText"></span></div>
+<section class="hero"><div class="eyebrow">Community Environment Dashboard</div><h1>Welcome to UEM</h1><p>See current conditions at a glance, then sign in for detailed live data, trends and advice.</p></section>
+<div class="section-title"><h2>Quick overview</h2><span>Live status</span></div>
+<section class="overview-grid">
+<article class="overview-card"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div><div><div class="overview-label">Temperature</div><div class="overview-status" id="ts">Waiting</div><div class="overview-caption" id="tc">Waiting for live data</div></div></article>
+<article class="overview-card"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div><div><div class="overview-label">Noise level</div><div class="overview-status" id="ns">Waiting</div><div class="overview-caption" id="nc">Waiting for live data</div></div></article>
+<article class="overview-card"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div><div><div class="overview-label">Water acidity</div><div class="overview-status" id="ps">Waiting</div><div class="overview-caption" id="pc">Waiting for live data</div></div></article>
+<article class="overview-card"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div><div><div class="overview-label">Air quality</div><div class="overview-status" id="as">Waiting</div><div class="overview-caption" id="ac">Waiting for live data</div></div></article>
+</section>
+<div class="signin-wrap"><button class="primary-btn" id="signInButton">SIGN IN</button><p class="note" style="margin-top:22px">Prototype statuses are derived from one potentiometer for demonstration only.</p></div>
+</main></div>
 
 <div class="drawer-overlay" id="drawerOverlay">
-  <aside class="drawer">
-    <div class="drawer-head">
-      <div class="drawer-title">UEM Settings</div>
-      <button class="icon-btn" id="closeDrawerButton" aria-label="Close menu">✕</button>
-    </div>
-    <div class="drawer-section">
-      <h3>Appearance</h3>
-      <div class="choice-row">
-        <button class="choice-btn active" id="lightModeButton">Light</button>
-        <button class="choice-btn" id="darkModeButton">Dark</button>
-      </div>
-    </div>
-    <div class="drawer-section">
-      <h3>Language</h3>
-      <div class="choice-row">
-        <button class="choice-btn active" id="englishButton">English</button>
-        <button class="choice-btn" id="zuluButton">IsiZulu</button>
-      </div>
-      <p class="note" style="margin-top:12px">Both options display English for now.</p>
-    </div>
-  </aside>
+<aside class="drawer">
+  <div class="drawer-head"><div class="drawer-title">UEM Settings</div><button class="icon-btn" id="closeDrawerButton">✕</button></div>
+  <div class="drawer-section"><h3>Appearance</h3><div class="choice-row"><button class="choice-btn active" id="lightModeButton">Light</button><button class="choice-btn" id="darkModeButton">Dark</button></div></div>
+  <div class="drawer-section"><h3>Language</h3><div class="choice-row"><button class="choice-btn active" id="englishButton">English</button><button class="choice-btn" id="zuluButton">IsiZulu</button></div><p class="note" style="margin-top:12px">Both options display English for now.</p></div>
+</aside>
 </div>
 
-
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="loading-card">
-    <div class="spinner"></div>
-    <div class="loading-text">Taking you there in a moment...</div>
-    <div class="loading-sub">hang tight</div>
-  </div>
-</div>
-
+<div class="loading-overlay" id="loadingOverlay"><div style="text-align:center"><div class="spinner"></div><div style="font-weight:800;font-size:20px">Taking you there in a moment...</div><div style="color:var(--muted);margin-top:8px">hang tight</div></div></div>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
-
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {getDatabase,ref,onValue} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 const firebaseConfig = {
   apiKey: "AIzaSyDEklrPBaRIvDg8bTwkcMz3kE_VNLcVxAs",
   authDomain: "umzumbe-monitor.firebaseapp.com",
@@ -277,96 +63,40 @@ const firebaseConfig = {
   messagingSenderId: "781346294395",
   appId: "1:781346294395:web:056f025c31ab1b055f70de"
 };
-
-const app=initializeApp(firebaseConfig);
-const db=getDatabase(app);
-const sensorRef=ref(db,"sensor/currentValue");
+const app=initializeApp(firebaseConfig),db=getDatabase(app),sensorRef=ref(db,"sensor/currentValue"),alertRef=ref(db,"communityAlert");
 
 function clamp(v,min,max){return Math.min(max,Math.max(min,v))}
 function derive(rawValue){
-  const raw=clamp(Number(rawValue)||0,0,1023), n=raw/1023;
-  return {
-    temperature:+(18+27*n).toFixed(1),
-    noise:+(35+75*n).toFixed(1),
-    ph:+(8.5-4.5*n).toFixed(2),
-    air:+(5+195*n).toFixed(1)
-  };
+  const raw=clamp(Number(rawValue)||0,0,1023),n=raw/1023;
+  return {raw,temperature:+(18+27*n).toFixed(1),noise:+(35+75*n).toFixed(1),ph:+(8.5-4.5*n).toFixed(2),air:+(5+195*n).toFixed(1)};
+}
+function fmt(key,v){
+  if(key==="ph")return `pH ${Number(v).toFixed(2)}`;
+  if(key==="temperature")return `${Number(v).toFixed(1)} °C`;
+  if(key==="noise")return `${Number(v).toFixed(1)} dB`;
+  return `${Number(v).toFixed(1)} µg/m³`;
 }
 
-function statusWords(m){
-  return {
-    temperature:
-      m.temperature < 30 ? ["Comfortable","Temperature is within the normal prototype range"] :
-      m.temperature < 35 ? ["Warm","Temperature is becoming elevated"] :
-      ["Very hot","High temperature detected"],
-
-    noise:
-      m.noise < 55 ? ["Quiet","Noise conditions are currently low"] :
-      m.noise < 70 ? ["Noticeable","Noise level is elevated"] :
-      ["Loud","High noise level detected"],
-
-    ph:
-      (m.ph >= 5 && m.ph <= 9.7) ? ["Within range","pH is within the prototype reference range"] :
-      (m.ph >= 4.5 && m.ph < 5) ? ["Needs attention","Water is becoming more acidic"] :
-      ["Out of range","Water acidity needs investigation"],
-
-    air:
-      m.air <= 15 ? ["Good","Air quality is currently good"] :
-      m.air <= 35 ? ["Elevated","Air pollution is increasing"] :
-      ["Poor","High particulate level detected"]
-  };
+function update(m){
+ const temp=m.temperature<30?["Comfortable","Temperature is within the normal prototype range"]:m.temperature<35?["Warm","Temperature is becoming elevated"]:["Very hot","High temperature detected"];
+ const noise=m.noise<55?["Quiet","Noise conditions are currently low"]:m.noise<70?["Noticeable","Noise level is elevated"]:["Loud","High noise level detected"];
+ const ph=(m.ph>=5&&m.ph<=9.7)?["Within range","pH is within the prototype reference range"]:(m.ph>=4.5?["Needs attention","Water is becoming more acidic"]:["Out of range","Water acidity needs investigation"]);
+ const air=m.air<=15?["Good","Air quality is currently good"]:m.air<=35?["Elevated","Air pollution is increasing"]:["Poor","High particulate level detected"];
+ [["ts","tc",temp],["ns","nc",noise],["ps","pc",ph],["as","ac",air]].forEach(x=>{document.getElementById(x[0]).textContent=x[2][0];document.getElementById(x[1]).textContent=x[2][1]})
 }
-
-function updateOverview(m){
-  const s=statusWords(m);
-  document.getElementById("welcomeTempStatus").textContent=s.temperature[0];
-  document.getElementById("welcomeTempCaption").textContent=s.temperature[1];
-  document.getElementById("welcomeNoiseStatus").textContent=s.noise[0];
-  document.getElementById("welcomeNoiseCaption").textContent=s.noise[1];
-  document.getElementById("welcomePhStatus").textContent=s.ph[0];
-  document.getElementById("welcomePhCaption").textContent=s.ph[1];
-  document.getElementById("welcomeAirStatus").textContent=s.air[0];
-  document.getElementById("welcomeAirCaption").textContent=s.air[1];
-}
-
-onValue(sensorRef,snap=>{if(snap.exists())updateOverview(derive(snap.val()))});
-
-document.getElementById("signInButton").addEventListener("click",()=>{
-  document.getElementById("loadingOverlay").classList.add("show");
-  const source=new URLSearchParams(window.location.search).get("source")==="1";
-  setTimeout(()=>{window.location.href=source?"dashboard.html?source=1":"dashboard.html"},1800);
-});
-
+onValue(sensorRef,s=>{if(s.exists())update(derive(s.val()))});
+onValue(alertRef,s=>{const a=s.val();const b=document.getElementById("communityAlert");if(a&&a.active&&a.message){b.classList.add("show");document.getElementById("communityAlertText").textContent=a.message}else b.classList.remove("show")});
+document.getElementById("signInButton").onclick=()=>{document.getElementById("loadingOverlay").classList.add("show");setTimeout(()=>location.href="dashboard.html",1600)};
 
 const drawerOverlay=document.getElementById("drawerOverlay");
 document.getElementById("menuButton").addEventListener("click",()=>drawerOverlay.classList.add("open"));
 document.getElementById("closeDrawerButton").addEventListener("click",()=>drawerOverlay.classList.remove("open"));
 drawerOverlay.addEventListener("click",e=>{if(e.target===drawerOverlay)drawerOverlay.classList.remove("open")});
+const lightBtn=document.getElementById("lightModeButton"),darkBtn=document.getElementById("darkModeButton");
+function setTheme(t){document.body.classList.toggle("dark",t==="dark");lightBtn.classList.toggle("active",t==="light");darkBtn.classList.toggle("active",t==="dark");localStorage.setItem("uem-theme",t);if(typeof renderGraph==="function")renderGraph()}
+lightBtn.onclick=()=>setTheme("light");darkBtn.onclick=()=>setTheme("dark");setTheme(localStorage.getItem("uem-theme")||"light");
+const enBtn=document.getElementById("englishButton"),zuBtn=document.getElementById("zuluButton");
+function setLanguage(l){enBtn.classList.toggle("active",l==="en");zuBtn.classList.toggle("active",l==="zu");localStorage.setItem("uem-language",l)}
+enBtn.onclick=()=>setLanguage("en");zuBtn.onclick=()=>setLanguage("zu");setLanguage(localStorage.getItem("uem-language")||"en");
 
-const lightBtn=document.getElementById("lightModeButton");
-const darkBtn=document.getElementById("darkModeButton");
-function setTheme(theme){
-  document.body.classList.toggle("dark",theme==="dark");
-  lightBtn.classList.toggle("active",theme==="light");
-  darkBtn.classList.toggle("active",theme==="dark");
-  localStorage.setItem("uem-theme",theme);
-  if(typeof renderGraph==="function") renderGraph();
-}
-lightBtn.addEventListener("click",()=>setTheme("light"));
-darkBtn.addEventListener("click",()=>setTheme("dark"));
-setTheme(localStorage.getItem("uem-theme")||"light");
-
-const enBtn=document.getElementById("englishButton");
-const zuBtn=document.getElementById("zuluButton");
-function setLanguage(lang){
-  enBtn.classList.toggle("active",lang==="en");
-  zuBtn.classList.toggle("active",lang==="zu");
-  localStorage.setItem("uem-language",lang);
-}
-enBtn.addEventListener("click",()=>setLanguage("en"));
-zuBtn.addEventListener("click",()=>setLanguage("zu"));
-setLanguage(localStorage.getItem("uem-language")||"en");
-
-</script>
-</body>
-</html>
+</script></body></html>
