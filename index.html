@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>uMzumbe Environmental Monitor</title>
+
+
+    <style>
+
+        body
+        {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+
+        .card
+        {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+
+            box-shadow:
+                0 4px 15px rgba(0,0,0,0.15);
+        }
+
+
+        h1
+        {
+            font-size: 26px;
+        }
+
+
+        #sensorValue
+        {
+            font-size: 60px;
+            font-weight: bold;
+            margin: 20px;
+        }
+
+
+        #status
+        {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+
+        input
+        {
+            padding: 10px;
+            font-size: 18px;
+            width: 150px;
+        }
+
+
+        button
+        {
+            padding: 12px 20px;
+            font-size: 18px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+
+        .prototype
+        {
+            margin-top: 30px;
+            font-size: 13px;
+            color: #666;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="card">
+
+    <h1>uMzumbe Environmental Monitor</h1>
+
+    <p>Live Sensor Reading</p>
+
+
+    <div id="sensorValue">
+        ---
+    </div>
+
+
+    <div id="status">
+        Waiting for data...
+    </div>
+
+
+    <hr>
+
+
+    <h3>Temporary Sensor Test</h3>
+
+    <p>
+        Enter a number from 0 to 1023
+    </p>
+
+
+    <input
+        type="number"
+        id="testValue"
+        min="0"
+        max="1023"
+        value="500"
+    >
+
+
+    <br>
+
+
+    <button id="sendButton">
+        Send Test Value
+    </button>
+
+
+    <div class="prototype">
+        Prototype environmental monitoring system
+    </div>
+
+</div>
+
+
+
+<script type="module">
+
+
+    // Firebase libraries
+
+    import
+    {
+        initializeApp
+    }
+    from
+    "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+
+    import
+    {
+        getDatabase,
+        ref,
+        set,
+        onValue
+    }
+    from
+    "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+
+
+    // ==================================================
+    // REPLACE THIS WITH YOUR FIREBASE INFORMATION
+    // ==================================================
+
+    const firebaseConfig =
+    {
+
+        apiKey:
+        "AIzaSyDEklrPBaRIvDg8bTwkcMz3kE_VNLcVxAs",
+
+        authDomain:
+        "umzumbe-monitor.firebaseapp.com",
+
+        databaseURL:
+        "https://umzumbe-monitor-default-rtdb.firebaseio.com",
+
+        projectId:
+        "umzumbe-monitor",
+
+        storageBucket:
+        "umzumbe-monitor.firebasestorage.app",
+
+        messagingSenderId:
+        "781346294395",
+
+        appId:
+        "1:781346294395:web:056f025c31ab1b055f70de"
+
+    };
+
+
+
+    // Start Firebase
+
+    const app =
+        initializeApp(firebaseConfig);
+
+
+    const database =
+        getDatabase(app);
+
+
+
+    // Location where sensor data will be stored
+
+    const sensorReference =
+        ref(
+            database,
+            "sensor/currentValue"
+        );
+
+
+
+    // ==================================================
+    // SEND TEST DATA
+    // ==================================================
+
+    document
+        .getElementById("sendButton")
+        .addEventListener(
+            "click",
+            function()
+            {
+
+                const value =
+                    Number(
+                        document
+                        .getElementById(
+                            "testValue"
+                        )
+                        .value
+                    );
+
+
+                if (
+                    value < 0 ||
+                    value > 1023
+                )
+                {
+                    alert(
+                        "Enter a value between 0 and 1023"
+                    );
+
+                    return;
+                }
+
+
+                set(
+                    sensorReference,
+                    value
+                );
+
+            }
+        );
+
+
+
+    // ==================================================
+    // RECEIVE LIVE DATA
+    // ==================================================
+
+    onValue(
+        sensorReference,
+        function(snapshot)
+        {
+
+            const value =
+                snapshot.val();
+
+
+            if (value === null)
+            {
+                return;
+            }
+
+
+            document
+                .getElementById(
+                    "sensorValue"
+                )
+                .innerText =
+                value;
+
+
+
+            // Determine status
+
+            let status;
+
+
+            if (value < 300)
+            {
+                status =
+                    "LOW";
+            }
+
+            else if (value < 700)
+            {
+                status =
+                    "MODERATE";
+            }
+
+            else
+            {
+                status =
+                    "HIGH";
+            }
+
+
+            document
+                .getElementById(
+                    "status"
+                )
+                .innerText =
+                "Status: " + status;
+
+        }
+    );
+
+
+</script>
+
+
+</body>
+
+</html>
