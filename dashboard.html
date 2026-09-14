@@ -387,6 +387,13 @@ function updateDisplays(m){
 
 onValue(sensorRef,snap=>{
   if(!snap.exists())return;
+
+  // Viewer devices should always render Firebase data.
+  // On the source PC, while Arduino is actively streaming, we already
+  // render the serial value locally for near-instant response. Ignoring
+  // the Firebase echo prevents duplicated graph points and extra lag.
+  if(sourceMode && keepReading) return;
+
   const m=derive(snap.val());
   addHistory(m);
   updateDisplays(m);
@@ -514,6 +521,35 @@ if(sourceMode){
 
 let port=null,reader=null,keepReading=false,serialBuffer="";
 
+// Low-latency cloud sync state.
+// The serial loop never waits for Firebase anymore.
+let latestRawValue=null;
+let lastUploadedValue=null;
+let uploadInFlight=false;
+
+// Push only the newest reading. If the network is temporarily slower
+// than the Arduino, older readings are discarded instead of forming a queue.
+const firebaseUploadTimer=setInterval(async()=>{
+  if(!sourceMode || !keepReading) return;
+  if(latestRawValue===null) return;
+  if(uploadInFlight) return;
+  if(latestRawValue===lastUploadedValue) return;
+
+  const valueToUpload=latestRawValue;
+  uploadInFlight=true;
+
+  try{
+    await set(sensorRef,valueToUpload);
+    lastUploadedValue=valueToUpload;
+  }
+  catch(err){
+    console.error("Firebase upload error",err);
+  }
+  finally{
+    uploadInFlight=false;
+  }
+},200);
+
 connectButton.addEventListener("click",async()=>{
   if(!sourceMode)return;
 
@@ -526,6 +562,9 @@ connectButton.addEventListener("click",async()=>{
     port=await navigator.serial.requestPort();
     await port.open({baudRate:9600});
     keepReading=true;
+    latestRawValue=null;
+    lastUploadedValue=null;
+    uploadInFlight=false;
     connectButton.textContent="Disconnect Arduino";
     connectionStatus.textContent="Arduino connected";
     connectionStatus.style.color="var(--good)";
@@ -561,7 +600,17 @@ async function readSerial(){
 
           const raw=Number(s);
           if(!Number.isInteger(raw)||raw<0||raw>1023)continue;
-          await set(sensorRef,raw);
+
+          // 1) Update the source PC immediately from the serial value.
+          //    No internet round trip is required for the local display.
+          const localMetrics=derive(raw);
+          addHistory(localMetrics);
+          updateDisplays(localMetrics);
+
+          // 2) Store only the newest raw value for Firebase.
+          //    The timer above sends the latest reading without blocking
+          //    this serial loop.
+          latestRawValue=raw;
         }
       }
     }
@@ -576,11 +625,18 @@ async function readSerial(){
   }
 }
 
+window.addEventListener("beforeunload",()=>{
+  clearInterval(firebaseUploadTimer);
+});
+
 async function disconnectArduino(){
   keepReading=false;
   if(reader){try{await reader.cancel()}catch(_e){}}
   if(port){try{await port.close()}catch(_e){}}
   reader=null;port=null;
+  latestRawValue=null;
+  lastUploadedValue=null;
+  uploadInFlight=false;
   connectButton.textContent="Connect Arduino";
   connectionStatus.textContent="Arduino disconnected";
   connectionStatus.style.color="var(--muted)";
