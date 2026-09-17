@@ -152,7 +152,7 @@ body.pro-active .pro-mode{display:block}
       <div class="simple-emoji" id="normalAirEmoji">⏳</div>
     </article>
   </div>
-  <p class="note" style="margin-top:22px">This is a prototype demonstration using one potentiometer, not four real environmental sensors.</p>
+  <p class="note" style="margin-top:22px">This is a prototype demonstration using four potentiometers, one per environmental channel.</p>
 </section>
 
 <!-- OPTIONAL: PRO MODE -->
@@ -242,20 +242,23 @@ const firebaseConfig = {
 
 const app=initializeApp(firebaseConfig);
 const db=getDatabase(app);
-const sensorRef=ref(db,"sensor/currentValue");
+const rawRef=ref(db,"sensor/raw");
 const settingsRef=ref(db,"settings/thresholds");
 const alertRef=ref(db,"communityAlert");
 
 
 function clamp(v,min,max){return Math.min(max,Math.max(min,v))}
-function derive(rawValue){
-  const raw=clamp(Number(rawValue)||0,0,1023),n=raw/1023;
+function deriveFromRaw(raw){
+  const tRaw=clamp(Number(raw?.temperature)||0,0,1023);
+  const nRaw=clamp(Number(raw?.noise)||0,0,1023);
+  const pRaw=clamp(Number(raw?.ph)||0,0,1023);
+  const aRaw=clamp(Number(raw?.air)||0,0,1023);
   return {
-    raw,
-    temperature:+(18+27*n).toFixed(1),
-    noise:+(35+75*n).toFixed(1),
-    ph:+(8.5-4.5*n).toFixed(2),
-    air:+(5+195*n).toFixed(1)
+    raw:{temperature:tRaw,noise:nRaw,ph:pRaw,air:aRaw},
+    temperature:+(10+35*(tRaw/1023)).toFixed(1),
+    noise:+(30+80*(nRaw/1023)).toFixed(1),
+    ph:+(3.0+7.5*(pRaw/1023)).toFixed(2),
+    air:+(200*(aRaw/1023)).toFixed(1)
   };
 }
 function fmt(key,v){
@@ -267,7 +270,7 @@ function fmt(key,v){
 
 
 let thresholds={temperatureHigh:35,noiseHigh:70,airHigh:35,phMin:5,phMax:9.7};
-let current=derive(0);
+let current=deriveFromRaw({temperature:0,noise:0,ph:0,air:0});
 let selected=null;
 const hist={temperature:[],noise:[],ph:[],air:[]};
 const MAX=60;
@@ -287,9 +290,9 @@ onValue(alertRef,s=>{
   } else b.classList.remove("show");
 });
 
-onValue(sensorRef,s=>{
+onValue(rawRef,s=>{
   if(!s.exists())return;
-  current=derive(s.val());
+  current=deriveFromRaw(s.val());
 
   const t=Date.now();
   for(const k of Object.keys(hist)){
@@ -495,7 +498,7 @@ function renderGraph(){
   ctx.fillStyle=styles.getPropertyValue("--muted").trim();
   ctx.font="12px Arial";
 
-  const ranges={temperature:[15,50],noise:[30,115],ph:[3.5,10],air:[0,210]};
+  const ranges={temperature:[10,45],noise:[30,110],ph:[3,10.5],air:[0,200]};
   const [min,max]=ranges[selected];
 
   for(let i=0;i<=4;i++){
