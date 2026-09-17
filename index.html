@@ -66,7 +66,7 @@ h1{font-size:clamp(30px,5vw,44px);line-height:1.05;letter-spacing:-1px;margin:0 
 <div class="app-shell">
 <header class="topbar"><button class="icon-btn" id="menuButton"><span class="hamburger"></span></button><div class="brand">uMzumbe Environment Monitor</div><div></div></header>
 <main class="page">
-<section class="hero"><div class="eyebrow">Community Environment Dashboard</div><h1>Welcome to UEM</h1><p>See current conditions at a glance, then sign in for more information and advice.</p></section>
+<section class="hero"><div class="eyebrow">Community Environment Dashboard</div><h1>Welcome to UEM</h1><p>See four independent prototype environmental channels at a glance, then sign in for more information and advice.</p></section>
 <div class="section-title"><h2>Quick overview</h2><span>Live status</span></div>
 <section class="overview-grid">
 <article class="overview-card"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div><div><div class="overview-label">Temperature</div><div class="overview-status" id="ts">Waiting</div><div class="overview-caption" id="tc">Waiting for live data</div></div></article>
@@ -74,7 +74,7 @@ h1{font-size:clamp(30px,5vw,44px);line-height:1.05;letter-spacing:-1px;margin:0 
 <article class="overview-card"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div><div><div class="overview-label">Water acidity</div><div class="overview-status" id="ps">Waiting</div><div class="overview-caption" id="pc">Waiting for live data</div></div></article>
 <article class="overview-card"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div><div><div class="overview-label">Air quality</div><div class="overview-status" id="as">Waiting</div><div class="overview-caption" id="ac">Waiting for live data</div></div></article>
 </section>
-<div class="signin-wrap"><button class="primary-btn" id="signInButton">SIGN IN</button><p class="note" style="margin-top:22px">Prototype statuses are derived from one potentiometer for demonstration only.</p></div>
+<div class="signin-wrap"><button class="primary-btn" id="signInButton">SIGN IN</button><p class="note" style="margin-top:22px">Prototype only: four potentiometers independently simulate four sensor channels.</p></div>
 </main></div>
 
 <div class="drawer-overlay" id="drawerOverlay">
@@ -128,17 +128,20 @@ const firebaseConfig = {
   messagingSenderId: "781346294395",
   appId: "1:781346294395:web:056f025c31ab1b055f70de"
 };
-const app=initializeApp(firebaseConfig),db=getDatabase(app),sensorRef=ref(db,"sensor/currentValue");
+const app=initializeApp(firebaseConfig),db=getDatabase(app),rawRef=ref(db,"sensor/raw");
 
 function clamp(v,min,max){return Math.min(max,Math.max(min,v))}
-function derive(rawValue){
-  const raw=clamp(Number(rawValue)||0,0,1023),n=raw/1023;
+function deriveFromRaw(raw){
+  const tRaw=clamp(Number(raw?.temperature)||0,0,1023);
+  const nRaw=clamp(Number(raw?.noise)||0,0,1023);
+  const pRaw=clamp(Number(raw?.ph)||0,0,1023);
+  const aRaw=clamp(Number(raw?.air)||0,0,1023);
   return {
-    raw,
-    temperature:+(18+27*n).toFixed(1),
-    noise:+(35+75*n).toFixed(1),
-    ph:+(8.5-4.5*n).toFixed(2),
-    air:+(5+195*n).toFixed(1)
+    raw:{temperature:tRaw,noise:nRaw,ph:pRaw,air:aRaw},
+    temperature:+(10+35*(tRaw/1023)).toFixed(1),
+    noise:+(30+80*(nRaw/1023)).toFixed(1),
+    ph:+(3.0+7.5*(pRaw/1023)).toFixed(2),
+    air:+(200*(aRaw/1023)).toFixed(1)
   };
 }
 function fmt(key,v){
@@ -160,7 +163,7 @@ function update(m){
  const s=statusWords(m);
  [["ts","tc",s.temp],["ns","nc",s.noise],["ps","pc",s.ph],["as","ac",s.air]].forEach(x=>{document.getElementById(x[0]).textContent=x[2][0];document.getElementById(x[1]).textContent=x[2][1]})
 }
-onValue(sensorRef,s=>{if(s.exists())update(derive(s.val()))});
+onValue(rawRef,s=>{if(s.exists())update(deriveFromRaw(s.val()))});
 document.getElementById("signInButton").onclick=()=>{document.getElementById("loadingOverlay").classList.add("show");setTimeout(()=>location.href="dashboard.html",1600)};
 
 function applyDisplayMode(mode){ /* mode is used after sign-in; welcome remains simple */ }
