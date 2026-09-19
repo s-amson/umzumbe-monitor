@@ -3,80 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f4f7fa">
+<meta name="theme-color" content="#ffffff">
 <title>UEM Sign In</title>
 <style>
-:root{--bg:#f4f7fa;--surface:#fff;--text:#111820;--muted:#7a838d;--border:#dfe5ea;--blue:#1599ee;--blue-dark:#087ac1;--blue-soft:#eaf6fe;--danger:#c93842;--danger-soft:#fff0f1;--shadow:0 24px 70px rgba(25,40,55,.12)}
+:root{--ink:#102f42;--text:#20262c;--muted:#9098a0;--line:#dfe4e8;--blue:#0b759f;--blue-dark:#074c70;--blue-soft:#e8f5fa;--danger:#c73e48;--danger-soft:#fff1f2;--shadow:0 12px 28px rgba(20,39,52,.14)}
 *{box-sizing:border-box}
 html,body{min-height:100%}
-body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 0,#fff 0,var(--bg) 58%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;min-height:100vh;background:#f6f8fa;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 button,input{font:inherit}
 button{color:inherit}
 [hidden]{display:none!important}
-.signin-card{width:min(100%,500px);background:var(--surface);border:1px solid var(--border);border-radius:30px;padding:clamp(30px,7vw,48px);box-shadow:var(--shadow)}
-.brand{text-align:center;margin-bottom:38px}
-.brand-mark{font-size:clamp(64px,17vw,92px);line-height:.88;font-weight:950;letter-spacing:-6px;color:var(--text)}
-.brand-name{margin:14px 0 0;color:var(--muted);font-size:13px;letter-spacing:.2px}
-.panel-heading{text-align:center;margin-bottom:19px}
-.panel-heading h1{font-size:21px;margin:0 0 7px;letter-spacing:-.35px}
-.panel-heading p{color:var(--muted);font-size:13px;line-height:1.5;margin:0}
-.role-options{display:grid;gap:12px}
-.role-button{width:100%;display:grid;grid-template-columns:48px 1fr 24px;align-items:center;gap:14px;text-align:left;border:1px solid var(--border);border-radius:17px;padding:15px;background:var(--surface);cursor:pointer;transition:transform .16s,border-color .16s,box-shadow .16s}
-.role-button:hover,.role-button:focus-visible{transform:translateY(-2px);border-color:var(--blue);box-shadow:0 10px 24px rgba(21,153,238,.12);outline:none}
-.role-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue-dark)}
-.role-icon svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.role-title{display:block;font-size:16px;font-weight:850;margin-bottom:3px}.role-description{display:block;color:var(--muted);font-size:12px;line-height:1.35}
-.role-arrow{color:var(--muted);font-size:23px;line-height:1;text-align:center}
-.official-panel{animation:panelIn .2s ease}
-@keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.field{margin-bottom:14px}.field label{display:block;color:var(--muted);font-size:12px;font-weight:750;margin:0 0 7px}.field input{width:100%;border:1px solid var(--border);border-radius:13px;background:#f8fafc;color:var(--text);padding:13px 14px;outline:none}.field input:focus{border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}
-.error-message{display:none;color:var(--danger);background:var(--danger-soft);border:1px solid color-mix(in srgb,var(--danger) 38%,var(--border));border-radius:11px;padding:10px 12px;font-size:12px;line-height:1.4;margin:2px 0 14px}.error-message.show{display:block}
-.primary-button{width:100%;border:0;border-radius:13px;background:var(--blue);color:#fff;padding:13px 16px;font-weight:850;cursor:pointer}.primary-button:hover{background:var(--blue-dark)}
-.back-button{width:100%;border:0;background:transparent;color:var(--muted);padding:12px;margin-top:7px;font-size:13px;font-weight:750;cursor:pointer}.back-button:hover{color:var(--text)}
-@media(max-width:520px){body{padding:16px}.signin-card{border-radius:24px;padding:30px 21px}.brand{margin-bottom:32px}.brand-mark{letter-spacing:-4px}}
+.welcome-screen{position:relative;width:min(100%,760px);min-height:100vh;margin:0 auto;overflow:hidden;background:#fff;box-shadow:0 0 44px rgba(20,39,52,.08)}
+.hero{position:relative;min-height:clamp(390px,57vh,560px);display:flex;align-items:flex-start;justify-content:center;padding:clamp(105px,17vh,165px) 24px 30px;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0 0 18%;z-index:-3;background-image:linear-gradient(rgba(10,94,130,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(10,94,130,.055) 1px,transparent 1px);background-size:9px 9px;mask-image:linear-gradient(to bottom,#000,transparent 87%)}
+.hero::after{content:"";position:absolute;z-index:-2;width:115%;height:230px;left:-7%;top:56px;border-radius:50%;background:rgba(255,255,255,.91);box-shadow:0 52px 75px rgba(255,255,255,.92)}
+.decor-pill{position:absolute;top:31px;left:-35px;width:150px;height:43px;border-radius:0 24px 24px 0;background:rgba(12,103,142,.1)}
+.decor-ring{position:absolute;right:-74px;top:42px;width:210px;height:105px;border:2px solid rgba(12,103,142,.08);border-radius:0 0 0 110px}
+.greeting{position:relative;width:min(100%,560px);text-align:center}
+.hello-word{position:absolute;color:#6d8795;font-size:clamp(18px,4vw,27px);font-weight:700;opacity:.16;z-index:-1;white-space:nowrap}.word-one{left:9%;top:-38px}.word-two{right:8%;top:-31px}.word-three{left:-1%;bottom:24px}.word-four{right:0;bottom:19px}
+.uem{font-size:clamp(96px,25vw,170px);line-height:.84;font-weight:950;letter-spacing:-.09em;padding-right:.09em;color:transparent;background:linear-gradient(115deg,#063d5a 4%,#0b789f 49%,#062e54 84%);background-clip:text;-webkit-background-clip:text;filter:drop-shadow(0 7px 9px rgba(7,76,112,.12))}
+.uem::selection{color:#fff;background:var(--blue)}
+.brand-name{margin:25px 0 0;color:var(--muted);font-size:clamp(12px,2.5vw,14px);letter-spacing:.18em;text-transform:uppercase}
+.action-area{text-align:center;padding:12px clamp(24px,7vw,54px) 50px}
+.action-area h1{font-size:clamp(27px,5.5vw,38px);line-height:1.18;letter-spacing:-.8px;font-weight:450;margin:0 0 34px}
+.role-bar{display:grid;grid-template-columns:1fr 1fr;width:100%;min-height:78px;border:1px solid #e8ecef;border-radius:999px;background:#fff;box-shadow:var(--shadow);overflow:hidden}
+.role-choice{position:relative;border:0;background:#fff;cursor:pointer;font-size:clamp(16px,3.7vw,21px);font-weight:500;color:var(--ink);transition:background .18s,color .18s,transform .18s}.role-choice+ .role-choice{border-left:1px solid var(--line)}.role-choice:hover,.role-choice:focus-visible{background:var(--blue-soft);color:var(--blue-dark);outline:none}.role-choice:active{transform:scale(.98)}
+.role-hint{margin:18px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
+dialog{width:min(430px,calc(100% - 28px));border:1px solid var(--line);border-radius:26px;background:#fff;color:var(--text);padding:0;box-shadow:0 26px 80px rgba(13,35,50,.25)}
+dialog::backdrop{background:rgba(12,28,39,.38);backdrop-filter:blur(4px)}
+.dialog-body{padding:27px}.dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:23px}.dialog-head h2{margin:0 0 6px;font-size:25px;letter-spacing:-.5px}.dialog-head p{margin:0;color:var(--muted);font-size:13px}.close-button{width:39px;height:39px;border:0;border-radius:50%;background:#f2f5f7;color:var(--muted);cursor:pointer;font-size:18px}
+.field{margin-bottom:14px}.field label{display:block;color:#69737c;font-size:12px;font-weight:750;margin-bottom:7px}.field input{width:100%;border:1px solid var(--line);border-radius:13px;background:#f8fafb;color:var(--text);padding:13px 14px;outline:none}.field input:focus{border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}
+.login-error{display:none;color:var(--danger);background:var(--danger-soft);border:1px solid rgba(199,62,72,.28);border-radius:11px;padding:10px 12px;margin:2px 0 14px;font-size:12px}.login-error.show{display:block}
+.official-submit{width:100%;border:0;border-radius:13px;background:var(--blue);color:#fff;padding:13px 16px;font-weight:850;cursor:pointer}.official-submit:hover{background:var(--blue-dark)}
+.transition-screen{position:fixed;z-index:100;inset:0;display:grid;place-items:center;background:#fff;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease}.transition-screen.show{opacity:1;visibility:visible}.transition-content{text-align:center;padding:28px}.transition-logo{font-size:67px;line-height:1;font-weight:950;letter-spacing:-5px;color:var(--ink);animation:logoPulse 1.15s ease-in-out infinite}.transition-track{position:relative;width:190px;height:4px;margin:25px auto 23px;border-radius:99px;background:#e7edf1;overflow:hidden}.transition-track::after{content:"";position:absolute;inset:0;width:42%;border-radius:inherit;background:var(--blue);animation:trackMove 1s ease-in-out infinite}.transition-title{font-size:17px;font-weight:800;margin:0 0 6px}.transition-note{color:var(--muted);font-size:13px;margin:0}
+@keyframes logoPulse{0%,100%{transform:scale(1);opacity:.72}50%{transform:scale(1.045);opacity:1}}@keyframes trackMove{0%{transform:translateX(-115%)}100%{transform:translateX(345%)}}
+@media(max-width:520px){.hero{min-height:55vh;padding-top:17vh}.action-area{padding-bottom:max(40px,env(safe-area-inset-bottom))}.role-bar{min-height:74px}.role-hint{display:none}}
+@media(max-height:680px){.hero{min-height:350px;padding-top:105px}.action-area h1{margin-bottom:24px}.role-bar{min-height:68px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.transition-logo,.transition-track::after{animation-duration:1.8s}.role-choice{transition:none}}
 </style>
 </head>
 <body>
-<main class="signin-card" aria-labelledby="pageTitle">
-  <header class="brand">
-    <div class="brand-mark">UEM</div>
-    <p class="brand-name">UmZumbe Enviromental Monitor</p>
-  </header>
-
-  <section id="rolePanel">
-    <div class="panel-heading"><h1 id="pageTitle">Sign in</h1><p>Choose how you want to continue.</p></div>
-    <div class="role-options">
-      <button class="role-button" id="residentButton" type="button">
-        <span class="role-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg></span>
-        <span><span class="role-title">Resident</span><span class="role-description">Continue to the community dashboard</span></span>
-        <span class="role-arrow" aria-hidden="true">›</span>
-      </button>
-      <button class="role-button" id="officialButton" type="button">
-        <span class="role-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 7.8 7.5 9.5 4.4-1.7 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="M9 11h6v5H9zM10 11V9a2 2 0 0 1 4 0v2"/></svg></span>
-        <span><span class="role-title">Official</span><span class="role-description">Sign in with your username and PIN</span></span>
-        <span class="role-arrow" aria-hidden="true">›</span>
-      </button>
+<main class="welcome-screen">
+  <section class="hero" aria-labelledby="uemBrand">
+    <span class="decor-pill" aria-hidden="true"></span><span class="decor-ring" aria-hidden="true"></span>
+    <div class="greeting">
+      <span class="hello-word word-one" aria-hidden="true">sawubona</span><span class="hello-word word-two" aria-hidden="true">hello</span><span class="hello-word word-three" aria-hidden="true">molo</span><span class="hello-word word-four" aria-hidden="true">dumelang</span>
+      <div class="uem" id="uemBrand">UEM</div>
+      <p class="brand-name">UmZumbe Enviromental Monitor</p>
     </div>
   </section>
 
-  <section class="official-panel" id="officialPanel" hidden>
-    <div class="panel-heading"><h1>Official sign in</h1><p>Enter your official access details.</p></div>
-    <form id="officialForm" novalidate>
-      <div class="field"><label for="officialUsername">Username</label><input id="officialUsername" name="username" autocomplete="username" autocapitalize="none" required></div>
-      <div class="field"><label for="officialPin">PIN</label><input id="officialPin" name="pin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="current-password" required></div>
-      <div class="error-message" id="loginError" role="alert">Incorrect username or PIN. Please try again.</div>
-      <button class="primary-button" type="submit">Sign in</button>
-      <button class="back-button" id="backButton" type="button">Back to sign-in options</button>
-    </form>
+  <section class="action-area" aria-labelledby="roleQuestion">
+    <h1 id="roleQuestion">What would you like to do?</h1>
+    <div class="role-bar" aria-label="Sign-in options">
+      <button class="role-choice" id="residentButton" type="button">Resident</button>
+      <button class="role-choice" id="officialButton" type="button">Official</button>
+    </div>
+    <p class="role-hint">Residents can continue without login details.</p>
   </section>
 </main>
 
+<dialog id="officialDialog" aria-labelledby="officialDialogTitle">
+  <div class="dialog-body">
+    <div class="dialog-head"><div><h2 id="officialDialogTitle">Official sign in</h2><p>Enter your username and PIN.</p></div><button class="close-button" id="closeDialogButton" type="button" aria-label="Close">✕</button></div>
+    <form id="officialForm" novalidate>
+      <div class="field"><label for="officialUsername">Username</label><input id="officialUsername" name="username" autocomplete="username" autocapitalize="none" required></div>
+      <div class="field"><label for="officialPin">PIN</label><input id="officialPin" name="pin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="current-password" required></div>
+      <div class="login-error" id="loginError" role="alert">Incorrect username or PIN. Please try again.</div>
+      <button class="official-submit" type="submit">Continue</button>
+    </form>
+  </div>
+</dialog>
+
+<div class="transition-screen" id="transitionScreen" role="status" aria-live="polite" aria-hidden="true">
+  <div class="transition-content"><div class="transition-logo">UEM</div><div class="transition-track" aria-hidden="true"></div><p class="transition-title">Taking you there in a moment…</p><p class="transition-note">Hang tight.</p></div>
+</div>
+
 <script>
-const rolePanel=document.getElementById("rolePanel"),officialPanel=document.getElementById("officialPanel"),residentButton=document.getElementById("residentButton"),officialButton=document.getElementById("officialButton"),officialForm=document.getElementById("officialForm"),officialUsername=document.getElementById("officialUsername"),officialPin=document.getElementById("officialPin"),loginError=document.getElementById("loginError"),backButton=document.getElementById("backButton");
-residentButton.addEventListener("click",()=>{location.href="dashboard.html"});
-officialButton.addEventListener("click",()=>{rolePanel.hidden=true;officialPanel.hidden=false;loginError.classList.remove("show");setTimeout(()=>officialUsername.focus(),50)});
-backButton.addEventListener("click",()=>{officialPanel.hidden=true;rolePanel.hidden=false;officialForm.reset();loginError.classList.remove("show");officialButton.focus()});
-officialForm.addEventListener("submit",event=>{event.preventDefault();const username=officialUsername.value.trim().toLowerCase(),pin=officialPin.value;if(username==="owner"&&pin==="0000"){sessionStorage.setItem("uem-official-auth","true");location.href="official.html";return}loginError.classList.add("show");officialPin.value="";officialPin.focus()});
+const residentButton=document.getElementById("residentButton"),officialButton=document.getElementById("officialButton"),officialDialog=document.getElementById("officialDialog"),closeDialogButton=document.getElementById("closeDialogButton"),officialForm=document.getElementById("officialForm"),officialUsername=document.getElementById("officialUsername"),officialPin=document.getElementById("officialPin"),loginError=document.getElementById("loginError"),transitionScreen=document.getElementById("transitionScreen");
+let leaving=false;
+function goTo(destination){if(leaving)return;leaving=true;if(officialDialog.open)officialDialog.close();transitionScreen.classList.add("show");transitionScreen.setAttribute("aria-hidden","false");const delay=matchMedia("(prefers-reduced-motion: reduce)").matches?650:1650;setTimeout(()=>{location.href=destination},delay)}
+residentButton.addEventListener("click",()=>goTo("dashboard.html"));
+officialButton.addEventListener("click",()=>{loginError.classList.remove("show");officialForm.reset();officialDialog.showModal();setTimeout(()=>officialUsername.focus(),80)});
+closeDialogButton.addEventListener("click",()=>officialDialog.close());
+officialDialog.addEventListener("click",event=>{if(event.target===officialDialog)officialDialog.close()});
+officialForm.addEventListener("submit",event=>{event.preventDefault();const username=officialUsername.value.trim().toLowerCase(),pin=officialPin.value;if(username==="owner"&&pin==="0000"){sessionStorage.setItem("uem-official-auth","true");goTo("official.html");return}loginError.classList.add("show");officialPin.value="";officialPin.focus()});
 [officialUsername,officialPin].forEach(input=>input.addEventListener("input",()=>loginError.classList.remove("show")));
 </script>
 </body>
