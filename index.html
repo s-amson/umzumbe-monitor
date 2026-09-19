@@ -1,215 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>UEM Community</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f7fa">
+<title>UEM Sign In</title>
 <style>
-
-:root{
-  --bg:#f5f7f9;--surface:#fff;--surface2:#f8fafb;--text:#11161b;--muted:#6d7580;
-  --border:#e3e8ec;--accent:#1f4f6f;--accentSoft:#edf4f8;--accentContrast:#fff;
-  --good:#1f7a4d;--goodSoft:#edf8f2;--warn:#9a6a10;--warnSoft:#fbf5e8;
-  --bad:#b23a3a;--badSoft:#fbefef;--shadow:0 18px 45px rgba(18,22,27,.08);--grid:#e4e8ec;
-}
-body.dark{
-  --bg:#0f1317;--surface:#171c21;--surface2:#1d2329;--text:#f3f6f8;--muted:#a4adb6;
-  --border:#2a323a;--accent:#78b5d8;--accentSoft:#182832;--accentContrast:#0d151a;
-  --good:#67c994;--goodSoft:#17271f;--warn:#d8b55b;--warnSoft:#2a2415;
-  --bad:#ef8686;--badSoft:#2b1a1a;--shadow:0 18px 45px rgba(0,0,0,.28);--grid:#313940;
-}
+:root{--bg:#f4f7fa;--surface:#fff;--text:#111820;--muted:#7a838d;--border:#dfe5ea;--blue:#1599ee;--blue-dark:#087ac1;--blue-soft:#eaf6fe;--danger:#c93842;--danger-soft:#fff0f1;--shadow:0 24px 70px rgba(25,40,55,.12)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
-button{font:inherit}
-.app-shell{width:min(100%,900px);min-height:100vh;margin:0 auto;background:var(--surface);box-shadow:var(--shadow)}
-.topbar{position:sticky;top:0;z-index:20;height:76px;display:grid;grid-template-columns:52px 1fr 52px;align-items:center;padding:0 18px;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
-body.dark .topbar{background:rgba(23,28,33,.95)}
-.brand{text-align:center;font-weight:780;font-size:clamp(17px,3vw,22px);letter-spacing:-.3px}
-.icon-btn{width:44px;height:44px;border:0;background:transparent;color:var(--text);cursor:pointer;border-radius:12px;display:grid;place-items:center}
-.icon-btn:hover{background:var(--surface2)}
-.more-dots{display:flex;gap:5px}.more-dots i{display:block;width:6px;height:6px;border-radius:50%;background:var(--accent)}
-.factor-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--accentSoft);color:var(--accent);flex:0 0 auto}
-.factor-icon svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.34);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
-.drawer-overlay.open{opacity:1;pointer-events:auto}
-.drawer{position:absolute;top:0;left:0;width:min(330px,86vw);height:100%;background:var(--surface);color:var(--text);box-shadow:12px 0 30px rgba(0,0,0,.18);transform:translateX(-100%);transition:transform .22s ease;padding:22px;overflow-y:auto}
-.drawer-overlay.open .drawer{transform:translateX(0)}
-.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
-.drawer-title{font-weight:800;font-size:20px}
-.drawer-section{border-top:1px solid var(--border);padding:20px 0}
-.drawer-section h3{font-size:12px;color:var(--muted);margin:0 0 12px;text-transform:uppercase;letter-spacing:.9px}
-.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.choice-btn{border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:10px;border-radius:10px;cursor:pointer;font-weight:650}
-.choice-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accentSoft)}
-.note{color:var(--muted);font-size:12px;line-height:1.55}
-
-.page{min-height:calc(100vh - 76px);padding:36px 30px 48px;display:flex;flex-direction:column}
-.hero{text-align:center;padding:8px 0 30px}
-.eyebrow{display:inline-block;color:var(--accent);background:var(--accentSoft);font-size:12px;font-weight:750;letter-spacing:.7px;text-transform:uppercase;padding:8px 11px;border-radius:999px;margin-bottom:16px}
-h1{font-size:clamp(30px,5vw,44px);line-height:1.05;letter-spacing:-1px;margin:0 0 12px}
-.hero p{max-width:560px;margin:0 auto;color:var(--muted);line-height:1.6;font-size:15px}
-.section-title{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:6px 0 16px}
-.section-title h2{font-size:18px;margin:0}.section-title span{font-size:12px;color:var(--muted)}
-.overview-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.overview-card{border:1px solid var(--border);border-radius:18px;padding:18px;background:var(--surface);display:flex;gap:14px;align-items:center;min-height:116px}
-.overview-label{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:7px}
-.overview-status{font-size:22px;font-weight:800}.overview-caption{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.35}
-.signin-wrap{margin-top:auto;text-align:center;padding-top:34px}
-.primary-btn{border:0;color:var(--accentContrast);background:var(--accent);border-radius:13px;min-width:188px;padding:15px 28px;font-weight:750;cursor:pointer;font-size:17px}
-.loading-overlay{position:fixed;inset:0;background:var(--surface);z-index:100;display:none;place-items:center}.loading-overlay.show{display:grid}
-.spinner{width:50px;height:50px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;margin:0 auto 22px;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:560px){.page{padding:26px 18px 38px}.overview-grid{grid-template-columns:1fr}}
+html,body{min-height:100%}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 0,#fff 0,var(--bg) 58%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+button,input{font:inherit}
+button{color:inherit}
+[hidden]{display:none!important}
+.signin-card{width:min(100%,500px);background:var(--surface);border:1px solid var(--border);border-radius:30px;padding:clamp(30px,7vw,48px);box-shadow:var(--shadow)}
+.brand{text-align:center;margin-bottom:38px}
+.brand-mark{font-size:clamp(64px,17vw,92px);line-height:.88;font-weight:950;letter-spacing:-6px;color:var(--text)}
+.brand-name{margin:14px 0 0;color:var(--muted);font-size:13px;letter-spacing:.2px}
+.panel-heading{text-align:center;margin-bottom:19px}
+.panel-heading h1{font-size:21px;margin:0 0 7px;letter-spacing:-.35px}
+.panel-heading p{color:var(--muted);font-size:13px;line-height:1.5;margin:0}
+.role-options{display:grid;gap:12px}
+.role-button{width:100%;display:grid;grid-template-columns:48px 1fr 24px;align-items:center;gap:14px;text-align:left;border:1px solid var(--border);border-radius:17px;padding:15px;background:var(--surface);cursor:pointer;transition:transform .16s,border-color .16s,box-shadow .16s}
+.role-button:hover,.role-button:focus-visible{transform:translateY(-2px);border-color:var(--blue);box-shadow:0 10px 24px rgba(21,153,238,.12);outline:none}
+.role-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue-dark)}
+.role-icon svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.role-title{display:block;font-size:16px;font-weight:850;margin-bottom:3px}.role-description{display:block;color:var(--muted);font-size:12px;line-height:1.35}
+.role-arrow{color:var(--muted);font-size:23px;line-height:1;text-align:center}
+.official-panel{animation:panelIn .2s ease}
+@keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.field{margin-bottom:14px}.field label{display:block;color:var(--muted);font-size:12px;font-weight:750;margin:0 0 7px}.field input{width:100%;border:1px solid var(--border);border-radius:13px;background:#f8fafc;color:var(--text);padding:13px 14px;outline:none}.field input:focus{border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}
+.error-message{display:none;color:var(--danger);background:var(--danger-soft);border:1px solid color-mix(in srgb,var(--danger) 38%,var(--border));border-radius:11px;padding:10px 12px;font-size:12px;line-height:1.4;margin:2px 0 14px}.error-message.show{display:block}
+.primary-button{width:100%;border:0;border-radius:13px;background:var(--blue);color:#fff;padding:13px 16px;font-weight:850;cursor:pointer}.primary-button:hover{background:var(--blue-dark)}
+.back-button{width:100%;border:0;background:transparent;color:var(--muted);padding:12px;margin-top:7px;font-size:13px;font-weight:750;cursor:pointer}.back-button:hover{color:var(--text)}
+@media(max-width:520px){body{padding:16px}.signin-card{border-radius:24px;padding:30px 21px}.brand{margin-bottom:32px}.brand-mark{letter-spacing:-4px}}
 </style>
 </head>
 <body>
-<div class="app-shell">
-<header class="topbar"><button class="icon-btn" id="menuButton" aria-label="Open settings"><span class="more-dots"><i></i><i></i><i></i></span></button><div class="brand">uMzumbe Environment Monitor</div><div></div></header>
-<main class="page">
-<section class="hero"><div class="eyebrow">Community Environment Dashboard</div><h1>Welcome to UEM</h1><p>See four independent prototype environmental channels at a glance, then sign in for more information and advice.</p></section>
-<div class="section-title"><h2>Quick overview</h2><span>Live status</span></div>
-<section class="overview-grid">
-<article class="overview-card"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div><div><div class="overview-label">Temperature</div><div class="overview-status" id="ts">Waiting</div><div class="overview-caption" id="tc">Waiting for live data</div></div></article>
-<article class="overview-card"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div><div><div class="overview-label">Noise level</div><div class="overview-status" id="ns">Waiting</div><div class="overview-caption" id="nc">Waiting for live data</div></div></article>
-<article class="overview-card"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div><div><div class="overview-label">Water acidity</div><div class="overview-status" id="ps">Waiting</div><div class="overview-caption" id="pc">Waiting for live data</div></div></article>
-<article class="overview-card"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div><div><div class="overview-label">Air quality</div><div class="overview-status" id="as">Waiting</div><div class="overview-caption" id="ac">Waiting for live data</div></div></article>
-</section>
-<div class="signin-wrap"><button class="primary-btn" id="signInButton">SIGN IN</button><p class="note" style="margin-top:22px">Prototype only: four potentiometers independently simulate four sensor channels.</p></div>
-</main></div>
+<main class="signin-card" aria-labelledby="pageTitle">
+  <header class="brand">
+    <div class="brand-mark">UEM</div>
+    <p class="brand-name">UmZumbe Enviromental Monitor</p>
+  </header>
 
-<div class="drawer-overlay" id="drawerOverlay">
-<aside class="drawer">
-  <div class="drawer-head">
-    <div class="drawer-title">UEM Settings</div>
-    <button class="icon-btn" id="closeDrawerButton" aria-label="Close menu">✕</button>
-  </div>
-
-  <div class="drawer-section">
-    <h3>Display mode</h3>
-    <div class="choice-row">
-      <button class="choice-btn active" id="normalModeButton">Normal</button>
-      <button class="choice-btn" id="proModeButton">Pro</button>
+  <section id="rolePanel">
+    <div class="panel-heading"><h1 id="pageTitle">Sign in</h1><p>Choose how you want to continue.</p></div>
+    <div class="role-options">
+      <button class="role-button" id="residentButton" type="button">
+        <span class="role-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg></span>
+        <span><span class="role-title">Resident</span><span class="role-description">Continue to the community dashboard</span></span>
+        <span class="role-arrow" aria-hidden="true">›</span>
+      </button>
+      <button class="role-button" id="officialButton" type="button">
+        <span class="role-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 7.8 7.5 9.5 4.4-1.7 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="M9 11h6v5H9zM10 11V9a2 2 0 0 1 4 0v2"/></svg></span>
+        <span><span class="role-title">Official</span><span class="role-description">Sign in with your username and PIN</span></span>
+        <span class="role-arrow" aria-hidden="true">›</span>
+      </button>
     </div>
-    <p class="note" style="margin-top:12px">
-      Normal uses simple words, actions and visual faces. Pro shows numerical data and graphs.
-    </p>
-  </div>
+  </section>
 
-  <div class="drawer-section">
-    <h3>Appearance</h3>
-    <div class="choice-row">
-      <button class="choice-btn active" id="lightModeButton">Light</button>
-      <button class="choice-btn" id="darkModeButton">Dark</button>
-    </div>
-  </div>
+  <section class="official-panel" id="officialPanel" hidden>
+    <div class="panel-heading"><h1>Official sign in</h1><p>Enter your official access details.</p></div>
+    <form id="officialForm" novalidate>
+      <div class="field"><label for="officialUsername">Username</label><input id="officialUsername" name="username" autocomplete="username" autocapitalize="none" required></div>
+      <div class="field"><label for="officialPin">PIN</label><input id="officialPin" name="pin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="current-password" required></div>
+      <div class="error-message" id="loginError" role="alert">Incorrect username or PIN. Please try again.</div>
+      <button class="primary-button" type="submit">Sign in</button>
+      <button class="back-button" id="backButton" type="button">Back to sign-in options</button>
+    </form>
+  </section>
+</main>
 
-  <div class="drawer-section">
-    <h3>Language</h3>
-    <div class="choice-row">
-      <button class="choice-btn active" id="englishButton">English</button>
-      <button class="choice-btn" id="zuluButton">IsiZulu</button>
-    </div>
-    <p class="note" style="margin-top:12px">Both options display English for now.</p>
-  </div>
-</aside>
-</div>
-
-<div class="loading-overlay" id="loadingOverlay"><div style="text-align:center"><div class="spinner"></div><div style="font-weight:800;font-size:20px">Taking you there in a moment...</div><div style="color:var(--muted);margin-top:8px">hang tight</div></div></div>
-
-<script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import {getDatabase,ref,onValue} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
-const firebaseConfig = {
-  apiKey: "AIzaSyDEklrPBaRIvDg8bTwkcMz3kE_VNLcVxAs",
-  authDomain: "umzumbe-monitor.firebaseapp.com",
-  databaseURL: "https://umzumbe-monitor-default-rtdb.firebaseio.com",
-  projectId: "umzumbe-monitor",
-  storageBucket: "umzumbe-monitor.firebasestorage.app",
-  messagingSenderId: "781346294395",
-  appId: "1:781346294395:web:056f025c31ab1b055f70de"
-};
-const app=initializeApp(firebaseConfig),db=getDatabase(app),rawRef=ref(db,"sensor/raw");
-
-function clamp(v,min,max){return Math.min(max,Math.max(min,v))}
-function deriveFromRaw(raw){
-  const tRaw=clamp(Number(raw?.temperature)||0,0,1023);
-  const nRaw=clamp(Number(raw?.noise)||0,0,1023);
-  const pRaw=clamp(Number(raw?.ph)||0,0,1023);
-  const aRaw=clamp(Number(raw?.air)||0,0,1023);
-  return {
-    raw:{temperature:tRaw,noise:nRaw,ph:pRaw,air:aRaw},
-    temperature:+(10+35*(tRaw/1023)).toFixed(1),
-    noise:+(30+80*(nRaw/1023)).toFixed(1),
-    ph:+(3.0+7.5*(pRaw/1023)).toFixed(2),
-    air:+(200*(aRaw/1023)).toFixed(1)
-  };
-}
-function fmt(key,v){
-  if(key==="ph")return `pH ${Number(v).toFixed(2)}`;
-  if(key==="temperature")return `${Number(v).toFixed(1)} °C`;
-  if(key==="noise")return `${Number(v).toFixed(1)} dB`;
-  return `${Number(v).toFixed(1)} µg/m³`;
-}
-
-
-function statusWords(m){
- const temp=m.temperature<20?["Cold","Keep warm and stay dry."]:m.temperature<30?["Comfortable","Conditions are comfortable."]:m.temperature<35?["Warm","Drink water and rest in the shade."]:["Very hot","Stay in the shade and drink water."];
- const noise=m.noise<55?["Quiet","Noise is low."]:m.noise<70?["Noisy","Move away if the noise feels uncomfortable."]:["Very loud","Move away from the noise and protect your ears."];
- const ph=(m.ph>=5&&m.ph<=9.7)?["Within range","Use water only from an approved drinking source."]:m.ph<5?["Too acidic","Do not drink this water until it is checked."]:["Too alkaline","Do not drink this water until it is checked."];
- const air=m.air<=15?["Good","Normal outdoor activity is okay."]:m.air<=35?["Dusty","Avoid dusty areas if possible."]:["Poor","Stay indoors where possible and close windows."];
- return {temp,noise,ph,air};
-}
-function update(m){
- const s=statusWords(m);
- [["ts","tc",s.temp],["ns","nc",s.noise],["ps","pc",s.ph],["as","ac",s.air]].forEach(x=>{document.getElementById(x[0]).textContent=x[2][0];document.getElementById(x[1]).textContent=x[2][1]})
-}
-onValue(rawRef,s=>{if(s.exists())update(deriveFromRaw(s.val()))});
-document.getElementById("signInButton").onclick=()=>{document.getElementById("loadingOverlay").classList.add("show");setTimeout(()=>location.href="dashboard.html",1600)};
-
-function applyDisplayMode(mode){ /* mode is used after sign-in; welcome remains simple */ }
-
-const drawerOverlay=document.getElementById("drawerOverlay");
-document.getElementById("menuButton").addEventListener("click",()=>drawerOverlay.classList.add("open"));
-document.getElementById("closeDrawerButton").addEventListener("click",()=>drawerOverlay.classList.remove("open"));
-drawerOverlay.addEventListener("click",e=>{if(e.target===drawerOverlay)drawerOverlay.classList.remove("open")});
-
-const lightBtn=document.getElementById("lightModeButton");
-const darkBtn=document.getElementById("darkModeButton");
-function setTheme(t){
-  document.body.classList.toggle("dark",t==="dark");
-  lightBtn.classList.toggle("active",t==="light");
-  darkBtn.classList.toggle("active",t==="dark");
-  localStorage.setItem("uem-theme",t);
-  if(typeof renderGraph==="function")renderGraph();
-}
-lightBtn.onclick=()=>setTheme("light");
-darkBtn.onclick=()=>setTheme("dark");
-setTheme(localStorage.getItem("uem-theme")||"light");
-
-const enBtn=document.getElementById("englishButton");
-const zuBtn=document.getElementById("zuluButton");
-function setLanguage(l){
-  enBtn.classList.toggle("active",l==="en");
-  zuBtn.classList.toggle("active",l==="zu");
-  localStorage.setItem("uem-language",l);
-}
-enBtn.onclick=()=>setLanguage("en");
-zuBtn.onclick=()=>setLanguage("zu");
-setLanguage(localStorage.getItem("uem-language")||"en");
-
-const normalModeBtn=document.getElementById("normalModeButton");
-const proModeBtn=document.getElementById("proModeButton");
-function setDisplayMode(mode){
-  normalModeBtn.classList.toggle("active",mode==="normal");
-  proModeBtn.classList.toggle("active",mode==="pro");
-  localStorage.setItem("uem-display-mode",mode);
-  if(typeof applyDisplayMode==="function")applyDisplayMode(mode);
-}
-normalModeBtn.onclick=()=>setDisplayMode("normal");
-proModeBtn.onclick=()=>setDisplayMode("pro");
-
-// First-time visitors always start in Normal mode.
-// After they deliberately change it, their browser remembers the choice.
-setDisplayMode(localStorage.getItem("uem-display-mode")||"normal");
-
+<script>
+const rolePanel=document.getElementById("rolePanel"),officialPanel=document.getElementById("officialPanel"),residentButton=document.getElementById("residentButton"),officialButton=document.getElementById("officialButton"),officialForm=document.getElementById("officialForm"),officialUsername=document.getElementById("officialUsername"),officialPin=document.getElementById("officialPin"),loginError=document.getElementById("loginError"),backButton=document.getElementById("backButton");
+residentButton.addEventListener("click",()=>{location.href="dashboard.html"});
+officialButton.addEventListener("click",()=>{rolePanel.hidden=true;officialPanel.hidden=false;loginError.classList.remove("show");setTimeout(()=>officialUsername.focus(),50)});
+backButton.addEventListener("click",()=>{officialPanel.hidden=true;rolePanel.hidden=false;officialForm.reset();loginError.classList.remove("show");officialButton.focus()});
+officialForm.addEventListener("submit",event=>{event.preventDefault();const username=officialUsername.value.trim().toLowerCase(),pin=officialPin.value;if(username==="owner"&&pin==="0000"){sessionStorage.setItem("uem-official-auth","true");location.href="official.html";return}loginError.classList.add("show");officialPin.value="";officialPin.focus()});
+[officialUsername,officialPin].forEach(input=>input.addEventListener("input",()=>loginError.classList.remove("show")));
 </script>
-</body></html>
+</body>
+</html>
