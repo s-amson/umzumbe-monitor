@@ -1,590 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>UEM Community Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>UEM Resident App</title>
 <style>
 :root{
-  --bg:#f5f7f9;--surface:#fff;--surface2:#f8fafb;--text:#11161b;--muted:#6d7580;
-  --border:#e3e8ec;--accent:#1f4f6f;--accentSoft:#edf4f8;--accentContrast:#fff;
-  --good:#1f7a4d;--goodSoft:#edf8f2;--warn:#9a6a10;--warnSoft:#fbf5e8;
-  --bad:#b23a3a;--badSoft:#fbefef;--shadow:0 18px 45px rgba(18,22,27,.08);--grid:#e4e8ec;
+  --bg:#f4f5f7;--surface:#fff;--surface2:#f7f8fa;--text:#111317;--muted:#70757d;
+  --border:#e2e4e8;--accent:#1599ee;--accentDark:#087ac1;--accentSoft:#eaf6fe;
+  --good:#20b96b;--goodSoft:#eaf9f1;--warn:#b97a12;--warnSoft:#fff6e6;
+  --bad:#d9363e;--badSoft:#fff0f1;--shadow:0 18px 50px rgba(25,31,38,.09);--grid:#e5e7eb;
 }
 body.dark{
-  --bg:#0f1317;--surface:#171c21;--surface2:#1d2329;--text:#f3f6f8;--muted:#a4adb6;
-  --border:#2a323a;--accent:#78b5d8;--accentSoft:#182832;--accentContrast:#0d151a;
-  --good:#67c994;--goodSoft:#17271f;--warn:#d8b55b;--warnSoft:#2a2415;
-  --bad:#ef8686;--badSoft:#2b1a1a;--shadow:0 18px 45px rgba(0,0,0,.28);--grid:#313940;
+  --bg:#0f1216;--surface:#171b20;--surface2:#1e242b;--text:#f4f6f8;--muted:#a8afb7;
+  --border:#2c333b;--accent:#58b9f3;--accentDark:#7bc9f7;--accentSoft:#172b38;
+  --good:#65d99a;--goodSoft:#172b20;--warn:#e5bd62;--warnSoft:#2b2517;
+  --bad:#ff858b;--badSoft:#2e1b1d;--shadow:0 18px 50px rgba(0,0,0,.28);--grid:#343b43;
 }
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
-button{font:inherit}
-.app-shell{width:min(100%,900px);min-height:100vh;margin:0 auto;background:var(--surface);box-shadow:var(--shadow)}
-.topbar{position:sticky;top:0;z-index:20;height:76px;display:grid;grid-template-columns:52px 1fr 52px;align-items:center;padding:0 18px;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
-body.dark .topbar{background:rgba(23,28,33,.95)}
-.brand{text-align:center;font-weight:780;font-size:clamp(17px,3vw,22px);letter-spacing:-.3px}
-.icon-btn{width:44px;height:44px;border:0;background:transparent;color:var(--text);cursor:pointer;border-radius:12px;display:grid;place-items:center}
-.icon-btn:hover{background:var(--surface2)}
-.hamburger,.hamburger::before,.hamburger::after{width:25px;height:3px;background:currentColor;border-radius:20px;display:block;position:relative}
-.hamburger::before,.hamburger::after{content:"";position:absolute;left:0}.hamburger::before{top:-8px}.hamburger::after{top:8px}
-.factor-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--accentSoft);color:var(--accent);flex:0 0 auto}
-.factor-icon svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.34);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
-.drawer-overlay.open{opacity:1;pointer-events:auto}
-.drawer{position:absolute;top:0;left:0;width:min(330px,86vw);height:100%;background:var(--surface);color:var(--text);box-shadow:12px 0 30px rgba(0,0,0,.18);transform:translateX(-100%);transition:transform .22s ease;padding:22px;overflow-y:auto}
-.drawer-overlay.open .drawer{transform:translateX(0)}
-.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
-.drawer-title{font-weight:800;font-size:20px}
-.drawer-section{border-top:1px solid var(--border);padding:20px 0}
-.drawer-section h3{font-size:12px;color:var(--muted);margin:0 0 12px;text-transform:uppercase;letter-spacing:.9px}
-.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.choice-btn{border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:10px;border-radius:10px;cursor:pointer;font-weight:650}
-.choice-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accentSoft)}
-.note{color:var(--muted);font-size:12px;line-height:1.55}
-
-.page{padding:24px 28px 46px}
-.alert-banner{display:none;border-radius:15px;padding:15px 16px;margin-bottom:18px;border:1px solid var(--bad);background:var(--badSoft)}
-.alert-banner.show{display:block}
-
-/* NORMAL MODE */
-.normal-mode{display:block}
-.normal-intro{margin:3px 0 20px}
-.normal-intro h1{font-size:29px;margin:0 0 7px;letter-spacing:-.65px}
-.normal-intro p{margin:0;color:var(--muted);line-height:1.5}
-.simple-grid{display:grid;gap:16px}
-.simple-card{
-  border:1px solid var(--border);border-radius:22px;background:var(--surface);
-  padding:22px;display:grid;grid-template-columns:58px 1fr 74px;gap:16px;align-items:center;
-  min-height:142px
-}
-.simple-main{min-width:0}
-.simple-label{font-size:13px;font-weight:750;color:var(--muted);margin-bottom:6px}
-.simple-status{font-size:clamp(25px,4vw,32px);font-weight:900;letter-spacing:-.55px;margin-bottom:5px}
-.simple-advice{font-size:15px;line-height:1.45;color:var(--text)}
-.simple-emoji{
-  width:68px;height:68px;border-radius:50%;display:grid;place-items:center;
-  font-size:43px;background:var(--surface2);justify-self:end
-}
-.simple-card.good{border-color:color-mix(in srgb,var(--good) 35%,var(--border))}
-.simple-card.warn{border-color:color-mix(in srgb,var(--warn) 40%,var(--border))}
-.simple-card.bad{border-color:color-mix(in srgb,var(--bad) 42%,var(--border))}
-
-/* PRO MODE */
-.pro-mode{display:none}
-.metric-strip{display:grid;grid-template-columns:repeat(4,minmax(122px,1fr));gap:10px;overflow-x:auto;margin-bottom:26px}
-.metric-chip{border:1px solid var(--border);border-radius:14px;background:var(--surface2);padding:12px 13px;min-width:122px;display:flex;align-items:center;gap:9px}
-.metric-chip .factor-icon{width:34px;height:34px;border-radius:10px}.metric-chip .factor-icon svg{width:18px;height:18px}
-.mini-label{color:var(--muted);font-size:10px;font-weight:750;text-transform:uppercase}.mini-value{font-size:15px;font-weight:800;white-space:nowrap}
-.dashboard-heading h1{font-size:30px;letter-spacing:-.7px;margin:0 0 7px}.dashboard-heading p{color:var(--muted);line-height:1.55;margin:0 0 24px}
-.factor-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:26px}
-.factor-btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:18px;padding:18px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:14px}
-.factor-btn .name{color:var(--muted);font-size:12px;font-weight:750;text-transform:uppercase}.factor-btn .current{font-size:22px;font-weight:820}
-.detail-card{display:none;border:1px solid var(--border);border-radius:20px;padding:22px;background:var(--surface)}.detail-card.active{display:block}
-.detail-current{font-size:48px;font-weight:900;margin:3px 0 5px}.status-badge{display:inline-block;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:800;border:1px solid var(--border)}
-.meaning{color:var(--muted);line-height:1.6}.chart-wrap{border:1px solid var(--border);border-radius:14px;padding:10px;background:var(--surface2);margin-bottom:20px}canvas{width:100%;height:240px}
-.advice-box{border-left:4px solid var(--accent);background:var(--surface2);border-radius:12px;padding:16px;line-height:1.55}
-
-body.pro-active .normal-mode{display:none}
-body.pro-active .pro-mode{display:block}
-
-@media(max-width:560px){
- .page{padding:20px 16px}
- .simple-card{grid-template-columns:50px 1fr 60px;padding:18px 16px;gap:12px}
- .simple-card .factor-icon{width:46px;height:46px}
- .simple-emoji{width:56px;height:56px;font-size:36px}
- .simple-advice{font-size:14px}
- .metric-strip{grid-template-columns:repeat(4,132px)}
- .factor-grid{grid-template-columns:1fr}
-}
+button,input,textarea,select{font:inherit}
+button{color:inherit}
+.app-shell{width:min(100%,920px);min-height:100vh;margin:0 auto;background:var(--surface);box-shadow:var(--shadow)}
+.topbar{height:94px;display:flex;align-items:center;justify-content:space-between;padding:18px 24px 8px;background:var(--surface);position:sticky;top:0;z-index:30}
+.more-button{width:58px;height:58px;border:1px solid var(--border);background:var(--surface);border-radius:50%;display:grid;place-items:center;cursor:pointer;box-shadow:0 5px 18px rgba(20,30,40,.05)}
+.more-dots{display:flex;gap:5px}.more-dots i{display:block;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.top-actions{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:30px;padding:7px 9px 7px 13px;background:var(--surface)}
+.live-label{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px;font-weight:750}.live-dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px var(--goodSoft)}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--surface2);display:grid;place-items:center;font-weight:850;font-size:13px}
+.page{padding:24px 24px 132px;min-height:calc(100vh - 94px)}
+.app-page{display:none}.app-page.active{display:block}
+.page-heading{margin:5px 0 28px}.page-kicker{font-size:12px;text-transform:uppercase;letter-spacing:1.1px;color:var(--accent);font-weight:800;margin:0 0 8px}.page-heading h1{font-size:clamp(38px,6vw,52px);line-height:1;margin:0;letter-spacing:-1.8px}.page-heading p:last-child{color:var(--muted);margin:10px 0 0;line-height:1.5}
+.section-card{border:1px solid var(--border);border-radius:24px;background:var(--surface);padding:22px;margin-bottom:20px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:17px}.section-head h2{font-size:18px;margin:0;letter-spacing:-.25px}.section-head span{font-size:12px;color:var(--muted)}
+.notice-banner{display:none;border:1px solid var(--bad);background:var(--badSoft);border-radius:16px;padding:14px 16px;margin-bottom:16px;line-height:1.45}.notice-banner.show{display:block}
+.blast-card{padding:18px 19px}.blast-top{display:flex;align-items:center;justify-content:space-between;gap:14px}.blast-title{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:850}.blast-icon{width:34px;height:34px;border-radius:11px;background:var(--badSoft);color:var(--bad);display:grid;place-items:center}.blast-state{font-size:14px;font-weight:750;text-align:right}.blast-meta{display:none;color:var(--muted);font-size:12px;margin:9px 0 0 44px;line-height:1.45}.blast-countdown{display:none;color:var(--bad);font-size:clamp(29px,7vw,44px);font-weight:950;letter-spacing:-1.2px;margin:15px 0 2px;text-align:center;font-variant-numeric:tabular-nums}.blast-countdown.show,.blast-meta.show{display:block}.blast-countdown.over{color:var(--good);font-size:30px}.blast-links{display:none;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.blast-links.show{display:grid}.link-button{border:1px solid var(--border);background:var(--surface2);border-radius:12px;padding:11px 12px;text-align:center;font-weight:750;font-size:13px;cursor:pointer}.link-button.primary{background:var(--bad);border-color:var(--bad);color:#fff}
+.simple-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.simple-card{border:1px solid var(--border);border-radius:20px;background:var(--surface);padding:18px;display:grid;grid-template-columns:50px 1fr 52px;gap:13px;align-items:center;min-height:128px}.factor-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--accentSoft);color:var(--accent);flex:0 0 auto}.factor-icon svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.simple-label{font-size:12px;font-weight:750;color:var(--muted);margin-bottom:5px}.simple-status{font-size:23px;font-weight:900;letter-spacing:-.4px;margin-bottom:4px}.simple-advice{font-size:13px;line-height:1.4}.simple-emoji{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;font-size:30px;background:var(--surface2);justify-self:end}.simple-card.good{border-color:color-mix(in srgb,var(--good) 35%,var(--border))}.simple-card.warn{border-color:color-mix(in srgb,var(--warn) 40%,var(--border))}.simple-card.bad{border-color:color-mix(in srgb,var(--bad) 42%,var(--border))}
+.normal-mode{display:block}.pro-mode{display:none}body.pro-active .normal-mode{display:none}body.pro-active .pro-mode{display:block}
+.metric-strip{display:grid;grid-template-columns:repeat(4,minmax(126px,1fr));gap:9px;overflow-x:auto;margin-bottom:18px}.metric-chip{border:1px solid var(--border);border-radius:15px;background:var(--surface2);padding:11px;min-width:126px;display:flex;align-items:center;gap:8px}.metric-chip .factor-icon{width:34px;height:34px;border-radius:10px}.metric-chip .factor-icon svg{width:17px;height:17px}.mini-label{color:var(--muted);font-size:10px;font-weight:750;text-transform:uppercase}.mini-value{font-size:14px;font-weight:850;white-space:nowrap}.factor-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:17px}.factor-btn{border:1px solid var(--border);background:var(--surface);border-radius:17px;padding:16px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:12px}.factor-btn .name{color:var(--muted);font-size:11px;font-weight:750;text-transform:uppercase}.factor-btn .current{font-size:20px;font-weight:850}.detail-card{display:none;border-top:1px solid var(--border);padding-top:20px}.detail-card.active{display:block}.detail-current{font-size:44px;font-weight:950;margin:3px 0 6px}.status-badge{display:inline-block;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:850;border:1px solid var(--border)}.meaning{color:var(--muted);line-height:1.55}.chart-wrap{border:1px solid var(--border);border-radius:14px;padding:10px;background:var(--surface2);margin-bottom:18px}.chart-wrap canvas{width:100%;height:230px}.advice-box{border-left:4px solid var(--accent);background:var(--surface2);border-radius:12px;padding:15px;line-height:1.5}
+.blank-safety{height:52vh;border:1px dashed var(--border);border-radius:24px;background:linear-gradient(180deg,var(--surface),var(--surface2));opacity:.62}
+.empty-state{text-align:center;border:1px dashed var(--border);border-radius:19px;padding:42px 20px;color:var(--muted);background:var(--surface2)}
+.jobs-list{display:grid;gap:14px}.job-card{border:1px solid var(--border);border-radius:21px;padding:20px;background:var(--surface)}.job-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.job-type{display:inline-block;background:var(--accentSoft);color:var(--accentDark);padding:6px 9px;border-radius:999px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}.job-card h2{font-size:22px;margin:10px 0 5px;letter-spacing:-.4px}.job-location,.job-close{font-size:12px;color:var(--muted)}.job-description{line-height:1.55;margin:17px 0}.requirements{background:var(--surface2);border-radius:14px;padding:14px;white-space:pre-line;line-height:1.5;font-size:14px}.job-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px}.primary-button,.secondary-button,.danger-button{border:0;border-radius:13px;padding:12px 17px;font-weight:800;cursor:pointer}.primary-button{background:var(--accent);color:#fff}.secondary-button{background:var(--surface2);border:1px solid var(--border)}.danger-button{background:var(--bad);color:#fff}.primary-button:disabled{opacity:.48;cursor:not-allowed}
+.form-card{border:1px solid var(--border);border-radius:22px;padding:21px;background:var(--surface)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{min-width:0}.field.full{grid-column:1/-1}.field label{display:block;font-size:12px;color:var(--muted);font-weight:750;margin-bottom:7px}.field input,.field textarea,.field select{width:100%;border:1px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);padding:12px 13px;outline:none}.field textarea{min-height:116px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accentSoft)}.form-note{font-size:12px;color:var(--muted);line-height:1.5}.form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}.upload-zone{border:1.5px dashed var(--border);border-radius:15px;padding:16px;background:var(--surface2)}.upload-zone input{padding:0;border:0;background:transparent}.success-card{display:none;background:var(--goodSoft);color:var(--good);border:1px solid var(--good);border-radius:16px;padding:16px;margin-top:15px}.success-card.show{display:block}
+.emergency-hero{background:var(--bad);color:#fff;border-radius:24px;padding:24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:18px}.emergency-hero small{display:block;opacity:.82;margin-bottom:4px}.emergency-number{font-size:42px;font-weight:950;letter-spacing:-1px}.call-button{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#fff;color:#b91f2c;border-radius:50%;width:66px;height:66px;font-weight:900}.contact-section{margin-top:25px}.contact-section h2{font-size:17px;margin:0 0 13px}.contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.contact-card{border:1px solid var(--border);border-radius:18px;padding:17px;background:var(--surface)}.contact-card .role{font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:800;letter-spacing:.6px}.contact-card h3{margin:7px 0 10px;font-size:18px}.contact-links{display:flex;flex-wrap:wrap;gap:8px}.contact-links a,.contact-links button{color:var(--accentDark);background:var(--accentSoft);border:0;border-radius:10px;padding:8px 10px;text-decoration:none;font-size:12px;font-weight:750;cursor:pointer}.unavailable{font-size:13px;color:var(--muted);font-style:italic}
+.bottom-nav{position:fixed;z-index:40;left:50%;transform:translateX(-50%);bottom:max(12px,env(safe-area-inset-bottom));width:min(calc(100% - 24px),880px);height:82px;border:1px solid rgba(210,214,219,.9);border-radius:29px;background:color-mix(in srgb,var(--surface) 94%,transparent);box-shadow:0 14px 38px rgba(20,25,30,.16);backdrop-filter:blur(18px);display:grid;grid-template-columns:repeat(5,1fr);padding:7px 8px}.nav-button{border:0;background:transparent;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--text);font-size:11px;cursor:pointer;min-width:0}.nav-button svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.nav-button.active{background:var(--accentSoft);color:var(--accentDark);font-weight:850}.nav-label{white-space:nowrap}
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.36);z-index:70;opacity:0;pointer-events:none;transition:opacity .2s}.drawer-overlay.open{opacity:1;pointer-events:auto}.drawer{position:absolute;top:0;left:0;width:min(340px,88vw);height:100%;background:var(--surface);color:var(--text);box-shadow:12px 0 30px rgba(0,0,0,.18);transform:translateX(-100%);transition:transform .22s ease;padding:23px;overflow-y:auto}.drawer-overlay.open .drawer{transform:translateX(0)}.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}.drawer-title{font-weight:900;font-size:21px}.icon-button{width:42px;height:42px;border:0;background:var(--surface2);border-radius:12px;cursor:pointer}.drawer-section{border-top:1px solid var(--border);padding:20px 0}.drawer-section h3{font-size:11px;color:var(--muted);margin:0 0 12px;text-transform:uppercase;letter-spacing:.9px}.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.choice-button{border:1px solid var(--border);background:var(--surface2);padding:10px;border-radius:11px;cursor:pointer;font-weight:700}.choice-button.active{border-color:var(--accent);color:var(--accentDark);background:var(--accentSoft)}
+dialog{width:min(600px,calc(100% - 28px));max-height:88vh;overflow:auto;border:1px solid var(--border);border-radius:24px;background:var(--surface);color:var(--text);padding:0;box-shadow:0 24px 80px rgba(0,0,0,.28)}dialog::backdrop{background:rgba(5,10,15,.55);backdrop-filter:blur(3px)}.dialog-body{padding:24px}.dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:20px}.dialog-head h2{margin:0;font-size:24px}.dialog-close{width:38px;height:38px;border:0;border-radius:11px;background:var(--surface2);cursor:pointer}.toast{position:fixed;z-index:100;left:50%;bottom:112px;transform:translate(-50%,25px);opacity:0;pointer-events:none;background:var(--text);color:var(--surface);padding:12px 17px;border-radius:12px;font-size:13px;font-weight:750;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:680px){.topbar{height:86px;padding:14px 18px 5px}.more-button{width:52px;height:52px}.page{padding:20px 16px 128px}.simple-grid,.contact-grid{grid-template-columns:1fr}.simple-card{min-height:118px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.section-card{padding:18px}.bottom-nav{height:78px;border-radius:26px}.nav-button svg{width:23px;height:23px}.nav-label{font-size:10px}.blast-links{grid-template-columns:1fr}.job-actions{align-items:flex-start;flex-direction:column}.emergency-hero{padding:20px}.metric-strip{grid-template-columns:repeat(4,132px)}}
+@media(max-width:390px){.nav-label{font-size:9px}.bottom-nav{padding:6px 5px}.top-actions{padding-left:10px}.live-label{font-size:11px}.simple-card{grid-template-columns:46px 1fr 45px;padding:16px 14px;gap:10px}.simple-emoji{width:44px;height:44px;font-size:27px}}
 </style>
 </head>
 <body>
 <div class="app-shell">
-<header class="topbar"><button class="icon-btn" id="menuButton"><span class="hamburger"></span></button><div class="brand">uMzumbe Environment Monitor</div><div></div></header>
-<main class="page">
-<div id="communityAlert" class="alert-banner"><strong>Community alert</strong><div id="communityAlertText"></div></div>
+  <header class="topbar">
+    <button class="more-button" id="menuButton" aria-label="Open settings"><span class="more-dots"><i></i><i></i><i></i></span></button>
+    <div class="top-actions"><span class="live-label"><span class="live-dot"></span>LIVE</span><span class="avatar">UEM</span></div>
+  </header>
 
-<!-- DEFAULT: NORMAL MODE -->
-<section class="normal-mode" id="normalMode">
-  <div class="normal-intro">
-    <h1>Current conditions</h1>
-    <p>Simple information and what you should do right now.</p>
-  </div>
+  <main class="page">
+    <section class="app-page active" id="page-home" data-page="home">
+      <div class="page-heading"><p class="page-kicker">Community dashboard</p><h1>Today</h1></div>
+      <div id="communityAlert" class="notice-banner"><strong>Community alert</strong><div id="communityAlertText"></div></div>
 
-  <div class="simple-grid">
-    <article class="simple-card" id="normalTempCard">
-      <div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div>
-      <div class="simple-main">
-        <div class="simple-label">Temperature</div>
-        <div class="simple-status" id="normalTempStatus">Waiting</div>
-        <div class="simple-advice" id="normalTempAdvice">Waiting for live data</div>
-      </div>
-      <div class="simple-emoji" id="normalTempEmoji">⏳</div>
-    </article>
+      <section class="section-card blast-card" aria-live="polite">
+        <div class="blast-top">
+          <div class="blast-title"><span class="blast-icon">!</span><span>Blasting Alert</span></div>
+          <div class="blast-state" id="blastState">No planned blasts</div>
+        </div>
+        <div class="blast-meta" id="blastMeta"></div>
+        <div class="blast-countdown" id="blastCountdown"></div>
+        <div class="blast-links" id="blastLinks">
+          <button class="link-button primary" data-go-safety="video">Watch safety video</button>
+          <button class="link-button" data-go-safety="instructions">Read instructions</button>
+        </div>
+      </section>
 
-    <article class="simple-card" id="normalNoiseCard">
-      <div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div>
-      <div class="simple-main">
-        <div class="simple-label">Noise level</div>
-        <div class="simple-status" id="normalNoiseStatus">Waiting</div>
-        <div class="simple-advice" id="normalNoiseAdvice">Waiting for live data</div>
-      </div>
-      <div class="simple-emoji" id="normalNoiseEmoji">⏳</div>
-    </article>
+      <section class="normal-mode">
+        <div class="section-card">
+          <div class="section-head"><h2>Current conditions</h2><span>What to do now</span></div>
+          <div class="simple-grid">
+            <article class="simple-card" id="normalTempCard"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div><div><div class="simple-label">Temperature</div><div class="simple-status" id="normalTempStatus">Waiting</div><div class="simple-advice" id="normalTempAdvice">Waiting for live data</div></div><div class="simple-emoji" id="normalTempEmoji">⏳</div></article>
+            <article class="simple-card" id="normalNoiseCard"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div><div><div class="simple-label">Noise level</div><div class="simple-status" id="normalNoiseStatus">Waiting</div><div class="simple-advice" id="normalNoiseAdvice">Waiting for live data</div></div><div class="simple-emoji" id="normalNoiseEmoji">⏳</div></article>
+            <article class="simple-card" id="normalPhCard"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div><div><div class="simple-label">Water acidity</div><div class="simple-status" id="normalPhStatus">Waiting</div><div class="simple-advice" id="normalPhAdvice">Waiting for live data</div></div><div class="simple-emoji" id="normalPhEmoji">⏳</div></article>
+            <article class="simple-card" id="normalAirCard"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div><div><div class="simple-label">Air quality</div><div class="simple-status" id="normalAirStatus">Waiting</div><div class="simple-advice" id="normalAirAdvice">Waiting for live data</div></div><div class="simple-emoji" id="normalAirEmoji">⏳</div></article>
+          </div>
+        </div>
+      </section>
 
-    <article class="simple-card" id="normalPhCard">
-      <div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div>
-      <div class="simple-main">
-        <div class="simple-label">Water acidity</div>
-        <div class="simple-status" id="normalPhStatus">Waiting</div>
-        <div class="simple-advice" id="normalPhAdvice">Waiting for live data</div>
-      </div>
-      <div class="simple-emoji" id="normalPhEmoji">⏳</div>
-    </article>
+      <section class="pro-mode">
+        <div class="section-card">
+          <div class="section-head"><h2>Environmental analytics</h2><span>Live values</span></div>
+          <div class="metric-strip">
+            <div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div><div><div class="mini-label">Temp</div><div class="mini-value" id="st">-- °C</div></div></div>
+            <div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/></svg></div><div><div class="mini-label">Noise</div><div class="mini-value" id="sn">-- dB</div></div></div>
+            <div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/></svg></div><div><div class="mini-label">Water</div><div class="mini-value" id="sp">pH --</div></div></div>
+            <div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/></svg></div><div><div class="mini-label">PM2.5</div><div class="mini-value" id="sa">-- µg/m³</div></div></div>
+          </div>
+          <div class="factor-grid">
+            <button class="factor-btn" data-factor="temperature"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/></svg></div><div><div class="name">Temperature</div><div class="current" id="ct">-- °C</div></div></button>
+            <button class="factor-btn" data-factor="noise"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/></svg></div><div><div class="name">Noise level</div><div class="current" id="cn">-- dB</div></div></button>
+            <button class="factor-btn" data-factor="ph"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/></svg></div><div><div class="name">Water acidity</div><div class="current" id="cp">pH --</div></div></button>
+            <button class="factor-btn" data-factor="air"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/></svg></div><div><div class="name">Air quality</div><div class="current" id="ca">-- µg/m³</div></div></button>
+          </div>
+          <div class="detail-card" id="detailCard"><div id="detailName" class="simple-label"></div><div class="detail-current" id="detailValue">--</div><div class="status-badge" id="detailStatus">Waiting</div><p class="meaning" id="detailMeaning"></p><div class="chart-wrap"><canvas id="liveChart"></canvas></div><div class="advice-box" id="adviceBox"><strong>Recommended response</strong><div id="detailAdvice" style="margin-top:7px"></div></div></div>
+        </div>
+      </section>
+    </section>
 
-    <article class="simple-card" id="normalAirCard">
-      <div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div>
-      <div class="simple-main">
-        <div class="simple-label">Air quality</div>
-        <div class="simple-status" id="normalAirStatus">Waiting</div>
-        <div class="simple-advice" id="normalAirAdvice">Waiting for live data</div>
-      </div>
-      <div class="simple-emoji" id="normalAirEmoji">⏳</div>
-    </article>
-  </div>
-  <p class="note" style="margin-top:22px">This is a prototype demonstration using four potentiometers, one per environmental channel.</p>
-</section>
+    <section class="app-page" id="page-safety" data-page="safety">
+      <div class="page-heading"><p class="page-kicker">Learn and prepare</p><h1>Safety</h1></div>
+      <div class="blank-safety" aria-label="Safety content will be added later"></div>
+    </section>
 
-<!-- OPTIONAL: PRO MODE -->
-<section class="pro-mode" id="proMode">
-  <div class="metric-strip">
-    <div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div><div><div class="mini-label">Temp</div><div class="mini-value" id="st">-- °C</div></div></div>
-    <div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div><div><div class="mini-label">Noise</div><div class="mini-value" id="sn">-- dB</div></div></div>
-    <div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div><div><div class="mini-label">Water</div><div class="mini-value" id="sp">pH --</div></div></div>
-    <div class="metric-chip"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div><div><div class="mini-label">PM2.5</div><div class="mini-value" id="sa">-- µg/m³</div></div></div>
-  </div>
+    <section class="app-page" id="page-jobs" data-page="jobs">
+      <div class="page-heading"><p class="page-kicker">Local opportunities</p><h1>Jobs</h1><p>Vacancies published by mine officials.</p></div>
+      <div class="jobs-list" id="jobsList"><div class="empty-state">Checking for available jobs…</div></div>
+    </section>
 
-  <section class="dashboard-heading">
-    <h1>Environmental analytics</h1>
-    <p>Numerical readings, live trends and technical interpretation.</p>
-  </section>
+    <section class="app-page" id="page-report" data-page="report">
+      <div class="page-heading"><p class="page-kicker">Document an incident</p><h1>Report</h1><p>Send damage or an incident caused by mine operations directly to officials.</p></div>
+      <form class="form-card" id="reportForm">
+        <div class="form-grid">
+          <div class="field"><label for="reportCategory">Incident type</label><select id="reportCategory" required><option value="">Choose one</option><option>Property damage</option><option>Wall crack</option><option>Dust</option><option>Noise or vibration</option><option>Water concern</option><option>Road damage</option><option>Other</option></select></div>
+          <div class="field"><label for="reportOccurredAt">Date and time</label><input id="reportOccurredAt" type="datetime-local" required></div>
+          <div class="field full"><label for="reportLocation">Location</label><input id="reportLocation" placeholder="Street, landmark or area" required></div>
+          <div class="field full"><label for="reportDescription">What happened?</label><textarea id="reportDescription" placeholder="Describe what you saw, heard or experienced." required></textarea></div>
+          <div class="field"><label for="reportName">Your name (optional)</label><input id="reportName" autocomplete="name"></div>
+          <div class="field"><label for="reportContact">Phone or email (optional)</label><input id="reportContact"></div>
+          <div class="field full upload-zone"><label for="reportEvidence">Photo or video (optional)</label><input id="reportEvidence" type="file" accept="image/*,video/*"><p class="form-note" id="reportFileNote">One file, maximum 5 MB for this prototype.</p></div>
+        </div>
+        <p class="form-note">Your report is sent to the official console and is not displayed in the resident app.</p>
+        <div class="form-actions"><button class="primary-button" id="sendReportButton" type="submit">Send report</button></div>
+        <div class="success-card" id="reportSuccess"></div>
+      </form>
+    </section>
 
-  <div class="factor-grid">
-    <button class="factor-btn" data-factor="temperature"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z"/><path d="M11 7v8"/></svg></div><div><div class="name">Temperature</div><div class="current" id="ct">-- °C</div></div></button>
-    <button class="factor-btn" data-factor="noise"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/></svg></div><div><div class="name">Noise level</div><div class="current" id="cn">-- dB</div></div></button>
-    <button class="factor-btn" data-factor="ph"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z"/><path d="M9.5 15.5c.8.8 1.6 1.2 2.5 1.2"/></svg></div><div><div class="name">Water acidity</div><div class="current" id="cp">pH --</div></div></button>
-    <button class="factor-btn" data-factor="air"><div class="factor-icon"><svg viewBox="0 0 24 24"><path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12h14a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16h7"/></svg></div><div><div class="name">Air quality</div><div class="current" id="ca">-- µg/m³</div></div></button>
-  </div>
+    <section class="app-page" id="page-emergency" data-page="emergency">
+      <div class="page-heading"><p class="page-kicker">Help when it matters</p><h1>Emergency</h1></div>
+      <section class="emergency-hero"><div><small>Emergency services · South Africa</small><div class="emergency-number">112</div><small>Call from a mobile phone</small></div><a class="call-button" href="tel:112" aria-label="Call 112">CALL</a></section>
+      <section class="contact-section"><h2>Community leaders</h2><div class="contact-grid" id="communityContacts"></div></section>
+      <section class="contact-section"><h2>Mine safety officers</h2><div class="contact-grid" id="safetyContacts"></div></section>
+      <section class="contact-section"><div class="section-head"><h2>My emergency contacts</h2><span>Saved on this device</span></div><div class="contact-grid" id="personalContacts"></div></section>
+    </section>
+  </main>
 
-  <section class="detail-card" id="detailCard">
-    <div id="detailName" style="font-size:14px;color:var(--muted);font-weight:750"></div>
-    <div class="detail-current" id="detailValue">--</div>
-    <div class="status-badge" id="detailStatus">Waiting</div>
-    <p class="meaning" id="detailMeaning"></p>
-    <div class="chart-wrap"><canvas id="liveChart"></canvas></div>
-    <div class="advice-box" id="adviceBox"><strong>Recommended response</strong><div id="detailAdvice" style="margin-top:7px"></div></div>
-  </section>
-</section>
-</main>
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <button class="nav-button active" data-nav="home"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg><span class="nav-label">Home</span></button>
+    <button class="nav-button" data-nav="safety"><svg viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 7.8 7.5 9.5 4.4-1.7 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-5"/></svg><span class="nav-label">Safety</span></button>
+    <button class="nav-button" data-nav="jobs"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5h8v2M3 12h18M10 12v2h4v-2"/></svg><span class="nav-label">Jobs</span></button>
+    <button class="nav-button" data-nav="report"><svg viewBox="0 0 24 24"><path d="M4 3h11l5 5v13H4Z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg><span class="nav-label">Report</span></button>
+    <button class="nav-button" data-nav="emergency"><svg viewBox="0 0 24 24"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"/><path d="M12 6v7M12 17h.01"/></svg><span class="nav-label">Emergency</span></button>
+  </nav>
 </div>
-
 
 <div class="drawer-overlay" id="drawerOverlay">
-<aside class="drawer">
-  <div class="drawer-head">
-    <div class="drawer-title">UEM Settings</div>
-    <button class="icon-btn" id="closeDrawerButton" aria-label="Close menu">✕</button>
-  </div>
-
-  <div class="drawer-section">
-    <h3>Display mode</h3>
-    <div class="choice-row">
-      <button class="choice-btn active" id="normalModeButton">Normal</button>
-      <button class="choice-btn" id="proModeButton">Pro</button>
-    </div>
-    <p class="note" style="margin-top:12px">
-      Normal uses simple words, actions and visual faces. Pro shows numerical data and graphs.
-    </p>
-  </div>
-
-  <div class="drawer-section">
-    <h3>Appearance</h3>
-    <div class="choice-row">
-      <button class="choice-btn active" id="lightModeButton">Light</button>
-      <button class="choice-btn" id="darkModeButton">Dark</button>
-    </div>
-  </div>
-
-  <div class="drawer-section">
-    <h3>Language</h3>
-    <div class="choice-row">
-      <button class="choice-btn active" id="englishButton">English</button>
-      <button class="choice-btn" id="zuluButton">IsiZulu</button>
-    </div>
-    <p class="note" style="margin-top:12px">Both options display English for now.</p>
-  </div>
-</aside>
+  <aside class="drawer">
+    <div class="drawer-head"><div class="drawer-title">UEM Settings</div><button class="icon-button" id="closeDrawerButton" aria-label="Close settings">✕</button></div>
+    <div class="drawer-section"><h3>Display mode</h3><div class="choice-row"><button class="choice-button active" id="normalModeButton">Normal</button><button class="choice-button" id="proModeButton">Pro</button></div><p class="form-note">Normal uses simple words and visual faces. Pro shows numbers and live graphs.</p></div>
+    <div class="drawer-section"><h3>Appearance</h3><div class="choice-row"><button class="choice-button active" id="lightModeButton">Light</button><button class="choice-button" id="darkModeButton">Dark</button></div></div>
+    <div class="drawer-section"><h3>Language</h3><div class="choice-row"><button class="choice-button active" id="englishButton">English</button><button class="choice-button" id="zuluButton">IsiZulu</button></div><p class="form-note">Both options display English for now.</p></div>
+  </aside>
 </div>
 
+<dialog id="applicationDialog">
+  <div class="dialog-body">
+    <div class="dialog-head"><div><p class="page-kicker">Job application</p><h2 id="applicationJobTitle">Apply</h2></div><button class="dialog-close" type="button" data-close-dialog="applicationDialog">✕</button></div>
+    <form id="applicationForm">
+      <input type="hidden" id="applicationJobId">
+      <div class="form-grid">
+        <div class="field"><label for="applicantName">Full name</label><input id="applicantName" autocomplete="name" required></div>
+        <div class="field"><label for="applicantPhone">Phone number</label><input id="applicantPhone" type="tel" autocomplete="tel" required></div>
+        <div class="field"><label for="applicantEmail">Email</label><input id="applicantEmail" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="applicantArea">Residential area</label><input id="applicantArea" required></div>
+        <div class="field full"><label for="applicationMessage">Short motivation</label><textarea id="applicationMessage" required></textarea></div>
+        <div class="field full upload-zone"><label for="applicationDocuments">CV and supporting documents</label><input id="applicationDocuments" type="file" accept=".pdf,.doc,.docx,image/*" multiple required><p class="form-note">Up to 3 files; maximum 5 MB combined for this prototype.</p></div>
+      </div>
+      <label class="form-note" style="display:flex;gap:9px;align-items:flex-start;margin-top:14px"><input id="applicationConsent" type="checkbox" required style="width:auto;margin-top:3px">I consent to mine officials using this information to process this application.</label>
+      <div class="form-actions"><button class="secondary-button" type="button" data-close-dialog="applicationDialog">Cancel</button><button class="primary-button" id="submitApplicationButton" type="submit">Submit application</button></div>
+    </form>
+  </div>
+</dialog>
+
+<dialog id="personalContactDialog">
+  <div class="dialog-body">
+    <div class="dialog-head"><div><p class="page-kicker">Personal contact</p><h2 id="personalDialogTitle">Add contact</h2></div><button class="dialog-close" type="button" data-close-dialog="personalContactDialog">✕</button></div>
+    <form id="personalContactForm">
+      <input type="hidden" id="personalContactIndex">
+      <div class="form-grid"><div class="field full"><label for="personalName">Name and surname</label><input id="personalName" required></div><div class="field"><label for="personalRole">Relationship</label><input id="personalRole" placeholder="e.g. Parent" required></div><div class="field"><label for="personalPhone">Phone number</label><input id="personalPhone" type="tel" required></div><div class="field full"><label for="personalEmail">Email (optional)</label><input id="personalEmail" type="email"></div></div>
+      <div class="form-actions"><button class="secondary-button" type="button" data-close-dialog="personalContactDialog">Cancel</button><button class="primary-button" type="submit">Save contact</button></div>
+    </form>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const pages=["home","safety","jobs","report","emergency"];
+function activatePage(name){
+  if(!pages.includes(name))name="home";
+  document.querySelectorAll(".app-page").forEach(p=>p.classList.toggle("active",p.dataset.page===name));
+  document.querySelectorAll(".nav-button").forEach(b=>b.classList.toggle("active",b.dataset.nav===name));
+  window.scrollTo({top:0,behavior:"instant"});
+  window.dispatchEvent(new CustomEvent("uem:page",{detail:name}));
+}
+document.querySelectorAll(".nav-button").forEach(b=>b.addEventListener("click",()=>{location.hash=b.dataset.nav}));
+window.addEventListener("hashchange",()=>activatePage(location.hash.slice(1)));
+activatePage(location.hash.slice(1)||"home");
+document.querySelectorAll("[data-go-safety]").forEach(b=>b.addEventListener("click",()=>{sessionStorage.setItem("uem-safety-focus",b.dataset.goSafety);location.hash="safety"}));
+
+const drawerOverlay=document.getElementById("drawerOverlay");
+menuButton.addEventListener("click",()=>drawerOverlay.classList.add("open"));
+closeDrawerButton.addEventListener("click",()=>drawerOverlay.classList.remove("open"));
+drawerOverlay.addEventListener("click",e=>{if(e.target===drawerOverlay)drawerOverlay.classList.remove("open")});
+
+function setTheme(theme){document.body.classList.toggle("dark",theme==="dark");lightModeButton.classList.toggle("active",theme==="light");darkModeButton.classList.toggle("active",theme==="dark");localStorage.setItem("uem-theme",theme);window.dispatchEvent(new Event("uem:theme"))}
+lightModeButton.onclick=()=>setTheme("light");darkModeButton.onclick=()=>setTheme("dark");setTheme(localStorage.getItem("uem-theme")||"light");
+function setLanguage(language){englishButton.classList.toggle("active",language==="en");zuluButton.classList.toggle("active",language==="zu");localStorage.setItem("uem-language",language)}
+englishButton.onclick=()=>setLanguage("en");zuluButton.onclick=()=>setLanguage("zu");setLanguage(localStorage.getItem("uem-language")||"en");
+function setDisplayMode(mode){document.body.classList.toggle("pro-active",mode==="pro");normalModeButton.classList.toggle("active",mode==="normal");proModeButton.classList.toggle("active",mode==="pro");localStorage.setItem("uem-display-mode",mode);window.dispatchEvent(new Event("uem:display-mode"))}
+normalModeButton.onclick=()=>setDisplayMode("normal");proModeButton.onclick=()=>setDisplayMode("pro");setDisplayMode(localStorage.getItem("uem-display-mode")||"normal");
+
+document.querySelectorAll("[data-close-dialog]").forEach(b=>b.addEventListener("click",()=>document.getElementById(b.dataset.closeDialog).close()));
+window.showToast=function(message){toast.textContent=message;toast.classList.add("show");clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>toast.classList.remove("show"),3000)};
+
+const personalStorageKey="uem-personal-emergency-contacts";
+function loadPersonalContacts(){try{const saved=JSON.parse(localStorage.getItem(personalStorageKey));return Array.isArray(saved)?[saved[0]||null,saved[1]||null]:[null,null]}catch{return[null,null]}}
+let personalContactData=loadPersonalContacts();
+function safePhone(value){return String(value||"").replace(/[^+\d]/g,"")}
+function renderPersonalContacts(){
+  personalContacts.replaceChildren();
+  personalContactData.forEach((contact,index)=>{
+    const card=document.createElement("article");card.className="contact-card";
+    if(contact){
+      const role=document.createElement("div");role.className="role";role.textContent=contact.role;
+      const name=document.createElement("h3");name.textContent=contact.name;
+      const links=document.createElement("div");links.className="contact-links";
+      const call=document.createElement("a");call.href=`tel:${safePhone(contact.phone)}`;call.textContent=contact.phone;links.append(call);
+      if(contact.email){const email=document.createElement("a");email.href=`mailto:${contact.email}`;email.textContent=contact.email;links.append(email)}
+      const edit=document.createElement("button");edit.type="button";edit.textContent="Edit";edit.onclick=()=>openPersonalContact(index);links.append(edit);
+      card.append(role,name,links);
+    }else{
+      const role=document.createElement("div");role.className="role";role.textContent=`Contact ${index+1}`;
+      const name=document.createElement("h3");name.textContent="Not added";
+      const add=document.createElement("button");add.className="secondary-button";add.type="button";add.textContent="Add contact";add.onclick=()=>openPersonalContact(index);
+      card.append(role,name,add);
+    }
+    personalContacts.append(card);
+  });
+}
+function openPersonalContact(index){const c=personalContactData[index]||{};personalContactIndex.value=index;personalName.value=c.name||"";personalRole.value=c.role||"";personalPhone.value=c.phone||"";personalEmail.value=c.email||"";personalDialogTitle.textContent=c.name?"Edit contact":"Add contact";personalContactDialog.showModal()}
+personalContactForm.addEventListener("submit",e=>{e.preventDefault();const i=Number(personalContactIndex.value);personalContactData[i]={name:personalName.value.trim(),role:personalRole.value.trim(),phone:personalPhone.value.trim(),email:personalEmail.value.trim()};localStorage.setItem(personalStorageKey,JSON.stringify(personalContactData));renderPersonalContacts();personalContactDialog.close();showToast("Emergency contact saved")});
+renderPersonalContacts();
+</script>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import {getDatabase,ref,onValue} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
-const firebaseConfig = {
-  apiKey: "AIzaSyDEklrPBaRIvDg8bTwkcMz3kE_VNLcVxAs",
-  authDomain: "umzumbe-monitor.firebaseapp.com",
-  databaseURL: "https://umzumbe-monitor-default-rtdb.firebaseio.com",
-  projectId: "umzumbe-monitor",
-  storageBucket: "umzumbe-monitor.firebasestorage.app",
-  messagingSenderId: "781346294395",
-  appId: "1:781346294395:web:056f025c31ab1b055f70de"
-};
+import {getDatabase,ref,onValue,set,push} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+const firebaseConfig={apiKey:"AIzaSyDEklrPBaRIvDg8bTwkcMz3kE_VNLcVxAs",authDomain:"umzumbe-monitor.firebaseapp.com",databaseURL:"https://umzumbe-monitor-default-rtdb.firebaseio.com",projectId:"umzumbe-monitor",storageBucket:"umzumbe-monitor.firebasestorage.app",messagingSenderId:"781346294395",appId:"1:781346294395:web:056f025c31ab1b055f70de"};
+const app=initializeApp(firebaseConfig),db=getDatabase(app);
+const rawRef=ref(db,"sensor/raw"),settingsRef=ref(db,"settings/thresholds"),alertRef=ref(db,"communityAlert"),blastRef=ref(db,"blastPlan"),jobsRef=ref(db,"jobs"),reportsRef=ref(db,"residentReports"),contactsRef=ref(db,"publicContacts");
 
-const app=initializeApp(firebaseConfig);
-const db=getDatabase(app);
-const rawRef=ref(db,"sensor/raw");
-const settingsRef=ref(db,"settings/thresholds");
-const alertRef=ref(db,"communityAlert");
-
-
-function clamp(v,min,max){return Math.min(max,Math.max(min,v))}
-function deriveFromRaw(raw){
-  const tRaw=clamp(Number(raw?.temperature)||0,0,1023);
-  const nRaw=clamp(Number(raw?.noise)||0,0,1023);
-  const pRaw=clamp(Number(raw?.ph)||0,0,1023);
-  const aRaw=clamp(Number(raw?.air)||0,0,1023);
-  return {
-    raw:{temperature:tRaw,noise:nRaw,ph:pRaw,air:aRaw},
-    temperature:+(10+35*(tRaw/1023)).toFixed(1),
-    noise:+(30+80*(nRaw/1023)).toFixed(1),
-    ph:+(3.0+7.5*(pRaw/1023)).toFixed(2),
-    air:+(200*(aRaw/1023)).toFixed(1)
-  };
+const clamp=(v,min,max)=>Math.min(max,Math.max(min,v));
+function deriveFromRaw(raw){const t=clamp(Number(raw?.temperature)||0,0,1023),n=clamp(Number(raw?.noise)||0,0,1023),p=clamp(Number(raw?.ph)||0,0,1023),a=clamp(Number(raw?.air)||0,0,1023);return{temperature:+(10+35*t/1023).toFixed(1),noise:+(30+80*n/1023).toFixed(1),ph:+(3+7.5*p/1023).toFixed(2),air:+(200*a/1023).toFixed(1)}}
+function fmt(key,value){if(key==="ph")return`pH ${Number(value).toFixed(2)}`;if(key==="temperature")return`${Number(value).toFixed(1)} °C`;if(key==="noise")return`${Number(value).toFixed(1)} dB`;return`${Number(value).toFixed(1)} µg/m³`}
+let thresholds={temperatureHigh:35,noiseHigh:70,airHigh:35,phMin:5,phMax:9.7},current=deriveFromRaw({}),selected=null;
+const history={temperature:[],noise:[],ph:[],air:[]},MAX=60;
+onValue(settingsRef,s=>{if(s.exists())thresholds={...thresholds,...s.val()};updateNormalMode();if(selected)updateDetail(selected)});
+onValue(alertRef,s=>{const alert=s.val();if(alert?.active&&alert.message){communityAlert.classList.add("show");communityAlertText.textContent=alert.message}else communityAlert.classList.remove("show")});
+onValue(rawRef,s=>{if(!s.exists())return;current=deriveFromRaw(s.val());for(const key of Object.keys(history)){history[key].push(current[key]);if(history[key].length>MAX)history[key].shift()}updateNormalMode();updateProDisplays();if(selected)updateDetail(selected)});
+function simpleState(key,value){
+  if(key==="Temp"){if(value<20)return["Cold","🥶","warn","Keep warm. Wear extra clothing and stay dry."];if(value<30)return["Comfortable","😊","good","Conditions are comfortable. Continue normal activities."];if(value<thresholds.temperatureHigh)return["Warm","😅","warn","Drink water and take breaks in the shade."];return["Very hot","🥵","bad","Stay in the shade, drink water, and avoid long periods outside."]}
+  if(key==="Noise"){if(value<55)return["Quiet","😊","good","Noise is low. No special action is needed."];if(value<thresholds.noiseHigh)return["Noisy","😕","warn","Move away from loud areas if the noise feels uncomfortable."];return["Very loud","🙉","bad","Move away from the noise and protect your ears."]}
+  if(key==="Ph"){if(value<thresholds.phMin)return["Too acidic","🚱","bad","Do not drink this water until it has been checked."];if(value>thresholds.phMax)return["Too alkaline","🚱","bad","Do not drink this water until it has been checked."];return["Within range","😊","good","Use water only from an approved drinking source."]}
+  if(value<=15)return["Good","😊","good","Air quality is good. Normal outdoor activity is okay."];if(value<thresholds.airHigh)return["Dusty","😷","warn","Avoid dusty areas and close windows if dust enters your home."];return["Poor","🤧","bad","Stay indoors where possible, close windows, and avoid dusty areas."];
 }
-function fmt(key,v){
-  if(key==="ph")return `pH ${Number(v).toFixed(2)}`;
-  if(key==="temperature")return `${Number(v).toFixed(1)} °C`;
-  if(key==="noise")return `${Number(v).toFixed(1)} dB`;
-  return `${Number(v).toFixed(1)} µg/m³`;
-}
+function setSimpleCard(prefix,value){const s=simpleState(prefix,value);document.getElementById(`normal${prefix}Status`).textContent=s[0];document.getElementById(`normal${prefix}Emoji`).textContent=s[1];document.getElementById(`normal${prefix}Advice`).textContent=s[3];const card=document.getElementById(`normal${prefix}Card`);card.classList.remove("good","warn","bad");card.classList.add(s[2])}
+function updateNormalMode(){setSimpleCard("Temp",current.temperature);setSimpleCard("Noise",current.noise);setSimpleCard("Ph",current.ph);setSimpleCard("Air",current.air)}
+function updateProDisplays(){st.textContent=fmt("temperature",current.temperature);sn.textContent=fmt("noise",current.noise);sp.textContent=fmt("ph",current.ph);sa.textContent=fmt("air",current.air);ct.textContent=st.textContent;cn.textContent=sn.textContent;cp.textContent=sp.textContent;ca.textContent=sa.textContent}
+function factorState(key,value){if(key==="temperature"){if(value<20)return["COLD","warn","Temperature is below the normal comfort range.","Keep warm and limit prolonged exposure if you feel uncomfortable."];if(value>=thresholds.temperatureHigh)return["HIGH","bad","Temperature is above the configured high threshold.","Reduce prolonged heat exposure and ensure shade and hydration."];if(value>=30)return["ELEVATED","warn","Temperature is elevated but below the high threshold.","Take breaks, hydrate and monitor conditions."];return["NORMAL","good","Temperature is within the normal prototype range.","Continue routine monitoring."]}if(key==="noise"){if(value>=thresholds.noiseHigh)return["HIGH","bad","Noise is above the configured high threshold.","Move away from the source and use hearing protection where required."];if(value>=55)return["ELEVATED","warn","Noise is elevated but below the high threshold.","Reduce unnecessary exposure and investigate persistent noise."];return["LOW","good","Noise is below the warning range.","Continue routine monitoring."]}if(key==="air"){if(value>=thresholds.airHigh)return["HIGH","bad","PM2.5 is above the configured high threshold.","Reduce outdoor exposure and avoid the dust source."];if(value>15)return["ELEVATED","warn","PM2.5 is above the lower prototype reference.","Reduce unnecessary exposure to dusty areas."];return["LOW","good","PM2.5 is in the lower prototype range.","Continue routine monitoring."]}if(value<thresholds.phMin||value>thresholds.phMax)return["OUT OF RANGE","bad","Water pH is outside the configured range.","Verify with calibrated water-quality testing before consumption."];return["IN RANGE","good","pH is within the configured range.","pH alone does not establish that water is safe to drink."]}
+document.querySelectorAll(".factor-btn").forEach(button=>button.onclick=()=>{selected=button.dataset.factor;detailCard.classList.add("active");updateDetail(selected);detailCard.scrollIntoView({behavior:"smooth",block:"nearest"})});
+function updateDetail(key){const names={temperature:"Temperature",noise:"Noise Level",ph:"Water Acidity",air:"Air Quality (PM2.5)"},value=current[key],state=factorState(key,value);detailName.textContent=names[key];detailValue.textContent=fmt(key,value);detailStatus.textContent=state[0];detailMeaning.textContent=state[2];detailAdvice.textContent=state[3];const color=state[1]==="bad"?"var(--bad)":state[1]==="warn"?"var(--warn)":"var(--good)";detailStatus.style.color=color;detailStatus.style.borderColor=color;adviceBox.style.borderLeftColor=color;renderGraph()}
+const canvas=liveChart,ctx=canvas.getContext("2d");
+function renderGraph(){if(!selected||!document.body.classList.contains("pro-active")||!document.getElementById("page-home").classList.contains("active"))return;const rect=canvas.getBoundingClientRect();if(!rect.width)return;const dpr=devicePixelRatio||1;canvas.width=rect.width*dpr;canvas.height=rect.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);const w=rect.width,h=rect.height,p={l:46,r:12,t:14,b:28},styles=getComputedStyle(document.body),ranges={temperature:[10,45],noise:[30,110],ph:[3,10.5],air:[0,200]},[min,max]=ranges[selected];ctx.clearRect(0,0,w,h);ctx.strokeStyle=styles.getPropertyValue("--grid").trim();ctx.fillStyle=styles.getPropertyValue("--muted").trim();ctx.font="12px Arial";for(let i=0;i<=4;i++){const y=p.t+(h-p.t-p.b)*i/4;ctx.beginPath();ctx.moveTo(p.l,y);ctx.lineTo(w-p.r,y);ctx.stroke();ctx.fillText((max-(max-min)*i/4).toFixed(selected==="ph"?1:0),4,y+4)}const points=history[selected];if(points.length<2)return;ctx.strokeStyle=styles.getPropertyValue("--accent").trim();ctx.lineWidth=2.5;ctx.beginPath();points.forEach((value,i)=>{const x=p.l+i/Math.max(1,MAX-1)*(w-p.l-p.r),y=p.t+(h-p.t-p.b)-clamp((value-min)/(max-min),0,1)*(h-p.t-p.b);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()}
+window.addEventListener("resize",renderGraph);window.addEventListener("uem:theme",renderGraph);window.addEventListener("uem:display-mode",()=>setTimeout(renderGraph,40));window.addEventListener("uem:page",()=>setTimeout(renderGraph,40));updateNormalMode();updateProDisplays();
 
+let blastPlan=null;
+function durationText(ms){const total=Math.max(0,Math.ceil(ms/1000)),days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),minutes=Math.floor(total%3600/60),seconds=total%60;return`${days?days+"d ":""}${String(hours).padStart(2,"0")}:${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`}
+function clearBlastDisplay(){blastState.textContent="No planned blasts";blastMeta.textContent="";blastMeta.classList.remove("show");blastCountdown.textContent="";blastCountdown.classList.remove("show","over");blastLinks.classList.remove("show")}
+function renderBlast(){if(!blastPlan?.active||!Number(blastPlan.startsAt)||!Number(blastPlan.durationMinutes)){clearBlastDisplay();return}const now=Date.now(),start=Number(blastPlan.startsAt),end=start+Number(blastPlan.durationMinutes)*60000,overUntil=end+60000;blastMeta.textContent=`${new Date(start).toLocaleString([], {weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})} · ${blastPlan.durationMinutes} minute${Number(blastPlan.durationMinutes)===1?"":"s"}${blastPlan.area?` · ${blastPlan.area}`:""}${blastPlan.note?` · ${blastPlan.note}`:""}`;blastMeta.classList.add("show");blastCountdown.classList.add("show");blastCountdown.classList.remove("over");if(now<start){blastState.textContent="Blast starts in";blastCountdown.textContent=durationText(start-now);blastLinks.classList.add("show")}else if(now<end){blastState.textContent="Blasting in progress";blastCountdown.textContent=durationText(end-now);blastLinks.classList.add("show")}else if(now<overUntil){blastState.textContent="";blastCountdown.textContent="Blast Over";blastCountdown.classList.add("over");blastLinks.classList.remove("show")}else clearBlastDisplay()}
+onValue(blastRef,s=>{blastPlan=s.val();renderBlast()});setInterval(renderBlast,1000);
 
-let thresholds={temperatureHigh:35,noiseHigh:70,airHigh:35,phMin:5,phMax:9.7};
-let current=deriveFromRaw({temperature:0,noise:0,ph:0,air:0});
-let selected=null;
-const hist={temperature:[],noise:[],ph:[],air:[]};
-const MAX=60;
+const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let jobs={};
+function jobIsOpen(job){return job.status!=="closed"&&(!job.closingDate||new Date(`${job.closingDate}T23:59:59`).getTime()>=Date.now())}
+function renderJobs(){const entries=Object.entries(jobs).filter(([,job])=>jobIsOpen(job)).sort((a,b)=>(b[1].publishedAt||0)-(a[1].publishedAt||0));if(!entries.length){jobsList.innerHTML='<div class="empty-state">No vacancies are available right now.</div>';return}jobsList.innerHTML=entries.map(([id,job])=>`<article class="job-card"><div class="job-card-top"><div><span class="job-type">${esc(job.jobType||"Vacancy")}</span><h2>${esc(job.title||"Untitled role")}</h2><div class="job-location">${esc(job.location||"uMzumbe area")}</div></div><span class="job-close">Closes ${esc(job.closingDate||"when filled")}</span></div><p class="job-description">${esc(job.description||"")}</p><div class="requirements"><strong>Requirements</strong><br>${esc(job.requirements||"See job description")}</div><div class="job-actions"><span class="form-note">Reference: ${esc(job.reference||id.slice(-6).toUpperCase())}</span><button class="primary-button apply-job" data-job-id="${esc(id)}">Apply</button></div></article>`).join("");jobsList.querySelectorAll(".apply-job").forEach(button=>button.onclick=()=>openApplication(button.dataset.jobId))}
+function openApplication(jobId){const job=jobs[jobId];if(!job)return;applicationForm.reset();applicationJobId.value=jobId;applicationJobTitle.textContent=job.title||"Apply";applicationDialog.showModal()}
+onValue(jobsRef,s=>{jobs=s.val()||{};renderJobs()});
+function fileToData(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve({name:file.name,type:file.type||"application/octet-stream",size:file.size,data:reader.result});reader.onerror=reject;reader.readAsDataURL(file)})}
+applicationForm.addEventListener("submit",async e=>{e.preventDefault();const files=[...applicationDocuments.files],total=files.reduce((sum,file)=>sum+file.size,0);if(files.length>3||total>5*1024*1024){showToast("Choose up to 3 files with a combined size below 5 MB");return}const button=submitApplicationButton;button.disabled=true;button.textContent="Submitting…";try{const jobId=applicationJobId.value,job=jobs[jobId];if(!job||!jobIsOpen(job))throw new Error("This vacancy is no longer open.");const documents=await Promise.all(files.map(fileToData)),applicationEntry=push(ref(db,`jobApplications/${jobId}`)),reference=`APP-${applicationEntry.key.slice(-6).toUpperCase()}`;await set(applicationEntry,{reference,jobId,jobTitle:job.title||"",fullName:applicantName.value.trim(),phone:applicantPhone.value.trim(),email:applicantEmail.value.trim(),area:applicantArea.value.trim(),motivation:applicationMessage.value.trim(),documents,submittedAt:Date.now(),status:"received"});applicationDialog.close();showToast(`Application sent · ${reference}`)}catch(error){console.error(error);showToast(error.message||"Application could not be sent")}finally{button.disabled=false;button.textContent="Submit application"}});
 
-onValue(settingsRef,s=>{
-  if(s.exists()) thresholds={...thresholds,...s.val()};
-  updateNormalMode();
-  if(selected)updateDetail(selected);
-});
+reportEvidence.addEventListener("change",()=>{const file=reportEvidence.files[0];reportFileNote.textContent=file?`${file.name} · ${(file.size/1024/1024).toFixed(2)} MB`:"One file, maximum 5 MB for this prototype."});
+reportForm.addEventListener("submit",async e=>{e.preventDefault();const file=reportEvidence.files[0];if(file&&file.size>5*1024*1024){showToast("The photo or video must be smaller than 5 MB");return}sendReportButton.disabled=true;sendReportButton.textContent="Sending…";try{const reportEntry=push(reportsRef),reference=`REP-${reportEntry.key.slice(-6).toUpperCase()}`,evidence=file?await fileToData(file):null;await set(reportEntry,{reference,category:reportCategory.value,occurredAt:new Date(reportOccurredAt.value).getTime(),location:reportLocation.value.trim(),description:reportDescription.value.trim(),residentName:reportName.value.trim(),contact:reportContact.value.trim(),evidence,submittedAt:Date.now(),status:"new"});reportForm.reset();reportFileNote.textContent="One file, maximum 5 MB for this prototype.";reportSuccess.textContent=`Report sent successfully. Reference: ${reference}`;reportSuccess.classList.add("show");showToast("Report sent to officials")}catch(error){console.error(error);showToast("Report could not be sent. Please try again.")}finally{sendReportButton.disabled=false;sendReportButton.textContent="Send report"}});
+reportOccurredAt.value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
 
-onValue(alertRef,s=>{
-  const a=s.val();
-  const b=document.getElementById("communityAlert");
-  if(a&&a.active&&a.message){
-    b.classList.add("show");
-    document.getElementById("communityAlertText").textContent=a.message;
-  } else b.classList.remove("show");
-});
-
-onValue(rawRef,s=>{
-  if(!s.exists())return;
-  current=deriveFromRaw(s.val());
-
-  const t=Date.now();
-  for(const k of Object.keys(hist)){
-    hist[k].push({t,value:current[k]});
-    if(hist[k].length>MAX)hist[k].shift();
-  }
-
-  updateNormalMode();
-  updateProDisplays();
-  if(selected)updateDetail(selected);
-});
-
-/* -------------------------
-   NORMAL MODE
-   ------------------------- */
-function setSimpleCard(prefix,state){
-  document.getElementById(`normal${prefix}Status`).textContent=state.status;
-  document.getElementById(`normal${prefix}Advice`).textContent=state.advice;
-  document.getElementById(`normal${prefix}Emoji`).textContent=state.emoji;
-
-  const card=document.getElementById(`normal${prefix}Card`);
-  card.classList.remove("good","warn","bad");
-  card.classList.add(state.level);
-}
-
-function normalTemperature(v){
-  if(v<20) return {
-    status:"Cold",
-    emoji:"🥶",
-    level:"warn",
-    advice:"Keep warm. Wear extra clothing and stay dry."
-  };
-  if(v<30) return {
-    status:"Comfortable",
-    emoji:"😊",
-    level:"good",
-    advice:"Conditions are comfortable. Continue normal activities."
-  };
-  if(v<thresholds.temperatureHigh) return {
-    status:"Warm",
-    emoji:"😅",
-    level:"warn",
-    advice:"Drink water and take breaks in the shade."
-  };
-  return {
-    status:"Very hot",
-    emoji:"🥵",
-    level:"bad",
-    advice:"Stay in the shade, drink water, and avoid long periods outside."
-  };
-}
-
-function normalNoise(v){
-  if(v<55) return {
-    status:"Quiet",
-    emoji:"😊",
-    level:"good",
-    advice:"Noise is low. No special action is needed."
-  };
-  if(v<thresholds.noiseHigh) return {
-    status:"Noisy",
-    emoji:"😕",
-    level:"warn",
-    advice:"Move away from loud areas if the noise feels uncomfortable."
-  };
-  return {
-    status:"Very loud",
-    emoji:"🙉",
-    level:"bad",
-    advice:"Move away from the noise and protect your ears."
-  };
-}
-
-function normalPh(v){
-  if(v<thresholds.phMin) return {
-    status:"Too acidic",
-    emoji:"🚱",
-    level:"bad",
-    advice:"Do not drink this water until it has been checked."
-  };
-  if(v>thresholds.phMax) return {
-    status:"Too alkaline",
-    emoji:"🚱",
-    level:"bad",
-    advice:"Do not drink this water until it has been checked."
-  };
-  return {
-    status:"Within range",
-    emoji:"😊",
-    level:"good",
-    advice:"Use water only from an approved drinking source."
-  };
-}
-
-function normalAir(v){
-  if(v<=15) return {
-    status:"Good",
-    emoji:"😊",
-    level:"good",
-    advice:"Air quality is good. Normal outdoor activity is okay."
-  };
-  if(v<thresholds.airHigh) return {
-    status:"Dusty",
-    emoji:"😷",
-    level:"warn",
-    advice:"Avoid dusty areas and close windows if dust enters your home."
-  };
-  return {
-    status:"Poor",
-    emoji:"🤧",
-    level:"bad",
-    advice:"Stay indoors where possible, close windows, and avoid dusty areas."
-  };
-}
-
-function updateNormalMode(){
-  setSimpleCard("Temp",normalTemperature(current.temperature));
-  setSimpleCard("Noise",normalNoise(current.noise));
-  setSimpleCard("Ph",normalPh(current.ph));
-  setSimpleCard("Air",normalAir(current.air));
-}
-
-/* -------------------------
-   PRO MODE
-   ------------------------- */
-function updateProDisplays(){
-  document.getElementById("st").textContent=fmt("temperature",current.temperature);
-  document.getElementById("sn").textContent=fmt("noise",current.noise);
-  document.getElementById("sp").textContent=fmt("ph",current.ph);
-  document.getElementById("sa").textContent=fmt("air",current.air);
-  document.getElementById("ct").textContent=document.getElementById("st").textContent;
-  document.getElementById("cn").textContent=document.getElementById("sn").textContent;
-  document.getElementById("cp").textContent=document.getElementById("sp").textContent;
-  document.getElementById("ca").textContent=document.getElementById("sa").textContent;
-}
-
-document.querySelectorAll(".factor-btn").forEach(b=>b.onclick=()=>{
-  selected=b.dataset.factor;
-  document.getElementById("detailCard").classList.add("active");
-  updateDetail(selected);
-  document.getElementById("detailCard").scrollIntoView({behavior:"smooth"});
-});
-
-function factorState(k,v){
-  if(k==="temperature"){
-    if(v<20)return ["COLD","warn","Temperature is below the normal comfort range.","Keep warm and limit prolonged exposure if you feel uncomfortable."];
-    if(v>=thresholds.temperatureHigh)return ["HIGH","bad","Temperature is above the configured high threshold.","Reduce prolonged heat exposure and ensure shade and hydration."];
-    if(v>=30)return ["ELEVATED","warn","Temperature is elevated but below the configured high threshold.","Take breaks, hydrate and monitor conditions."];
-    return ["NORMAL","good","Temperature is within the normal prototype range.","Continue routine monitoring."];
-  }
-
-  if(k==="noise"){
-    if(v>=thresholds.noiseHigh)return ["HIGH","bad","Noise is above the configured high threshold.","Move away from the source where practical and use hearing protection where required."];
-    if(v>=55)return ["ELEVATED","warn","Noise is elevated but below the configured high threshold.","Reduce unnecessary exposure and investigate the source if it persists."];
-    return ["LOW","good","Noise is below the configured warning range.","Continue routine monitoring."];
-  }
-
-  if(k==="air"){
-    if(v>=thresholds.airHigh)return ["HIGH","bad","PM2.5 is above the configured high threshold.","Reduce outdoor exposure and investigate or suppress the dust source."];
-    if(v>15)return ["ELEVATED","warn","PM2.5 is above the lower prototype reference.","Reduce unnecessary exposure to dusty areas."];
-    return ["LOW","good","PM2.5 is in the lower prototype range.","Continue routine monitoring."];
-  }
-
-  if(v<thresholds.phMin||v>thresholds.phMax)return ["OUT OF RANGE","bad","Water pH is outside the configured range.","Verify with calibrated water-quality testing before any consumption decision."];
-  return ["IN RANGE","good","pH is within the configured range.","pH alone does not establish that water is safe to drink."];
-}
-
-function updateDetail(k){
-  const names={temperature:"Temperature",noise:"Noise Level",ph:"Water Acidity",air:"Air Quality (PM2.5)"};
-  const v=current[k],s=factorState(k,v);
-
-  document.getElementById("detailName").textContent=names[k];
-  document.getElementById("detailValue").textContent=fmt(k,v);
-  document.getElementById("detailStatus").textContent=s[0];
-  document.getElementById("detailMeaning").textContent=s[2];
-  document.getElementById("detailAdvice").textContent=s[3];
-
-  const color=s[1]==="bad"?"var(--bad)":s[1]==="warn"?"var(--warn)":"var(--good)";
-  document.getElementById("detailStatus").style.color=color;
-  document.getElementById("detailStatus").style.borderColor=color;
-  document.getElementById("adviceBox").style.borderLeftColor=color;
-  renderGraph();
-}
-
-const canvas=document.getElementById("liveChart");
-const ctx=canvas.getContext("2d");
-
-function renderGraph(){
-  if(!selected || !document.body.classList.contains("pro-active"))return;
-
-  const r=canvas.getBoundingClientRect();
-  if(!r.width)return;
-
-  const dpr=devicePixelRatio||1;
-  canvas.width=r.width*dpr;
-  canvas.height=r.height*dpr;
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-
-  const w=r.width,h=r.height,p={l:46,r:12,t:14,b:28};
-  const styles=getComputedStyle(document.body);
-  ctx.clearRect(0,0,w,h);
-  ctx.strokeStyle=styles.getPropertyValue("--grid").trim();
-  ctx.fillStyle=styles.getPropertyValue("--muted").trim();
-  ctx.font="12px Arial";
-
-  const ranges={temperature:[10,45],noise:[30,110],ph:[3,10.5],air:[0,200]};
-  const [min,max]=ranges[selected];
-
-  for(let i=0;i<=4;i++){
-    const y=p.t+(h-p.t-p.b)*i/4;
-    ctx.beginPath();
-    ctx.moveTo(p.l,y);
-    ctx.lineTo(w-p.r,y);
-    ctx.stroke();
-    ctx.fillText((max-(max-min)*i/4).toFixed(selected==="ph"?1:0),4,y+4);
-  }
-
-  const pts=hist[selected];
-  if(pts.length<2)return;
-
-  ctx.strokeStyle=styles.getPropertyValue("--accent").trim();
-  ctx.lineWidth=2.5;
-  ctx.beginPath();
-
-  pts.forEach((pt,i)=>{
-    const x=p.l+i/Math.max(1,MAX-1)*(w-p.l-p.r);
-    const y=p.t+(h-p.t-p.b)-clamp((pt.value-min)/(max-min),0,1)*(h-p.t-p.b);
-    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
-  });
-
-  ctx.stroke();
-}
-window.addEventListener("resize",renderGraph);
-
-function applyDisplayMode(mode){
-  document.body.classList.toggle("pro-active",mode==="pro");
-
-  // Pro mode is deliberately emoji-free and analytics-focused.
-  if(mode==="pro"){
-    setTimeout(renderGraph,50);
-  }
-}
-
-
-const drawerOverlay=document.getElementById("drawerOverlay");
-document.getElementById("menuButton").addEventListener("click",()=>drawerOverlay.classList.add("open"));
-document.getElementById("closeDrawerButton").addEventListener("click",()=>drawerOverlay.classList.remove("open"));
-drawerOverlay.addEventListener("click",e=>{if(e.target===drawerOverlay)drawerOverlay.classList.remove("open")});
-
-const lightBtn=document.getElementById("lightModeButton");
-const darkBtn=document.getElementById("darkModeButton");
-function setTheme(t){
-  document.body.classList.toggle("dark",t==="dark");
-  lightBtn.classList.toggle("active",t==="light");
-  darkBtn.classList.toggle("active",t==="dark");
-  localStorage.setItem("uem-theme",t);
-  if(typeof renderGraph==="function")renderGraph();
-}
-lightBtn.onclick=()=>setTheme("light");
-darkBtn.onclick=()=>setTheme("dark");
-setTheme(localStorage.getItem("uem-theme")||"light");
-
-const enBtn=document.getElementById("englishButton");
-const zuBtn=document.getElementById("zuluButton");
-function setLanguage(l){
-  enBtn.classList.toggle("active",l==="en");
-  zuBtn.classList.toggle("active",l==="zu");
-  localStorage.setItem("uem-language",l);
-}
-enBtn.onclick=()=>setLanguage("en");
-zuBtn.onclick=()=>setLanguage("zu");
-setLanguage(localStorage.getItem("uem-language")||"en");
-
-const normalModeBtn=document.getElementById("normalModeButton");
-const proModeBtn=document.getElementById("proModeButton");
-function setDisplayMode(mode){
-  normalModeBtn.classList.toggle("active",mode==="normal");
-  proModeBtn.classList.toggle("active",mode==="pro");
-  localStorage.setItem("uem-display-mode",mode);
-  if(typeof applyDisplayMode==="function")applyDisplayMode(mode);
-}
-normalModeBtn.onclick=()=>setDisplayMode("normal");
-proModeBtn.onclick=()=>setDisplayMode("pro");
-
-// First-time visitors always start in Normal mode.
-// After they deliberately change it, their browser remembers the choice.
-setDisplayMode(localStorage.getItem("uem-display-mode")||"normal");
-
-
-// Paint current state immediately, then Firebase will replace it with live data.
-updateNormalMode();
-updateProDisplays();
+function renderPublicContact(container,contacts,label){container.replaceChildren();[0,1].forEach(index=>{const contact=contacts?.[index]||contacts?.[String(index)]||null,card=document.createElement("article");card.className="contact-card";if(contact?.name){const role=document.createElement("div");role.className="role";role.textContent=contact.position||label;const name=document.createElement("h3");name.textContent=contact.name;const links=document.createElement("div");links.className="contact-links";if(contact.phone){const phone=document.createElement("a");phone.href=`tel:${String(contact.phone).replace(/[^+\d]/g,"")}`;phone.textContent=contact.phone;links.append(phone)}if(contact.email){const email=document.createElement("a");email.href=`mailto:${contact.email}`;email.textContent=contact.email;links.append(email)}card.append(role,name,links)}else{const role=document.createElement("div");role.className="role";role.textContent=`${label} ${index+1}`;const empty=document.createElement("div");empty.className="unavailable";empty.textContent="Contact details pending";card.append(role,empty)}container.append(card)})}
+onValue(contactsRef,s=>{const data=s.val()||{};renderPublicContact(communityContacts,data.communityLeaders,"Community leader");renderPublicContact(safetyContacts,data.mineSafetyOfficers,"Mine safety officer")});
 </script>
 </body>
 </html>
