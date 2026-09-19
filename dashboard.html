@@ -40,7 +40,7 @@ button{color:inherit}
 .simple-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.simple-card{border:1px solid var(--border);border-radius:20px;background:var(--surface);padding:18px;display:grid;grid-template-columns:50px 1fr 52px;gap:13px;align-items:center;min-height:128px}.factor-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--accentSoft);color:var(--accent);flex:0 0 auto}.factor-icon svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.simple-label{font-size:12px;font-weight:750;color:var(--muted);margin-bottom:5px}.simple-status{font-size:23px;font-weight:900;letter-spacing:-.4px;margin-bottom:4px}.simple-advice{font-size:13px;line-height:1.4}.simple-emoji{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;font-size:30px;background:var(--surface2);justify-self:end}.simple-card.good{border-color:color-mix(in srgb,var(--good) 35%,var(--border))}.simple-card.warn{border-color:color-mix(in srgb,var(--warn) 40%,var(--border))}.simple-card.bad{border-color:color-mix(in srgb,var(--bad) 42%,var(--border))}
 .normal-mode{display:block}.pro-mode{display:none}body.pro-active .normal-mode{display:none}body.pro-active .pro-mode{display:block}
 .metric-strip{display:grid;grid-template-columns:repeat(4,minmax(126px,1fr));gap:9px;overflow-x:auto;margin-bottom:18px}.metric-chip{border:1px solid var(--border);border-radius:15px;background:var(--surface2);padding:11px;min-width:126px;display:flex;align-items:center;gap:8px}.metric-chip .factor-icon{width:34px;height:34px;border-radius:10px}.metric-chip .factor-icon svg{width:17px;height:17px}.mini-label{color:var(--muted);font-size:10px;font-weight:750;text-transform:uppercase}.mini-value{font-size:14px;font-weight:850;white-space:nowrap}.factor-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:17px}.factor-btn{border:1px solid var(--border);background:var(--surface);border-radius:17px;padding:16px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:12px}.factor-btn .name{color:var(--muted);font-size:11px;font-weight:750;text-transform:uppercase}.factor-btn .current{font-size:20px;font-weight:850}.detail-card{display:none;border-top:1px solid var(--border);padding-top:20px}.detail-card.active{display:block}.detail-current{font-size:44px;font-weight:950;margin:3px 0 6px}.status-badge{display:inline-block;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:850;border:1px solid var(--border)}.meaning{color:var(--muted);line-height:1.55}.chart-wrap{border:1px solid var(--border);border-radius:14px;padding:10px;background:var(--surface2);margin-bottom:18px}.chart-wrap canvas{width:100%;height:230px}.advice-box{border-left:4px solid var(--accent);background:var(--surface2);border-radius:12px;padding:15px;line-height:1.5}
-.blank-safety{height:52vh;border:1px dashed var(--border);border-radius:24px;background:linear-gradient(180deg,var(--surface),var(--surface2));opacity:.62}
+.safety-intro{color:var(--muted);max-width:650px;line-height:1.55}.safety-topics{display:grid;gap:22px}.safety-topic{border:1px solid var(--border);border-radius:24px;background:var(--surface);padding:22px;scroll-margin-top:108px}.safety-topic-head{display:flex;align-items:center;gap:13px;margin-bottom:19px}.safety-topic-number{width:40px;height:40px;border-radius:13px;background:var(--accentSoft);color:var(--accentDark);display:grid;place-items:center;font-size:12px;font-weight:900}.safety-topic h2{font-size:clamp(21px,4vw,28px);margin:0;letter-spacing:-.55px}.safety-media{border:1px solid var(--border);border-radius:18px;background:var(--surface2);padding:14px;margin-top:14px;scroll-margin-top:115px}.safety-media-label{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px;font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.6px}.safety-media-label span:last-child{color:var(--muted);font-size:10px}.safety-video{display:block;width:100%;max-height:480px;border-radius:13px;background:#090b0e;aspect-ratio:16/9}.safety-pdf{display:block;width:100%;height:570px;border:0;border-radius:13px;background:#fff}.safety-media-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}.safety-file-link{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:11px;background:var(--surface);color:var(--accentDark);padding:10px 13px;text-decoration:none;font-size:12px;font-weight:800}.safety-media.focused{animation:safetyFocus 1.6s ease}@keyframes safetyFocus{0%,100%{box-shadow:none}25%{box-shadow:0 0 0 5px var(--accentSoft);border-color:var(--accent)}}
 .empty-state{text-align:center;border:1px dashed var(--border);border-radius:19px;padding:42px 20px;color:var(--muted);background:var(--surface2)}
 .jobs-list{display:grid;gap:14px}.job-card{border:1px solid var(--border);border-radius:21px;padding:20px;background:var(--surface)}.job-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.job-type{display:inline-block;background:var(--accentSoft);color:var(--accentDark);padding:6px 9px;border-radius:999px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}.job-card h2{font-size:22px;margin:10px 0 5px;letter-spacing:-.4px}.job-location,.job-close{font-size:12px;color:var(--muted)}.job-description{line-height:1.55;margin:17px 0}.requirements{background:var(--surface2);border-radius:14px;padding:14px;white-space:pre-line;line-height:1.5;font-size:14px}.job-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px}.primary-button,.secondary-button,.danger-button{border:0;border-radius:13px;padding:12px 17px;font-weight:800;cursor:pointer}.primary-button{background:var(--accent);color:#fff}.secondary-button{background:var(--surface2);border:1px solid var(--border)}.danger-button{background:var(--bad);color:#fff}.primary-button:disabled{opacity:.48;cursor:not-allowed}
 .form-card{border:1px solid var(--border);border-radius:22px;padding:21px;background:var(--surface)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{min-width:0}.field.full{grid-column:1/-1}.field label{display:block;font-size:12px;color:var(--muted);font-weight:750;margin-bottom:7px}.field input,.field textarea,.field select{width:100%;border:1px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);padding:12px 13px;outline:none}.field textarea{min-height:116px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accentSoft)}.form-note{font-size:12px;color:var(--muted);line-height:1.5}.form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}.upload-zone{border:1.5px dashed var(--border);border-radius:15px;padding:16px;background:var(--surface2)}.upload-zone input{padding:0;border:0;background:transparent}.success-card{display:none;background:var(--goodSoft);color:var(--good);border:1px solid var(--good);border-radius:16px;padding:16px;margin-top:15px}.success-card.show{display:block}
@@ -49,7 +49,7 @@ button{color:inherit}
 .drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.36);z-index:70;opacity:0;pointer-events:none;transition:opacity .2s}.drawer-overlay.open{opacity:1;pointer-events:auto}.drawer{position:absolute;top:0;left:0;width:min(340px,88vw);height:100%;background:var(--surface);color:var(--text);box-shadow:12px 0 30px rgba(0,0,0,.18);transform:translateX(-100%);transition:transform .22s ease;padding:23px;overflow-y:auto}.drawer-overlay.open .drawer{transform:translateX(0)}.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}.drawer-title{font-weight:900;font-size:21px}.icon-button{width:42px;height:42px;border:0;background:var(--surface2);border-radius:12px;cursor:pointer}.drawer-section{border-top:1px solid var(--border);padding:20px 0}.drawer-section h3{font-size:11px;color:var(--muted);margin:0 0 12px;text-transform:uppercase;letter-spacing:.9px}.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.choice-button{border:1px solid var(--border);background:var(--surface2);padding:10px;border-radius:11px;cursor:pointer;font-weight:700}.choice-button.active{border-color:var(--accent);color:var(--accentDark);background:var(--accentSoft)}
 .logout-button{width:100%;border:1px solid var(--bad);background:var(--badSoft);color:var(--bad);padding:12px 15px;border-radius:12px;cursor:pointer;font-weight:850}
 dialog{width:min(600px,calc(100% - 28px));max-height:88vh;overflow:auto;border:1px solid var(--border);border-radius:24px;background:var(--surface);color:var(--text);padding:0;box-shadow:0 24px 80px rgba(0,0,0,.28)}dialog::backdrop{background:rgba(5,10,15,.55);backdrop-filter:blur(3px)}.dialog-body{padding:24px}.dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:20px}.dialog-head h2{margin:0;font-size:24px}.dialog-close{width:38px;height:38px;border:0;border-radius:11px;background:var(--surface2);cursor:pointer}.toast{position:fixed;z-index:100;left:50%;bottom:112px;transform:translate(-50%,25px);opacity:0;pointer-events:none;background:var(--text);color:var(--surface);padding:12px 17px;border-radius:12px;font-size:13px;font-weight:750;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:680px){.topbar{height:86px;padding:14px 18px 5px}.more-button{width:52px;height:52px}.page{padding:20px 16px 128px}.simple-grid,.contact-grid{grid-template-columns:1fr}.simple-card{min-height:118px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.section-card{padding:18px}.bottom-nav{height:78px;border-radius:26px}.nav-button svg{width:23px;height:23px}.nav-label{font-size:10px}.blast-links{grid-template-columns:1fr}.job-actions{align-items:flex-start;flex-direction:column}.emergency-hero{padding:20px}.metric-strip{grid-template-columns:repeat(4,132px)}}
+@media(max-width:680px){.topbar{height:86px;padding:14px 18px 5px}.more-button{width:52px;height:52px}.page{padding:20px 16px 128px}.simple-grid,.contact-grid{grid-template-columns:1fr}.simple-card{min-height:118px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.section-card{padding:18px}.safety-topic{padding:17px}.safety-pdf{height:480px}.bottom-nav{height:78px;border-radius:26px}.nav-button svg{width:23px;height:23px}.nav-label{font-size:10px}.blast-links{grid-template-columns:1fr}.job-actions{align-items:flex-start;flex-direction:column}.emergency-hero{padding:20px}.metric-strip{grid-template-columns:repeat(4,132px)}}
 @media(max-width:390px){.nav-label{font-size:9px}.bottom-nav{padding:6px 5px}.top-actions{padding-left:10px}.live-label{font-size:11px}.simple-card{grid-template-columns:46px 1fr 45px;padding:16px 14px;gap:10px}.simple-emoji{width:44px;height:44px;font-size:27px}}
 </style>
 </head>
@@ -111,8 +111,36 @@ dialog{width:min(600px,calc(100% - 28px));max-height:88vh;overflow:auto;border:1
     </section>
 
     <section class="app-page" id="page-safety" data-page="safety">
-      <div class="page-heading"><p class="page-kicker">Learn and prepare</p><h1>Safety</h1></div>
-      <div class="blank-safety" aria-label="Safety content will be added later"></div>
+      <div class="page-heading"><p class="page-kicker" id="safetyKicker">Learn and prepare</p><h1 id="safetyPageTitle">Safety</h1><p class="safety-intro" id="safetyIntro">Watch the short videos first, then read the guides. The resources change automatically when you choose English or isiZulu in settings.</p></div>
+      <div class="safety-topics">
+        <section class="safety-topic" id="blastingSafetyTopic">
+          <div class="safety-topic-head"><span class="safety-topic-number">01</span><h2 id="blastingSafetyTitle">What to do during blasting</h2></div>
+          <div class="safety-media" id="blastingVideoCard">
+            <div class="safety-media-label"><span id="blastingVideoLabel">Watch the video</span><span>MP4</span></div>
+            <video class="safety-video" id="blastingSafetyVideo" controls playsinline preload="metadata"></video>
+            <div class="safety-media-actions"><a class="safety-file-link" id="blastingVideoLink" target="_blank" rel="noopener">Open video</a></div>
+          </div>
+          <div class="safety-media" id="blastingPdfCard">
+            <div class="safety-media-label"><span id="blastingPdfLabel">Read the guide</span><span>PDF</span></div>
+            <iframe class="safety-pdf" id="blastingSafetyPdf" loading="lazy" title="What to do during blasting PDF"></iframe>
+            <div class="safety-media-actions"><a class="safety-file-link" id="blastingPdfLink" target="_blank" rel="noopener">Open PDF</a><a class="safety-file-link" id="blastingPdfDownload" download>Download PDF</a></div>
+          </div>
+        </section>
+
+        <section class="safety-topic" id="mineLivingSafetyTopic">
+          <div class="safety-topic-head"><span class="safety-topic-number">02</span><h2 id="mineLivingSafetyTitle">Living close to a mine</h2></div>
+          <div class="safety-media" id="mineLivingVideoCard">
+            <div class="safety-media-label"><span id="mineLivingVideoLabel">Watch the video</span><span>MP4</span></div>
+            <video class="safety-video" id="mineLivingSafetyVideo" controls playsinline preload="metadata"></video>
+            <div class="safety-media-actions"><a class="safety-file-link" id="mineLivingVideoLink" target="_blank" rel="noopener">Open video</a></div>
+          </div>
+          <div class="safety-media" id="mineLivingPdfCard">
+            <div class="safety-media-label"><span id="mineLivingPdfLabel">Read the guide</span><span>PDF</span></div>
+            <iframe class="safety-pdf" id="mineLivingSafetyPdf" loading="lazy" title="Living close to a mine PDF"></iframe>
+            <div class="safety-media-actions"><a class="safety-file-link" id="mineLivingPdfLink" target="_blank" rel="noopener">Open PDF</a><a class="safety-file-link" id="mineLivingPdfDownload" download>Download PDF</a></div>
+          </div>
+        </section>
+      </div>
     </section>
 
     <section class="app-page" id="page-jobs" data-page="jobs">
@@ -161,7 +189,7 @@ dialog{width:min(600px,calc(100% - 28px));max-height:88vh;overflow:auto;border:1
     <div class="drawer-head"><div class="drawer-title">UEM Settings</div><button class="icon-button" id="closeDrawerButton" aria-label="Close settings">✕</button></div>
     <div class="drawer-section"><h3>Display mode</h3><div class="choice-row"><button class="choice-button active" id="normalModeButton">Normal</button><button class="choice-button" id="proModeButton">Pro</button></div><p class="form-note">Normal uses simple words and visual faces. Pro shows numbers and live graphs.</p></div>
     <div class="drawer-section"><h3>Appearance</h3><div class="choice-row"><button class="choice-button active" id="lightModeButton">Light</button><button class="choice-button" id="darkModeButton">Dark</button></div></div>
-    <div class="drawer-section"><h3>Language</h3><div class="choice-row"><button class="choice-button active" id="englishButton">English</button><button class="choice-button" id="zuluButton">IsiZulu</button></div><p class="form-note">Both options display English for now.</p></div>
+    <div class="drawer-section"><h3>Language</h3><div class="choice-row"><button class="choice-button active" id="englishButton">English</button><button class="choice-button" id="zuluButton">IsiZulu</button></div><p class="form-note">Safety videos and guides use the selected language.</p></div>
     <div class="drawer-section"><h3>Account</h3><button class="logout-button" id="logoutButton" type="button">Log out</button></div>
   </aside>
 </div>
@@ -219,8 +247,38 @@ drawerOverlay.addEventListener("click",e=>{if(e.target===drawerOverlay)drawerOve
 
 function setTheme(theme){document.body.classList.toggle("dark",theme==="dark");lightModeButton.classList.toggle("active",theme==="light");darkModeButton.classList.toggle("active",theme==="dark");localStorage.setItem("uem-theme",theme);window.dispatchEvent(new Event("uem:theme"))}
 lightModeButton.onclick=()=>setTheme("light");darkModeButton.onclick=()=>setTheme("dark");setTheme(localStorage.getItem("uem-theme")||"light");
-function setLanguage(language){englishButton.classList.toggle("active",language==="en");zuluButton.classList.toggle("active",language==="zu");localStorage.setItem("uem-language",language)}
+const safetyContent={
+  en:{
+    kicker:"Learn and prepare",title:"Safety",intro:"Watch the short videos first, then read the guides. The resources change automatically when you choose English or isiZulu in settings.",
+    blastingTitle:"What to do during blasting",livingTitle:"Living close to a mine",videoLabel:"Watch the video",pdfLabel:"Read the guide",openVideo:"Open video",openPdf:"Open PDF",downloadPdf:"Download PDF",
+    blastingVideo:"WTDDB_English.mp4",blastingPdf:"WTDDB_English.pdf",livingVideo:"LCTAM_English.mp4",livingPdf:"LCTAM_English.pdf"
+  },
+  zu:{
+    kicker:"Funda futhi uzilungiselele",title:"Ukuphepha",intro:"Qala ngokubuka amavidiyo amafushane, bese ufunda imihlahlandlela. Izinsiza ziyashintsha ngokuzenzakalela uma ukhetha isiNgisi noma isiZulu kuzilungiselelo.",
+    blastingTitle:"Okufanele ukwenze ngesikhathi sokuqhunyiswa",livingTitle:"Ukuhlala eduze kwemayini",videoLabel:"Buka ividiyo",pdfLabel:"Funda umhlahlandlela",openVideo:"Vula ividiyo",openPdf:"Vula i-PDF",downloadPdf:"Dawuniloda i-PDF",
+    blastingVideo:"WTDDB_IsiZulu.mp4",blastingPdf:"WTDDB_IsiZulu.pdf",livingVideo:"LCTAM_IsiZulu.mp4",livingPdf:"LCTAM_IsiZulu.pdf"
+  }
+};
+function setSafetyMedia(video,videoLink,videoFile,pdf,pdfLink,pdfDownload,pdfFile,pdfTitle){
+  if(video.getAttribute("src")!==videoFile){video.pause();video.src=videoFile;video.load()}
+  videoLink.href=videoFile;pdf.src=`${pdfFile}#view=FitH`;pdf.title=pdfTitle;pdfLink.href=pdfFile;pdfDownload.href=pdfFile
+}
+function updateSafetyContent(language){
+  const content=safetyContent[language]||safetyContent.en;
+  document.documentElement.lang=language; safetyKicker.textContent=content.kicker;safetyPageTitle.textContent=content.title;safetyIntro.textContent=content.intro;blastingSafetyTitle.textContent=content.blastingTitle;mineLivingSafetyTitle.textContent=content.livingTitle;
+  [blastingVideoLabel,mineLivingVideoLabel].forEach(el=>el.textContent=content.videoLabel);[blastingPdfLabel,mineLivingPdfLabel].forEach(el=>el.textContent=content.pdfLabel);[blastingVideoLink,mineLivingVideoLink].forEach(el=>el.textContent=content.openVideo);[blastingPdfLink,mineLivingPdfLink].forEach(el=>el.textContent=content.openPdf);[blastingPdfDownload,mineLivingPdfDownload].forEach(el=>el.textContent=content.downloadPdf);
+  setSafetyMedia(blastingSafetyVideo,blastingVideoLink,content.blastingVideo,blastingSafetyPdf,blastingPdfLink,blastingPdfDownload,content.blastingPdf,content.blastingTitle);
+  setSafetyMedia(mineLivingSafetyVideo,mineLivingVideoLink,content.livingVideo,mineLivingSafetyPdf,mineLivingPdfLink,mineLivingPdfDownload,content.livingPdf,content.livingTitle)
+}
+function setLanguage(language){englishButton.classList.toggle("active",language==="en");zuluButton.classList.toggle("active",language==="zu");localStorage.setItem("uem-language",language);updateSafetyContent(language)}
 englishButton.onclick=()=>setLanguage("en");zuluButton.onclick=()=>setLanguage("zu");setLanguage(localStorage.getItem("uem-language")||"en");
+function focusRequestedSafetyMedia(){
+  const requested=sessionStorage.getItem("uem-safety-focus");if(!requested)return;sessionStorage.removeItem("uem-safety-focus");
+  const target=requested==="instructions"?blastingPdfCard:blastingVideoCard;
+  setTimeout(()=>{target.scrollIntoView({behavior:"smooth",block:"start"});target.classList.add("focused");setTimeout(()=>target.classList.remove("focused"),1700)},80)
+}
+window.addEventListener("uem:page",event=>{if(event.detail==="safety")focusRequestedSafetyMedia()});
+if(location.hash.slice(1)==="safety")focusRequestedSafetyMedia();
 function setDisplayMode(mode){document.body.classList.toggle("pro-active",mode==="pro");normalModeButton.classList.toggle("active",mode==="normal");proModeButton.classList.toggle("active",mode==="pro");localStorage.setItem("uem-display-mode",mode);window.dispatchEvent(new Event("uem:display-mode"))}
 normalModeButton.onclick=()=>setDisplayMode("normal");proModeButton.onclick=()=>setDisplayMode("pro");setDisplayMode(localStorage.getItem("uem-display-mode")||"normal");
 logoutButton.addEventListener("click",()=>{drawerOverlay.classList.remove("open");location.href="index.html"});
