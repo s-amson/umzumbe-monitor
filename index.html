@@ -26,8 +26,7 @@ body.dark .topbar{background:rgba(23,28,33,.95)}
 .brand{text-align:center;font-weight:780;font-size:clamp(17px,3vw,22px);letter-spacing:-.3px}
 .icon-btn{width:44px;height:44px;border:0;background:transparent;color:var(--text);cursor:pointer;border-radius:12px;display:grid;place-items:center}
 .icon-btn:hover{background:var(--surface2)}
-.hamburger,.hamburger::before,.hamburger::after{width:25px;height:3px;background:currentColor;border-radius:20px;display:block;position:relative}
-.hamburger::before,.hamburger::after{content:"";position:absolute;left:0}.hamburger::before{top:-8px}.hamburger::after{top:8px}
+.more-dots{display:flex;gap:5px}.more-dots i{display:block;width:6px;height:6px;border-radius:50%;background:var(--accent)}
 .factor-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--accentSoft);color:var(--accent);flex:0 0 auto}
 .factor-icon svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.34);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -64,7 +63,7 @@ h1{font-size:clamp(30px,5vw,44px);line-height:1.05;letter-spacing:-1px;margin:0 
 </head>
 <body>
 <div class="app-shell">
-<header class="topbar"><button class="icon-btn" id="menuButton"><span class="hamburger"></span></button><div class="brand">uMzumbe Environment Monitor</div><div></div></header>
+<header class="topbar"><button class="icon-btn" id="menuButton" aria-label="Open settings"><span class="more-dots"><i></i><i></i><i></i></span></button><div class="brand">uMzumbe Environment Monitor</div><div></div></header>
 <main class="page">
 <section class="hero"><div class="eyebrow">Community Environment Dashboard</div><h1>Welcome to UEM</h1><p>See four independent prototype environmental channels at a glance, then sign in for more information and advice.</p></section>
 <div class="section-title"><h2>Quick overview</h2><span>Live status</span></div>
