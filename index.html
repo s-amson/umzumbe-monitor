@@ -55,7 +55,7 @@ dialog::backdrop{background:rgba(12,28,39,.38);backdrop-filter:blur(4px)}
   </section>
 
   <section class="action-area" aria-labelledby="roleQuestion">
-    <h1 id="roleQuestion">What would you like to do?</h1>
+    <h1 id="roleQuestion">You are signing as?</h1>
     <div class="role-bar" aria-label="Sign-in options">
       <button class="role-choice" id="residentButton" type="button">Resident</button>
       <button class="role-choice" id="officialButton" type="button">Official</button>
@@ -82,7 +82,7 @@ dialog::backdrop{background:rgba(12,28,39,.38);backdrop-filter:blur(4px)}
 
 <script>
 const signInTranslations={
-  en:{documentTitle:"UEM Sign In",sawubona:"sawubona",hello:"hello",molo:"molo",dumelang:"dumelang",brandName:"UmZumbe Enviromental Monitor",roleQuestion:"What would you like to do?",signInOptions:"Sign-in options",resident:"Resident",official:"Official",residentHint:"Residents can continue without login details.",officialSignIn:"Official sign in",enterCredentials:"Enter your username and PIN.",close:"Close",username:"Username",incorrectCredentials:"Incorrect username or PIN. Please try again.",continue:"Continue",takingYouThere:"Taking you there in a moment…",hangTight:"Hang tight."},
+  en:{documentTitle:"UEM Sign In",sawubona:"sawubona",hello:"hello",molo:"molo",dumelang:"dumelang",brandName:"UmZumbe Enviromental Monitor",roleQuestion:"You're signing in as?",signInOptions:"Sign-in options",resident:"Resident",official:"Official",residentHint:"Residents can continue without login details.",officialSignIn:"Official sign in",enterCredentials:"Enter your username and PIN.",close:"Close",username:"Username",incorrectCredentials:"Incorrect username or PIN. Please try again.",continue:"Continue",takingYouThere:"Taking you there in a moment…",hangTight:"Hang tight."},
   zu:{documentTitle:"Ukungena ku-UEM",sawubona:"sawubona",hello:"sanibonani",molo:"wamukelekile",dumelang:"siyakwamukela",brandName:"Umqaphi Wezemvelo waseMzumbe",roleQuestion:"Ungathanda ukwenzani?",signInOptions:"Izinketho zokungena",resident:"Umhlali",official:"Isikhulu",residentHint:"Abahlali bangaqhubeka ngaphandle kokufaka imininingwane yokungena.",officialSignIn:"Ukungena kwesikhulu",enterCredentials:"Faka igama lomsebenzisi ne-PIN yakho.",close:"Vala",username:"Igama lomsebenzisi",incorrectCredentials:"Igama lomsebenzisi noma i-PIN ayilungile. Sicela uzame futhi.",continue:"Qhubeka",takingYouThere:"Sikuyisa lapho maduze…",hangTight:"Linda kancane."}
 };
 const signInLanguage=localStorage.getItem("uem-language")==="zu"?"zu":"en",signInText=signInTranslations[signInLanguage],signInEnglish=new Map();
